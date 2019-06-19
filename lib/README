@@ -1,3 +1,4 @@
+Use https://github.com/arduino-libraries/Servo/blob/master/src/Servo.h as an example for the PlayerPad class
 
 This directory is intended for project specific (private) libraries.
 PlatformIO will compile them to static libraries and link into executable file.
