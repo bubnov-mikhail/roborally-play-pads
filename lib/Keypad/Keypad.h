@@ -38,14 +38,14 @@ class Keypad
         static const uint8_t keyHash = 0x0F; //15
         static const uint8_t keyMultiSymbol = 0x10; //16 //Psevdo symbol to indicate that there are more then one key pressed
         static const uint8_t keyReleasedSymbol = 0x11; //17 Psevdo symbol to indicate that no key is pressed
-        Keypad(uint8_t mosiPin, uint8_t misoPin, uint8_t buzzerPin, bool beepOnClick);
-        Keypad(uint8_t mosiPin, uint8_t misoPin);
+        Keypad(uint8_t keypadMoSiCS, uint8_t keypadMiSoCS, uint8_t buzzerPin, bool beepOnClick);
+        Keypad(uint8_t keypadMoSiCS, uint8_t keypadMiSoCS);
         uint16_t getKeypadCode(void);
         uint8_t getKeypadSymbol(void);
         bool isKeypadUpdated(void);
         void setBeepOnClick(bool beepOnClick);
     private:
-        uint16_t keypadCode, _mosiPin, _misoPin, _buzzerPin;
+        uint16_t keypadCode, _keypadMoSiCS, _keypadMiSoCS, _buzzerPin;
         static const uint8_t buttons = 16;
         const uint8_t keySymbols[buttons] = {
             key1, key2, key3, keyA,

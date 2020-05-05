@@ -1,17 +1,17 @@
 #include <Keypad.h>
 
-Keypad::Keypad(uint8_t mosiPin, uint8_t misoPin, uint8_t buzzerPin, bool beepOnClick)
+Keypad::Keypad(uint8_t keypadMoSiCS, uint8_t keypadMiSoCS, uint8_t buzzerPin, bool beepOnClick)
 {
-    _mosiPin = mosiPin;
-    _misoPin = misoPin;
+    _keypadMoSiCS = keypadMoSiCS;
+    _keypadMiSoCS = keypadMiSoCS;
     _buzzerPin = buzzerPin;
     _beepOnClick = beepOnClick;
 }
 
-Keypad::Keypad(uint8_t mosiPin, uint8_t misoPin)
+Keypad::Keypad(uint8_t keypadMoSiCS, uint8_t keypadMiSoCS)
 {
-    _mosiPin = mosiPin;
-    _misoPin = misoPin;
+    _keypadMoSiCS = keypadMoSiCS;
+    _keypadMiSoCS = keypadMiSoCS;
     _beepOnClick = false;
 }
 
@@ -47,23 +47,23 @@ bool Keypad::isKeypadUpdated(void)
   {
     keypadCode = keypadCode << 4;
     outputMask = outputMask << 1; //Ignore QA output;
-    digitalWrite(_mosiPin, LOW);
+    digitalWrite(_keypadMoSiCS, LOW);
     SPI.transfer(outputMask);
-    digitalWrite(_mosiPin, HIGH);
+    digitalWrite(_keypadMoSiCS, HIGH);
 
     //Reload the lock on the input
-    digitalWrite(_mosiPin, LOW);
-    digitalWrite(_mosiPin, HIGH);
+    digitalWrite(_keypadMoSiCS, LOW);
+    digitalWrite(_keypadMoSiCS, HIGH);
 
-    digitalWrite(_misoPin, LOW);
+    digitalWrite(_keypadMiSoCS, LOW);
     uint8_t inputData = SPI.transfer(0x00);
-    digitalWrite(_misoPin, HIGH);
+    digitalWrite(_keypadMiSoCS, HIGH);
     
     keypadCode = keypadCode | inputData;
   }
-  digitalWrite(_mosiPin, LOW);
+  digitalWrite(_keypadMoSiCS, LOW);
   SPI.transfer(0x00);
-  digitalWrite(_mosiPin, HIGH);
+  digitalWrite(_keypadMoSiCS, HIGH);
   SPI.end();
 
   bool updated = lastCode != keypadCode;
