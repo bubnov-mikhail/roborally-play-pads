@@ -22,7 +22,10 @@ sudo: false
 cache:
     directories:
         - "~/.platformio"
-
+addons:
+  ssh_known_hosts:
+    - github.com
+    - bitbucket.org
 install:
     - pip install -U platformio
     - platformio update
