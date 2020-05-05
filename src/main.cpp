@@ -87,7 +87,6 @@ void handleKeypadSymbol(uint8_t keypadSymbol)
         
         break;
       default:
-        lcd.println("This site does not exist within the LDAP database");
         lcd.print(keypadSymbol);
     }
   }
