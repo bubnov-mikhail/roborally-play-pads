@@ -1,10 +1,11 @@
 #include <ServiceContainer.h>
 
-ServiceContainer::ServiceContainer(ConfigStorage* _configStorage, Nokia_LCD* _lcd, Keypad* _keypad)
+ServiceContainer::ServiceContainer(ConfigStorage* _configStorage, Nokia_LCD* _lcd, Keypad* _keypad, uint8_t _buzzerPin)
 {
     configStorage = _configStorage;
     lcd = _lcd;
     keypad = _keypad;
+    buzzerPin = _buzzerPin;
 
     _lcd->setBacklight(_configStorage->isWithBacklight());
     _lcd->begin();

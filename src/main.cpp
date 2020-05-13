@@ -16,7 +16,7 @@ uint8_t nokiaContrast = 50;
 Nokia_LCD lcd(SCK, MOSI, nokiaDCPin, nokiaCEPin, nokiaRSTPin, nokiaBLPin);
 Keypad keypad(keypadMoSiCSPin, keypadMiSoCSPin, buzzerPin, configStorage.isWithSounds());
 
-ServiceContainer serviceContainer(&configStorage, &lcd, &keypad);
+ServiceContainer serviceContainer(&configStorage, &lcd, &keypad, buzzerPin);
 
 void setup()
 {
