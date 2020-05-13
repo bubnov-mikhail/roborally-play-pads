@@ -1,6 +1,7 @@
 #include <main.h>
 
 //#define DEBUG true
+//#define SET_CONFIG_DEFAULTS true
 
 const uint8_t keypadMoSiCSPin = 8;
 const uint8_t keypadMiSoCSPin = 7; //CLK INH, Latch on the output is connected to the SS output.
@@ -8,14 +9,18 @@ const uint8_t buzzerPin = 6;
 
 // 5110
 const uint8_t nokiaDCPin = 4; // Data/Command select (D/C)
-const uint8_t nokiaBLPin = 2; // Back light
+const uint8_t nokiaBLPin = 2; // Backlight
 const uint8_t nokiaCEPin = 3; // Chip Select
 const uint8_t nokiaRSTPin = 5; // Reset
-uint8_t nokiaContrast = 40;
-bool nokiaBL = true;
+uint8_t nokiaContrast = 50;
 
-Nokia_LCD lcd(SCK, MOSI, nokiaDCPin, nokiaCEPin, nokiaRSTPin);
-Keypad keypad(keypadMoSiCSPin, keypadMiSoCSPin, buzzerPin, true);
+#if defined(SET_CONFIG_DEFAULTS)
+  ConfigStorage configStorage(true, true, 50);
+#else
+  ConfigStorage configStorage;
+#endif
+Nokia_LCD lcd(SCK, MOSI, nokiaDCPin, nokiaCEPin, nokiaRSTPin, nokiaBLPin);
+Keypad keypad(keypadMoSiCSPin, keypadMiSoCSPin, buzzerPin, configStorage.isWithSounds());
 
 void setup()
 {
@@ -29,9 +34,9 @@ void setup()
   pinMode(nokiaRSTPin, OUTPUT);
   pinMode(nokiaBLPin, OUTPUT);
   
-  digitalWrite(nokiaBLPin, nokiaBL);
+  lcd.setBacklight(configStorage.isWithBacklight());
   lcd.begin();
-  lcd.setContrast(nokiaContrast);
+  lcd.setContrast(configStorage.getContrast());
   lcd.clear(false);
   lcd.setCursor(76, 0);
   lcd.draw(LcdAssets::batteryFull, sizeof(LcdAssets::batteryFull) / sizeof(uint8_t), true);
@@ -74,8 +79,8 @@ void handleKeypadSymbol(uint8_t keypadSymbol)
         
         break;
       case Keypad::keyStar:
-        nokiaBL = !nokiaBL;
-        digitalWrite(nokiaBLPin, nokiaBL);
+        configStorage.setWithBacklight(!configStorage.isWithBacklight());
+        lcd.setBacklight(configStorage.isWithBacklight());
         
         break;
       case Keypad::keyA:
@@ -86,7 +91,16 @@ void handleKeypadSymbol(uint8_t keypadSymbol)
         lcd.setInverted(false);
         
         break;
+      case Keypad::keyHash:
+        configStorage.setWithSounds(!configStorage.isWithSounds());
+        keypad.setBeepOnClick(configStorage.isWithSounds());
+        break;
       default:
+        lcd.setCursor(0, 0);
+        lcd.setInverted(true);
+        lcd.println("This is an inverted text");
+        lcd.setInverted(false);
+        lcd.println("This is a normal text.");
         lcd.print(keypadSymbol);
     }
   }
