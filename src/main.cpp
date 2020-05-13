@@ -14,6 +14,10 @@ const uint8_t nokiaCEPin = 3; // Chip Select
 const uint8_t nokiaRSTPin = 5; // Reset
 uint8_t nokiaContrast = 50;
 
+/**
+ * Init services
+ */
+
 #if defined(SET_CONFIG_DEFAULTS)
   ConfigStorage configStorage(true, true, 50);
 #else
@@ -21,6 +25,8 @@ uint8_t nokiaContrast = 50;
 #endif
 Nokia_LCD lcd(SCK, MOSI, nokiaDCPin, nokiaCEPin, nokiaRSTPin, nokiaBLPin);
 Keypad keypad(keypadMoSiCSPin, keypadMiSoCSPin, buzzerPin, configStorage.isWithSounds());
+
+ServiceContainer serviceContainer(&configStorage, &lcd, &keypad);
 
 void setup()
 {
