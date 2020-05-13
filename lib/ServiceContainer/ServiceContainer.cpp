@@ -10,6 +10,7 @@ ServiceContainer::ServiceContainer(ConfigStorage* _configStorage, Nokia_LCD* _lc
     lcd->setBacklight(configStorage->isWithBacklight());
     lcd->begin();
     lcd->setContrast(configStorage->getContrast());
+    menuRenderer = new MenuRenderer(lcd);
 }
 
 ConfigStorage* ServiceContainer::getConfigStorage(void)
@@ -25,4 +26,9 @@ Nokia_LCD* ServiceContainer::getLcd(void)
 Keypad* ServiceContainer::getKeypad(void)
 {
     return keypad;
+}
+
+MenuRenderer* ServiceContainer::getMenuRenderer(void)
+{
+    return menuRenderer;
 }
