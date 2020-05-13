@@ -7,9 +7,9 @@
 #endif
 
 namespace LcdAssets {
-    const unsigned char batteryFull[] PROGMEM = {0xfe, 0xfb, 0xfb, 0xfb, 0xfe};
-    const unsigned char batteryHalf[] PROGMEM = {0xfe, 0xe3, 0xe3, 0xe3, 0xfe};
-    const unsigned char batteryLow[] PROGMEM = {0xfe, 0x83, 0x83, 0x83, 0xfe};
+    const unsigned char batteryFull[] PROGMEM = {0x7e, 0x7d, 0x7d, 0x7d, 0x7e};
+    const unsigned char batteryHalf[] PROGMEM = {0x7e, 0x71, 0x71, 0x71, 0x7e};
+    const unsigned char batteryLow[] PROGMEM = {0x7e, 0x41, 0x41, 0x41, 0x7e};
     const unsigned char progressBarSideBorder PROGMEM = 0xff;
     const unsigned char progressBarEmptyBody PROGMEM = 0x81;
     const unsigned char progressBarFilledBody PROGMEM = 0xbd;
