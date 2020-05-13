@@ -13,22 +13,22 @@ uint8_t nokiaContrast = 50;
 #else
   ConfigStorage configStorage;
 #endif
-Nokia_LCD lcd(SCK, MOSI, nokiaDCPin, nokiaCEPin, nokiaRSTPin, nokiaBLPin);
-Keypad keypad(keypadMoSiCSPin, keypadMiSoCSPin, buzzerPin, configStorage.isWithSounds());
+Nokia_LCD lcd(SCK, MOSI, PIN_NOKIA_DC, PIN_NOKIA_CE, PIN_NOKIA_RST, PIN_NOKIA_BL);
+Keypad keypad(PIN_KEYPAD_MOSI_CS, PIN_KEYPAD_MISO_CS, PIN_BUZZER, configStorage.isWithSounds());
 
-ServiceContainer serviceContainer(&configStorage, &lcd, &keypad, buzzerPin);
+ServiceContainer serviceContainer(&configStorage, &lcd, &keypad, PIN_BUZZER);
 
 void setup()
 {
-  pinMode(keypadMoSiCSPin, OUTPUT);
-  pinMode(keypadMiSoCSPin, OUTPUT);
-  pinMode(buzzerPin, OUTPUT);
+  pinMode(PIN_KEYPAD_MOSI_CS, OUTPUT);
+  pinMode(PIN_KEYPAD_MISO_CS, OUTPUT);
+  pinMode(PIN_BUZZER, OUTPUT);
   pinMode(SCK, OUTPUT);
   pinMode(MOSI, OUTPUT);
-  pinMode(nokiaDCPin, OUTPUT);
-  pinMode(nokiaCEPin, OUTPUT);
-  pinMode(nokiaRSTPin, OUTPUT);
-  pinMode(nokiaBLPin, OUTPUT);
+  pinMode(PIN_NOKIA_DC, OUTPUT);
+  pinMode(PIN_NOKIA_CE, OUTPUT);
+  pinMode(PIN_NOKIA_RST, OUTPUT);
+  pinMode(PIN_NOKIA_BL, OUTPUT);
   
   lcd.clear(false);
   lcd.setCursor(76, 0);
