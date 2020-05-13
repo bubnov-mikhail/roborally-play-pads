@@ -5,6 +5,10 @@ ServiceContainer::ServiceContainer(ConfigStorage* _configStorage, Nokia_LCD* _lc
     configStorage = _configStorage;
     lcd = _lcd;
     keypad = _keypad;
+
+    _lcd->setBacklight(_configStorage->isWithBacklight());
+    _lcd->begin();
+    _lcd->setContrast(_configStorage->getContrast());
 }
 
 const ConfigStorage* ServiceContainer::getConfigStorage(void)
