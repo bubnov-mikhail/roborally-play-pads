@@ -13,4 +13,5 @@ namespace LcdAssets {
     const unsigned char progressBarSideBorder PROGMEM = 0xff;
     const unsigned char progressBarEmptyBody PROGMEM = 0x81;
     const unsigned char progressBarFilledBody PROGMEM = 0xbd;
+    const unsigned char menuHeader[] PROGMEM = {0xf3, 0x79, 0x3c, 0x9e, 0xcf, 0xe7};
 }
