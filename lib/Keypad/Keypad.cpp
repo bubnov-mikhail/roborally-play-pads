@@ -81,6 +81,8 @@ void Keypad::setBeepOnClick(bool beepOnClick)
 void Keypad::beepOnClick(void)
 {
     if (_beepOnClick && _buzzerPin) {
-        TimerFreeTone(_buzzerPin, 450, 40);
+        TimerFreeTone(_buzzerPin, beepFreq, delayOnClick);
+        return;
     }
+    delay(delayOnClick);
 }
