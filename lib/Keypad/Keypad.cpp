@@ -28,6 +28,9 @@ uint8_t Keypad::getKeypadSymbol(void)
       }
     }
 
+    #if defined(DEBUG)
+    Serial.print(int(keypadSymbol));
+    #endif
     return keyMultiSymbol;
 }
 
