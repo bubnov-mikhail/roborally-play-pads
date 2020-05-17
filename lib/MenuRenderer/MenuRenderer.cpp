@@ -48,13 +48,11 @@ void MenuRenderer::render_menu(Menu const& menu) const {
 }
 
 void MenuRenderer::render_menu_component(MenuComponent const& menu_item) const {
-    lcd->draw(LcdAssets::menuItemBorder, 1, true);
-    if (menu_item.is_current()) {
-        lcd->setInverted(true);
-    }
-    lcd->draw(LcdAssets::menuItemSpace, 2, true);
+    menu_item.is_current()
+        ? lcd->draw(LcdAssets::menuItemSelected, 4, true)
+        : lcd->draw(LcdAssets::menuItem, 4, true)
+    ;
     lcd->print(menu_item.get_name());
-    lcd->setInverted(false);
 }
 
 uint8_t MenuRenderer::getCursorXForCenteredText(const char* text) const
