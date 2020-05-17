@@ -11,7 +11,7 @@ class MenuRenderer : public MenuComponentRenderer {
         void render(Menu const& menu) const;
 
         void render_menu_item(MenuItem const& menu_item) const;
-
+        
         void render_back_menu_item(BackMenuItem const& menu_item) const;
 
         void render_numeric_menu_item(NumericMenuItem const& menu_item) const;
@@ -19,5 +19,8 @@ class MenuRenderer : public MenuComponentRenderer {
         void render_menu(Menu const& menu) const;
     private:
         Nokia_LCD* lcd;
+        uint8_t getCursorXForCenteredText(const char* text) const;
+        void render_menu_component(MenuComponent const& menu_item) const;
         const uint8_t displayWidth = 84;
+        const uint8_t charWidth = 6;
 };
