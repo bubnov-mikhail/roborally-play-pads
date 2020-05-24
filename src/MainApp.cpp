@@ -27,7 +27,7 @@ void MainApp::execute(void) {
     Menu menuConfigs(StringAssets::configs);
     MenuItem menuItemBacklight(MainApp::getBacklightMenuName(config), MainApp::handleConfigBacklight);
     MenuItem menuItemSounds(MainApp::getSoundsMenuName(config), MainApp::handleConfigSound);
-    MenuItem menuItemContrast(StringAssets::contrast, MainApp::handleGamesRoborally);
+    MenuItem menuItemContrast(StringAssets::contrast, MainApp::handleConfigContrast);
     menuConfigs.add_item(&menuItemBacklight);
     menuConfigs.add_item(&menuItemSounds);
     menuConfigs.add_item(&menuItemContrast);
@@ -42,7 +42,9 @@ void MainApp::execute(void) {
     menuSystem.display();
 
     while(true) {
-        keypad->read();
+        if (!keypad->read()) {
+            continue;
+        }
         handleKeypadSymbol(keypad->getKeypadSymbol(), &menuSystem);
     }
 }
@@ -94,7 +96,9 @@ void MainApp::handleAbout(MenuComponent* p_menu_component)
     lcd->println(StringAssets::createdBy);
     lcd->println(StringAssets::mihailBubnov);
     while(true) {
-        keypad->read();
+        if (!keypad->read()) {
+            continue;
+        }
         if (keypad->getKeypadSymbol() == Keypad::keyD) {
             break;
         }
