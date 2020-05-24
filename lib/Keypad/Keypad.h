@@ -42,11 +42,13 @@ class Keypad
         Keypad(uint8_t keypadMoSiCS, uint8_t keypadMiSoCS);
         uint16_t getKeypadCode(void);
         uint8_t getKeypadSymbol(void);
-        bool isKeypadUpdated(void);
+        bool read(void);
         void setBeepOnClick(bool beepOnClick);
     private:
         uint16_t keypadCode, _keypadMoSiCS, _keypadMiSoCS, _buzzerPin;
         static const uint8_t buttons = 16;
+        static const unsigned int delayOnClick = 40; //ms
+        static const unsigned long beepFreq = 450;
         const uint8_t keySymbols[buttons] = {
             key1, key2, key3, keyA,
             key4, key5, key6, keyB,

@@ -28,6 +28,9 @@ uint8_t Keypad::getKeypadSymbol(void)
       }
     }
 
+    #if defined(DEBUG)
+    Serial.print(int(keypadSymbol));
+    #endif
     return keyMultiSymbol;
 }
 
@@ -36,7 +39,7 @@ uint16_t Keypad::getKeypadCode(void)
   return keypadCode;
 }
 
-bool Keypad::isKeypadUpdated(void)
+bool Keypad::read(void)
 {
   uint16_t lastCode = keypadCode;
   keypadCode = 0x00;
@@ -81,6 +84,8 @@ void Keypad::setBeepOnClick(bool beepOnClick)
 void Keypad::beepOnClick(void)
 {
     if (_beepOnClick && _buzzerPin) {
-        TimerFreeTone(_buzzerPin, 450, 40);
+        TimerFreeTone(_buzzerPin, beepFreq, delayOnClick);
+        return;
     }
+    delay(delayOnClick);
 }

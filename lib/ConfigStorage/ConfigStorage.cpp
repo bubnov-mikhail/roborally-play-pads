@@ -40,7 +40,6 @@ void ConfigStorage::setWithBacklight(bool value)
 {
     withBacklight = value;
     EEPROM.put(withBacklightAddress, withBacklight);
-
 }
 
 void ConfigStorage::setWithSounds(bool value)
