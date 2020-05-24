@@ -1,12 +1,6 @@
 #pragma once
 
 #include "AbstractApp.h"
-#include <ServiceContainer.h>
-#include "StringAssets.h"
-#include <Keypad.h>
-#include <LcdAssets.h>
-#include <MenuSystem.h>
-#include <TimerFreeTone.h>
 #include "ContrastCtlApp.h"
 
 class MainApp : public AbstractApp {
