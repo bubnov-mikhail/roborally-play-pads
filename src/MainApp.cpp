@@ -87,11 +87,11 @@ void MainApp::handleAbout(MenuComponent* p_menu_component)
 {
     Nokia_LCD* lcd = AbstractApp::sc->getLcd();
     Keypad* keypad = AbstractApp::sc->getKeypad();
+    MenuRenderer* menuRenderer = AbstractApp::sc->getMenuRenderer();
+
     lcd->clear(false);
-    lcd->setCursor(0, 1);
-    lcd->setInverted(true);
-    lcd->println(StringAssets::playpad);
-    lcd->setInverted(false);
+    menuRenderer->render_header(StringAssets::playpad);
+    lcd->setCursor(0, 2);
     lcd->println(StringAssets::version);
     lcd->println(StringAssets::createdBy);
     lcd->println(StringAssets::mihailBubnov);
