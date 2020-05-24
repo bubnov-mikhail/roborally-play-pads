@@ -25,8 +25,8 @@ void MainApp::execute(void) {
     menuGames.add_item(&menuItemRoborally);
     //16.2, 21.6
     Menu menuConfigs(StringAssets::configs);
-    MenuItem menuItemBacklight(getBacklightMenuName(config), MainApp::handleConfigBacklight);
-    MenuItem menuItemSounds(getSoundsMenuName(config), MainApp::handleConfigSound);
+    MenuItem menuItemBacklight(MainApp::getBacklightMenuName(config), MainApp::handleConfigBacklight);
+    MenuItem menuItemSounds(MainApp::getSoundsMenuName(config), MainApp::handleConfigSound);
     MenuItem menuItemContrast(StringAssets::contrast, MainApp::handleGamesRoborally);
     menuConfigs.add_item(&menuItemBacklight);
     menuConfigs.add_item(&menuItemSounds);
@@ -65,12 +65,16 @@ void MainApp::handleConfigBacklight(MenuComponent* p_menu_component)
     ConfigStorage* config = AbstractApp::sc->getConfigStorage();
     config->setWithBacklight(!config->isWithBacklight());
     lcd->setBacklight(config->isWithBacklight());
+    p_menu_component->set_name(MainApp::getBacklightMenuName(config));
 }
 
 void MainApp::handleConfigSound(MenuComponent* p_menu_component)
 {
     ConfigStorage* config = AbstractApp::sc->getConfigStorage();
     config->setWithSounds(!config->isWithSounds());
+    Keypad* keypad = AbstractApp::sc->getKeypad();
+    keypad->setBeepOnClick(config->isWithSounds());
+    p_menu_component->set_name(MainApp::getSoundsMenuName(config));
 }
 
 void MainApp::handleGamesRoborally(MenuComponent* p_menu_component)

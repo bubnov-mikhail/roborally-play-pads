@@ -18,6 +18,6 @@ class MainApp : public AbstractApp {
         static void handleGamesRoborally(MenuComponent* p_menu_component);
     private:
         void handleKeypadSymbol(uint8_t keypadSymbol, MenuSystem* menuSystem);
-        const char* getBacklightMenuName(ConfigStorage* config);
-        const char* getSoundsMenuName(ConfigStorage* config);
+        static const char* getBacklightMenuName(ConfigStorage* config);
+        static const char* getSoundsMenuName(ConfigStorage* config);
 };
