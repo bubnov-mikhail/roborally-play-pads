@@ -11,4 +11,8 @@ namespace StringAssets {
     const char backlightOff[] = "Backlight:off";
     const char soundsOn[] = "Sounds:on";
     const char soundsOff[] = "Sounds:off";
+    const char playpad[] = "Playpad";
+    const char version[] = "ver. 0.1";
+    const char createdBy[] = "created by";
+    const char mihailBubnov[] = "Mihail Bubnov";
 }
