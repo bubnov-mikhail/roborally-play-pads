@@ -15,7 +15,7 @@ void MainApp::execute(void) {
     lcd->setCursor(5, 3);
     lcd->print(StringAssets::pressAnyKey);
 
-    while(!keypad->isKeypadUpdated()) {
+    while(!keypad->read()) {
         continue;
     }
 
@@ -42,9 +42,7 @@ void MainApp::execute(void) {
     menuSystem.display();
 
     while(true) {
-        if (!keypad->isKeypadUpdated()) {
-            continue;
-        }
+        keypad->read();
         handleKeypadSymbol(keypad->getKeypadSymbol(), &menuSystem);
     }
 }
@@ -96,10 +94,7 @@ void MainApp::handleAbout(MenuComponent* p_menu_component)
     lcd->println(StringAssets::createdBy);
     lcd->println(StringAssets::mihailBubnov);
     while(true) {
-        if (!keypad->isKeypadUpdated()) {
-            continue;
-        }
-
+        keypad->read();
         if (keypad->getKeypadSymbol() == Keypad::keyD) {
             break;
         }
@@ -114,10 +109,6 @@ void MainApp::handleConfigContrast(MenuComponent* p_menu_component)
 
 void MainApp::handleKeypadSymbol(uint8_t keypadSymbol, MenuSystem* menuSystem)
 {
-    if (keypadSymbol == Keypad::keyMultiSymbol || keypadSymbol == Keypad::keyReleasedSymbol) {
-        return;
-    }
-
     switch (keypadSymbol) {
       case Keypad::keyB:
         menuSystem->prev();

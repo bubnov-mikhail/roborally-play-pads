@@ -39,7 +39,7 @@ uint16_t Keypad::getKeypadCode(void)
   return keypadCode;
 }
 
-bool Keypad::isKeypadUpdated(void)
+bool Keypad::read(void)
 {
   uint16_t lastCode = keypadCode;
   keypadCode = 0x00;
