@@ -13,8 +13,8 @@
 #endif
 Nokia_LCD lcd(SCK, MOSI, PIN_NOKIA_DC, PIN_NOKIA_CE, PIN_NOKIA_RST, PIN_NOKIA_BL);
 Keypad keypad(PIN_KEYPAD_MOSI_CS, PIN_KEYPAD_MISO_CS, PIN_BUZZER, configStorage.isWithSounds());
-
-ServiceContainer serviceContainer(&configStorage, &lcd, &keypad, PIN_BUZZER);
+Headline headline(&configStorage, &lcd, PIN_VOLTAGE_READ);
+ServiceContainer serviceContainer(&configStorage, &lcd, &keypad, &headline, PIN_BUZZER);
 ServiceContainer *AbstractApp::sc = &serviceContainer;
 
 void setup()

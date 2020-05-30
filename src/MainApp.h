@@ -12,7 +12,7 @@ class MainApp : public AbstractApp {
         static void handleAbout(MenuComponent* p_menu_component);
         static void handleGamesRoborally(MenuComponent* p_menu_component);
     private:
-        void handleKeypadSymbol(uint8_t keypadSymbol, MenuSystem* menuSystem);
+        bool handleKeypadSymbol(uint8_t keypadSymbol, MenuSystem* menuSystem);
         static const char* getBacklightMenuName(ConfigStorage* config);
         static const char* getSoundsMenuName(ConfigStorage* config);
 };

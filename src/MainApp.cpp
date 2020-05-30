@@ -4,11 +4,11 @@ void MainApp::execute(void) {
     Nokia_LCD* lcd = AbstractApp::sc->getLcd();
     Keypad* keypad = AbstractApp::sc->getKeypad();
     ConfigStorage* config = AbstractApp::sc->getConfigStorage();
+    Headline* headline = AbstractApp::sc->getHeadline();
 
     lcd->clear(false);
-    lcd->setCursor(76, 0);
-    lcd->draw(LcdAssets::batteryFull, sizeof(LcdAssets::batteryFull) / sizeof(uint8_t), true);
-    lcd->setCursor(27, 1);
+    headline->update(true);
+    lcd->setCursor(27, 2);
     lcd->setInverted(true);
     lcd->print(StringAssets::intro);
     lcd->setInverted(false);
@@ -16,6 +16,7 @@ void MainApp::execute(void) {
     lcd->print(StringAssets::pressAnyKey);
 
     while(!keypad->read()) {
+        headline->update();
         continue;
     }
 
@@ -33,7 +34,7 @@ void MainApp::execute(void) {
     menuConfigs.add_item(&menuItemContrast);
 
     MenuItem menuAbout(StringAssets::about, MainApp::handleAbout);
-
+   
     menuSystem.get_root_menu().set_name(StringAssets::mainMenu);
     menuSystem.get_root_menu().add_menu(&menuGames);
     menuSystem.get_root_menu().add_menu(&menuConfigs);
@@ -43,9 +44,12 @@ void MainApp::execute(void) {
 
     while(true) {
         if (!keypad->read()) {
+            headline->update();
             continue;
         }
-        handleKeypadSymbol(keypad->getKeypadSymbol(), &menuSystem);
+        if(handleKeypadSymbol(keypad->getKeypadSymbol(), &menuSystem)) {
+            headline->update(true);
+        }
     }
 }
 
@@ -88,6 +92,7 @@ void MainApp::handleAbout(MenuComponent* p_menu_component)
     Nokia_LCD* lcd = AbstractApp::sc->getLcd();
     Keypad* keypad = AbstractApp::sc->getKeypad();
     MenuRenderer* menuRenderer = AbstractApp::sc->getMenuRenderer();
+    Headline* headline = AbstractApp::sc->getHeadline();
 
     lcd->clear(false);
     menuRenderer->render_header(StringAssets::playpad);
@@ -95,7 +100,9 @@ void MainApp::handleAbout(MenuComponent* p_menu_component)
     lcd->println(StringAssets::version);
     lcd->println(StringAssets::createdBy);
     lcd->println(StringAssets::mihailBubnov);
+    headline->update(true);
     while(true) {
+        headline->update();
         if (!keypad->read()) {
             continue;
         }
@@ -111,24 +118,26 @@ void MainApp::handleConfigContrast(MenuComponent* p_menu_component)
     contrastApp.execute();
 }
 
-void MainApp::handleKeypadSymbol(uint8_t keypadSymbol, MenuSystem* menuSystem)
+bool MainApp::handleKeypadSymbol(uint8_t keypadSymbol, MenuSystem* menuSystem)
 {
     switch (keypadSymbol) {
       case Keypad::keyB:
         menuSystem->prev();
         menuSystem->display();
-        break;
+        return true;
       case Keypad::keyC:
         menuSystem->next();
         menuSystem->display();
-        break;
+        return true;
       case Keypad::keyStar:
         menuSystem->select();
         menuSystem->display();
-        break;
+        return true;
       case Keypad::keyD:
         menuSystem->back();
         menuSystem->display();
-        break;
+        return true;
     }
+
+    return false;
 }

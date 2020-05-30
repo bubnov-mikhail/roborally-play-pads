@@ -7,3 +7,6 @@
 #define PIN_NOKIA_BL 2 // Backlight
 #define PIN_NOKIA_CE 3 // Chip Select
 #define PIN_NOKIA_RST 5 // Reset
+
+// Voltage reader
+#define PIN_VOLTAGE_READ A0

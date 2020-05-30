@@ -6,12 +6,12 @@ MenuRenderer::MenuRenderer(Nokia_LCD* _lcd)
 }
 
 void MenuRenderer::render_header(const char* header) const {
-    lcd->setCursor(0, 0);
+    lcd->setCursor(0, 1);
     for (int i = 0; i < 14; ++i) {
         lcd->draw(LcdAssets::menuHeader, 6, true);
     }
     lcd->setInverted(true);
-    lcd->setCursor(getCursorXForCenteredText(header), 0);
+    lcd->setCursor(getCursorXForCenteredText(header), 1);
     lcd->print(header);
     lcd->setInverted(false);
 }
@@ -25,8 +25,8 @@ void MenuRenderer::render(Menu const& menu) const {
     int8_t totalMinusCurrent = totalMenuItems - currentMenuIndex;
     int8_t menuStartFrom = totalMinusCurrent > 2
         ? max(0, currentMenuIndex - 2)
-        : max(0, currentMenuIndex - 5 + totalMinusCurrent);
-    int8_t menuEndAt = min(menuStartFrom + 5, totalMenuItems);
+        : max(0, currentMenuIndex - 4 + totalMinusCurrent);
+    int8_t menuEndAt = min(menuStartFrom + 4, totalMenuItems);
 
     for (int i = menuStartFrom; i < menuEndAt; i++) {
         MenuComponent const* cp_m_comp = menu.get_menu_component(i);
