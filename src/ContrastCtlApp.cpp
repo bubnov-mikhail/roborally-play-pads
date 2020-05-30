@@ -43,12 +43,25 @@ uint8_t ContrastCtlApp::increment(Keypad* keypad, Nokia_LCD* lcd, uint8_t tmpCon
 {
     tmpContrast = min(contrastMax, max(contrastMin, tmpContrast + direction));
     update(lcd, tmpContrast);
-    delay(300);
+    unsigned long longDelay = millis();
+    unsigned long shortDelay;
+
     while(true) {
         if(keypad->read()) {
             return tmpContrast;
         }
-        delay(50);
+
+        if ((millis() - longDelay) < 300) {
+            continue;
+        } else if(longDelay > 0) {
+            longDelay = 0;
+            shortDelay = millis();
+        }
+
+        if ((millis() - shortDelay) < 50) {
+            continue;
+        }
+        shortDelay = millis();
         tmpContrast = min(contrastMax, max(contrastMin, tmpContrast + direction));
         update(lcd, tmpContrast);
     }
