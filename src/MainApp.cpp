@@ -41,6 +41,8 @@ void MainApp::execute(void) {
     menuSystem.get_root_menu().add_item(&menuAbout);
 
     menuSystem.display();
+    
+    headline->update(true);
 
     while(true) {
         if (!keypad->read()) {
