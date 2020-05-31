@@ -30,6 +30,7 @@ class Headline {
         bool displayClockDots = true;
         inline void updateRtc(void);
         inline void updateBattery(void);
-        inline void printValue(uint8_t value);
+        void printValue(uint8_t value);
+        void printDigit(uint8_t value);
         const static unsigned short int refreshTimeMilis = 500;
 };

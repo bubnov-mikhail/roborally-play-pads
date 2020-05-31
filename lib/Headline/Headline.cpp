@@ -28,10 +28,11 @@ inline void Headline::updateRtc(void)
     if (rtc->read(tm)) {
         lcd->setCursor(0, 0);
         printValue(tm.Hour);
+        lcd->setCursor(lcd->getCursorX() + 1, 0);
         if (displayClockDots) {
-            lcd->print(" ");
+            lcd->draw(LcdAssets::smallInts[11], 3, true);
         } else {
-            lcd->print(":");
+            lcd->draw(LcdAssets::smallInts[10], 3, true);
         }
         printValue(tm.Minute);
     }
@@ -41,13 +42,24 @@ inline void Headline::updateBattery(void)
 {
     // This is demo.
     lcd->setCursor(76, 0);
-    lcd->draw(LcdAssets::batteryFull, sizeof(LcdAssets::batteryFull) / sizeof(uint8_t), true);
+    lcd->draw(LcdAssets::batteryFull, 8, true);
 }
 
-inline void Headline::printValue(uint8_t value)
+void Headline::printValue(uint8_t value)
 {
     if (value < 10) {
-        lcd->print(0);
+        printDigit(0);
+        printDigit(value);
+        
+        return;
     }
-    lcd->print(value);
+    uint8_t tens = value / 10;
+    printDigit(tens);
+    printDigit(value - tens*10);
+}
+
+void Headline::printDigit(uint8_t value)
+{
+    lcd->setCursor(lcd->getCursorX() + 1, 0);
+    lcd->draw(LcdAssets::smallInts[value], 3, true);
 }
