@@ -8,9 +8,9 @@ Headline::Headline(ConfigStorage* _configStorage, Nokia_LCD* _lcd, uint8_t _pinV
     lastUpdated = millis();
 }
 
-void Headline::update(bool forceUpdate = false)
+void Headline::update(bool forceUpdate /*= false*/)
 {
-    if (millis() - lastUpdated < 1000 && !forceUpdate) {
+    if (millis() - lastUpdated < refreshTimeMilis && !forceUpdate) {
         return;
     }
 
@@ -24,6 +24,9 @@ void Headline::update(bool forceUpdate = false)
 inline void Headline::updateRtc(void)
 {
     // This is demo. RTC will provide real data here
+    uint8_t hours = 23;
+    uint8_t minutes = 5;
+
     lcd->setCursor(0, 0);
     lcd->print("12");
     if (displayClockDots) {

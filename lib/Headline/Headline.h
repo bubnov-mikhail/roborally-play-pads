@@ -27,4 +27,5 @@ class Headline {
         bool displayClockDots = true;
         inline void updateRtc(void);
         inline void updateBattery(void);
+        const static unsigned short int refreshTimeMilis = 500;
 };
