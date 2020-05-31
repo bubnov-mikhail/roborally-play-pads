@@ -41,8 +41,14 @@ inline void Headline::updateRtc(void)
 inline void Headline::updateBattery(void)
 {
     // This is demo.
+    lcd->setCursor(20, 0);
+    int voltage = analogRead(pinVoltageRead);
     lcd->setCursor(76, 0);
-    lcd->draw(LcdAssets::batteryFull, 8, true);
+    if (voltage < 45 && displayClockDots) {
+        lcd->draw(LcdAssets::batteryBlank, 8, true);
+        return;
+    }
+    lcd->draw((voltage >= 60) ? LcdAssets::batteryFull : (voltage >= 45 ? LcdAssets::batteryHalf : LcdAssets::batteryLow), 8, true);
 }
 
 void Headline::printValue(uint8_t value)
