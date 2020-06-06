@@ -24,6 +24,7 @@ void setup()
   #if defined(DEBUG)
     Serial.begin(9600);
   #endif
+  analogReference(EXTERNAL);
   pinMode(PIN_KEYPAD_MOSI_CS, OUTPUT);
   pinMode(PIN_KEYPAD_MISO_CS, OUTPUT);
   pinMode(PIN_BUZZER, OUTPUT);
