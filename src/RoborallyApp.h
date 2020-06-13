@@ -1,7 +1,7 @@
 #pragma once
 
 #include "AbstractApp.h"
-#include "GfxAssets.h" //Remove after debug
+#include <BitmapLoader.h>
 
 class RoborallyApp : public AbstractApp {
     public:
@@ -18,4 +18,5 @@ class RoborallyApp : public AbstractApp {
         void printCardNumber(int16_t cardNumber);
         void printMessage(const char *message);
         void updateMonitor(void);
+        const unsigned char loadBitmap(unsigned int address, unsigned short int length);
 };

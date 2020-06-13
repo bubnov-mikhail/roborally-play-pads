@@ -23,9 +23,12 @@ void RoborallyApp::execute(void) {
 
 void RoborallyApp::drawMainScreen(void) {
     Nokia_LCD* lcd = AbstractApp::sc->getLcd();
+    BitmapLoader* bitmapLoader = AbstractApp::sc->getBitmapLoader();
 
+    unsigned char* bitmap = new unsigned char[LcdAssets::roborallyMainScreenLength];
+    bitmapLoader->loadBitmap(bitmap, LcdAssets::roborallyMainScreenAddress, LcdAssets::roborallyMainScreenLength);
     lcd->setCursor(0, 1);
-    lcd->draw(roborallyMainScreen, roborallyMainScreenWidth, true);
+    lcd->draw(bitmap, LcdAssets::roborallyMainScreenLength, false);
 }
 
 void RoborallyApp::drawRound(uint8_t _round) {
