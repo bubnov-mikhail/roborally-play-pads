@@ -2,7 +2,6 @@
 
 //#define DEBUG true
 //#define SET_CONFIG_DEFAULTS true
-//#define SET_CLOCK true
 
 /**
  * Init services
@@ -37,37 +36,18 @@ void setup()
   pinMode(PIN_A4, OUTPUT);
   pinMode(PIN_A5, OUTPUT);
 
-  #if defined(SET_CLOCK)
+  if (!RTC.isRunning()) {
     tmElements_t tm;
-    const char *monthName[12] = {
-      "Jan", "Feb", "Mar", "Apr", "May", "Jun",
-      "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
-    };
-    int Hour, Min, Sec;
+    tm.Day = BUILD_DAY;
+    tm.Month = BUILD_MONTH;
+    tm.Year = BUILD_YEAR;
+    tm.Hour = BUILD_HOUR;
+    tm.Minute = BUILD_MIN;
+    tm.Second = BUILD_SEC;
 
-    if (sscanf(__TIME__, "%d:%d:%d", &Hour, &Min, &Sec) == 3) {
-      tm.Hour = Hour;
-      tm.Minute = Min;
-      tm.Second = Sec;
-    }
-
-    char Month[12];
-    int Day, Year;
-    uint8_t monthIndex;
-
-    if (sscanf(__DATE__, "%s %d %d", Month, &Day, &Year) == 3) {
-      for (monthIndex = 0; monthIndex < 12; monthIndex++) {
-        if (strcmp(Month, monthName[monthIndex]) == 0) break;
-      }
-      if (monthIndex < 12) {
-        tm.Day = Day;
-        tm.Month = monthIndex + 1;
-        tm.Year = CalendarYrToTm(Year);
-      }
-    }
     RTC.write(tm);
-  #endif
-  
+  }
+
   MainApp mainApp;
   mainApp.execute();
 }
