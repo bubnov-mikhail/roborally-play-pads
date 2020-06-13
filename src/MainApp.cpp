@@ -85,8 +85,8 @@ void MainApp::handleConfigSound(MenuComponent* p_menu_component)
 
 void MainApp::handleGamesRoborally(MenuComponent* p_menu_component)
 {
-    TimerFreeTone(6, 350, 200); 
-    TimerFreeTone(6, 250, 300); 
+    RoborallyApp app;
+    app.execute();
 }
 
 void MainApp::handleAbout(MenuComponent* p_menu_component)
@@ -116,8 +116,8 @@ void MainApp::handleAbout(MenuComponent* p_menu_component)
 
 void MainApp::handleConfigContrast(MenuComponent* p_menu_component)
 {
-    ContrastCtlApp contrastApp;
-    contrastApp.execute();
+    ContrastCtlApp app;
+    app.execute();
 }
 
 bool MainApp::handleKeypadSymbol(uint8_t keypadSymbol, MenuSystem* menuSystem)

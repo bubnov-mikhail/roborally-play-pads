@@ -15,4 +15,7 @@ namespace StringAssets {
     const char version[] = "ver. 0.1";
     const char createdBy[] = "created by";
     const char mihailBubnov[] = "Mihail Bubnov";
+
+    //Roborally game
+    const char enterCard[] = "Enter card";
 }

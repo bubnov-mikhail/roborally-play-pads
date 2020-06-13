@@ -2,6 +2,7 @@
 
 #include "AbstractApp.h"
 #include "ContrastCtlApp.h"
+#include "RoborallyApp.h"
 
 class MainApp : public AbstractApp {
     public:
