@@ -12,7 +12,6 @@
 
 #pragma once
 
-//#include <inttypes.h>
 #include <Arduino.h>
 #include <SPI.h>
 #include <TimerFreeTone.h>
