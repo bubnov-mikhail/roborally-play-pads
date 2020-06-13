@@ -24,6 +24,4 @@ class MenuRenderer : public MenuComponentRenderer {
     private:
         Nokia_LCD* lcd;
         void render_menu_component(MenuComponent const& menu_item) const;
-        static const uint8_t displayWidth = 84;
-        static const uint8_t charWidth = 6;
 };

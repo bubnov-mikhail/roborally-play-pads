@@ -7,6 +7,13 @@
 #endif
 
 namespace LcdAssets {
+    static const uint8_t displayWidth = 84;
+    static const uint8_t charWidth = 6;
+    // Gfx assets stored on Eeprom24C08
+    const unsigned int roborallyMainScreenAddress = 0;
+    const unsigned short int roborallyMainScreenLength = 420;
+
+    // Bitmaps
     const unsigned char batteryFull[] PROGMEM = {0x1f, 0x1f, 0x1f, 0x1f, 0x1f, 0x1f, 0x11, 0x0e};
     const unsigned char batteryHalf[] PROGMEM = {0x1f, 0x1f, 0x1f, 0x1f, 0x11, 0x11, 0x11, 0x0e};
     const unsigned char batteryLow[] PROGMEM = {0x1f, 0x11, 0x11, 0x11, 0x11, 0x11, 0x11, 0x0e};
@@ -17,6 +24,9 @@ namespace LcdAssets {
     const unsigned char menuHeader[] PROGMEM = {0xf3, 0x79, 0x3c, 0x9e, 0xcf, 0xe7};
     const unsigned char menuItem[] PROGMEM = {0xff, 0x00, 0x00, 0x00};
     const unsigned char menuItemSelected[] PROGMEM = {0xff, 0xff, 0xff, 0x00};
+    const unsigned char noise[][1] PROGMEM = {{0x55}, {0x96}, {0x4b}, {0xac}, {0x52}, {0x4d}};
+    const unsigned char roborallyRoundEmpty[] PROGMEM = {0x54, 0x54};
+    const unsigned char roborallyRoundFilled[] PROGMEM = {0x57, 0x57};
     const unsigned char smallInts[][3] PROGMEM = {
         {0x3e, 0x22, 0x3e}, // 0
         {0x00, 0x02, 0x3e}, // 1
