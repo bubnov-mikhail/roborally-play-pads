@@ -61,5 +61,5 @@ void MenuRenderer::render_menu_component(MenuComponent const& menu_item) const {
 
 uint8_t MenuRenderer::getCursorXForCenteredText(const char* text) const
 {
-    return (displayWidth - strlen(text) * charWidth) / 2;
+    return (LcdAssets::displayWidth - strlen(text) * LcdAssets::charWidth) / 2;
 }
