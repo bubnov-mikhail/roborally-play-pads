@@ -9,6 +9,11 @@
 namespace LcdAssets {
     static const uint8_t displayWidth = 84;
     static const uint8_t charWidth = 6;
+    // Gfx assets stored on Eeprom24C08
+    const unsigned int roborallyMainScreenAddress = 0;
+    const unsigned short int roborallyMainScreenLength = 420;
+
+    // Bitmaps
     const unsigned char batteryFull[] PROGMEM = {0x1f, 0x1f, 0x1f, 0x1f, 0x1f, 0x1f, 0x11, 0x0e};
     const unsigned char batteryHalf[] PROGMEM = {0x1f, 0x1f, 0x1f, 0x1f, 0x11, 0x11, 0x11, 0x0e};
     const unsigned char batteryLow[] PROGMEM = {0x1f, 0x11, 0x11, 0x11, 0x11, 0x11, 0x11, 0x0e};
