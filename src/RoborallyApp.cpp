@@ -3,9 +3,15 @@
 void RoborallyApp::execute(void) {
     Keypad* keypad = AbstractApp::sc->getKeypad();
     Headline* headline = AbstractApp::sc->getHeadline();
+    Nokia_LCD* lcd = AbstractApp::sc->getLcd();
+    MenuRenderer* menuRenderer = AbstractApp::sc->getMenuRenderer();
     monitorLastUpdated = millis() - monitorRefreshTimeMilis;
     roundLastUpdated = millis() - roundRefreshTimeMilis;
 
+    lcd->clear(false);
+    headline->update(true);
+    menuRenderer->render_header(StringAssets::loading);
+    
     drawMainScreen();
     printCardNumber(1789);
     printMessage(StringAssets::enterCard);
