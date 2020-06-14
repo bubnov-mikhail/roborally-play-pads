@@ -13,10 +13,12 @@ class RoborallyApp : public AbstractApp {
         unsigned long roundLastUpdated;
         const static unsigned short int monitorRefreshTimeMilis = 100;
         const static unsigned short int roundRefreshTimeMilis = 400;
+        const static uint8_t monitorBitmapLength = 14;
         void drawMainScreen(void);
         void drawRound(uint8_t _round);
         void printCardNumber(int16_t cardNumber);
         void printMessage(const char *message);
         void updateMonitor(void);
-        const unsigned char loadBitmap(unsigned int address, unsigned short int length);
+        void drawMonitor(unsigned char* bitmapUpper, unsigned char* bitmapLower);
+        void generateNoise(unsigned char* bitmapUpper);
 };

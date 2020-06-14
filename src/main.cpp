@@ -62,10 +62,10 @@ void setup()
       //Nothing here
     }
     return;
+  #else
+    MainApp mainApp;
+    mainApp.execute();
   #endif
-
-  MainApp mainApp;
-  mainApp.execute();
 }
 
 void loop()

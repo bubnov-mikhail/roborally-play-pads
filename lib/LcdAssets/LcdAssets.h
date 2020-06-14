@@ -24,7 +24,7 @@ namespace LcdAssets {
     const unsigned char menuHeader[] PROGMEM = {0xf3, 0x79, 0x3c, 0x9e, 0xcf, 0xe7};
     const unsigned char menuItem[] PROGMEM = {0xff, 0x00, 0x00, 0x00};
     const unsigned char menuItemSelected[] PROGMEM = {0xff, 0xff, 0xff, 0x00};
-    const unsigned char noise[][1] PROGMEM = {{0x55}, {0x96}, {0x4b}, {0xac}, {0x52}, {0x4d}};
+    const unsigned char noise[] = {0x55, 0x96, 0x4b, 0xac, 0x52, 0x4d};
     const unsigned char roborallyRoundEmpty[] PROGMEM = {0x54, 0x54};
     const unsigned char roborallyRoundFilled[] PROGMEM = {0x57, 0x57};
     const unsigned char smallInts[][3] PROGMEM = {

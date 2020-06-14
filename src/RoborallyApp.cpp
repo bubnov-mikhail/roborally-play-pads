@@ -29,6 +29,7 @@ void RoborallyApp::drawMainScreen(void) {
     bitmapLoader->loadBitmap(bitmap, LcdAssets::roborallyMainScreenAddress, LcdAssets::roborallyMainScreenLength);
     lcd->setCursor(0, 1);
     lcd->draw(bitmap, LcdAssets::roborallyMainScreenLength, false);
+    delete bitmap;
 }
 
 void RoborallyApp::drawRound(uint8_t _round) {
@@ -68,14 +69,32 @@ void RoborallyApp::updateMonitor(void) {
         return;
     }
 
+    unsigned char* bitmapUpper = new unsigned char[monitorBitmapLength];
+    unsigned char* bitmapLower = new unsigned char[monitorBitmapLength];
+
+    //switch
+    // other cards
+
+    // fallback to noise
+    generateNoise(bitmapUpper);
+    generateNoise(bitmapLower);
+    
+    drawMonitor(bitmapUpper, bitmapLower);
+    delete bitmapUpper;
+    delete bitmapLower;
+    monitorLastUpdated = millis();
+}
+
+void RoborallyApp::drawMonitor(unsigned char* bitmapUpper, unsigned char* bitmapLower) {
     Nokia_LCD* lcd = AbstractApp::sc->getLcd();
     lcd->setCursor(61, 2);
-    for (uint8_t i = 0; i < 28; i++) {
-        if (i == 14) {
-            lcd->setCursor(61, 3);
-        }
-        lcd->draw(LcdAssets::noise[random(0, 5)], 1, true);
-    }
+    lcd->draw(bitmapUpper, monitorBitmapLength, false);
+    lcd->setCursor(61, 3);
+    lcd->draw(bitmapLower, monitorBitmapLength, false);
+}
 
-    monitorLastUpdated = millis();
+void RoborallyApp::generateNoise(unsigned char* bitmap) {
+    for (uint8_t i = 0; i < monitorBitmapLength; i++) {
+        bitmap[i] = LcdAssets::noise[random(0, 5)];
+    }
 }
