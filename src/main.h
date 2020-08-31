@@ -13,4 +13,4 @@
 #include <Headline.h>
 #include "MainApp.h"
 
-bool writeBitmap(unsigned int address, unsigned short int length, const unsigned char* bitmap);
+bool writeBitmap(unsigned int address, unsigned int totalCapacity, unsigned short int length, const unsigned char* bitmap);
