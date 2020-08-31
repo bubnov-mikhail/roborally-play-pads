@@ -6,13 +6,13 @@ void ContrastCtlApp::execute(void) {
     ConfigStorage* config = AbstractApp::sc->getConfigStorage();
     MenuRenderer* menuRenderer = AbstractApp::sc->getMenuRenderer();
     Headline* headline = AbstractApp::sc->getHeadline();
-
+    ProgressBar* progressBar = new ProgressBar(lcd, 10, 74, 3, false);
     uint8_t tmpContrast = config->getContrast();
 
     lcd->clear(false);
     menuRenderer->render_header(StringAssets::contrast);
     headline->update(true);
-    update(lcd, tmpContrast);
+    update(lcd, progressBar, tmpContrast);
 
     while(true) {
         headline->update();
@@ -21,30 +21,32 @@ void ContrastCtlApp::execute(void) {
         }
         switch (keypad->getKeypadSymbol()) {
             case Keypad::keyB:
-                tmpContrast = increment(keypad, lcd, headline, tmpContrast, 1);
+                tmpContrast = increment(keypad, lcd, progressBar, headline, tmpContrast, 1);
                 break;
             case Keypad::keyC:
-                tmpContrast = increment(keypad, lcd, headline, tmpContrast, -1);
+                tmpContrast = increment(keypad, lcd, progressBar, headline, tmpContrast, -1);
                 break;
             case Keypad::keyHash:
                 tmpContrast = config->getContrast();
-                update(lcd, tmpContrast);
+                update(lcd, progressBar, tmpContrast);
                 break;
             case Keypad::keyStar:
                 config->setContrast(tmpContrast);
+                delete progressBar;
                 return;
             case Keypad::keyD:
                 tmpContrast = config->getContrast();
-                update(lcd, tmpContrast);
+                update(lcd, progressBar, tmpContrast);
+                delete progressBar;
                 return;
         }
     }
 }
 
-uint8_t ContrastCtlApp::increment(Keypad* keypad, Nokia_LCD* lcd, Headline* headline, uint8_t tmpContrast, int8_t direction)
+uint8_t ContrastCtlApp::increment(Keypad* keypad, Nokia_LCD* lcd, ProgressBar* progressBar, Headline* headline, uint8_t tmpContrast, int8_t direction)
 {
     tmpContrast = min(contrastMax, max(contrastMin, tmpContrast + direction));
-    update(lcd, tmpContrast);
+    update(lcd, progressBar, tmpContrast);
     unsigned long longDelay = millis();
     unsigned long shortDelay;
 
@@ -66,22 +68,14 @@ uint8_t ContrastCtlApp::increment(Keypad* keypad, Nokia_LCD* lcd, Headline* head
         }
         shortDelay = millis();
         tmpContrast = min(contrastMax, max(contrastMin, tmpContrast + direction));
-        update(lcd, tmpContrast);
+        update(lcd, progressBar, tmpContrast);
     }
 
     return tmpContrast;
 }
 
-void ContrastCtlApp::update(Nokia_LCD* lcd, uint8_t value)
+void ContrastCtlApp::update(Nokia_LCD* lcd, ProgressBar* progressBar, uint8_t value)
 {
     lcd->setContrast(value);
-    lcd->setCursor(10, 3);
-
-    lcd->draw(LcdAssets::progressBarSideBorder, 1, true);
-    lcd->draw(LcdAssets::progressBarEmptyBody, 1, true);
-    for (int i = contrastMin; i < contrastMax; i++) {
-        lcd->draw(value <= i ? LcdAssets::progressBarEmptyBody : LcdAssets::progressBarFilledBody, 1, true);
-    }
-    lcd->draw(LcdAssets::progressBarEmptyBody, 1, true);
-    lcd->draw(LcdAssets::progressBarSideBorder, 1, true);
+    progressBar->render((value - contrastMin) * 100 / (contrastMax - contrastMin));
 }
