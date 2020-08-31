@@ -3,6 +3,7 @@
 //#define DEBUG true
 //#define SET_CONFIG_DEFAULTS true
 //#define SET_GFX_ASSETS true
+#define SET_CLOCK true
 #define Eeprom24C32_capacity 32 // Size in bytes
 #define Eeprom24C32_address 0x50
 #define Eeprom24C08_capacity 8 // Size in bytes
@@ -49,7 +50,7 @@ void setup()
   pinMode(SDA, OUTPUT); //A4
   pinMode(SCL, OUTPUT); //A5
 
-  if (!RTC.isRunning()) {
+  #if defined(SET_CLOCK)
     tmElements_t tm;
     tm.Day = BUILD_DAY;
     tm.Month = BUILD_MONTH;
@@ -59,7 +60,7 @@ void setup()
     tm.Second = BUILD_SEC;
 
     RTC.write(tm);
-  }
+  #endif
 
   #if defined(SET_GFX_ASSETS)
     lcd.clear(false);

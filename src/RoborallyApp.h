@@ -2,6 +2,7 @@
 
 #include "AbstractApp.h"
 #include <BitmapLoader.h>
+#include <ProgressBar.h>
 
 class RoborallyApp : public AbstractApp {
     public:

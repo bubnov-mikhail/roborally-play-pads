@@ -49,12 +49,21 @@ void RoborallyApp::drawMainScreen(void) {
     lcd->clear(false);
     headline->update(true);
     menuRenderer->render_header(StringAssets::loading);
+    ProgressBar* progressBar = new ProgressBar(lcd, 10, 74, 3, true);
+    progressBar->render(0);
 
     unsigned char* bitmap = new unsigned char[LcdAssets::roborallyMainScreenLength];
-    bitmapLoader->loadBitmap(bitmap, LcdAssets::roborallyMainScreenAddress, LcdAssets::roborallyMainScreenLength);
+
+    for (unsigned int i = 0; i < LcdAssets::roborallyMainScreenLength; i++) {
+        bitmapLoader->loadByteToPosition(bitmap, LcdAssets::roborallyMainScreenAddress + i, i);
+        progressBar->render(i * 100 / LcdAssets::roborallyMainScreenLength);
+        headline->update();
+    }
+    
     lcd->setCursor(0, 1);
     lcd->draw(bitmap, LcdAssets::roborallyMainScreenLength, false);
     delete bitmap;
+    delete progressBar;
     screenState = gameState;
 }
 
