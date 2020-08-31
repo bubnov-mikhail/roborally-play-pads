@@ -3,7 +3,8 @@
 //#define DEBUG true
 //#define SET_CONFIG_DEFAULTS true
 //#define SET_GFX_ASSETS true
-#define Eeprom24C08_address 0x50
+#define Eeprom24C32_address 0x50
+#define Eeprom24C08_address 0x54
 #if defined(SET_GFX_ASSETS)
   #include "GfxAssets.h"
 #endif
@@ -19,10 +20,13 @@
 Nokia_LCD lcd(SCK, MOSI, PIN_NOKIA_DC, PIN_NOKIA_CE, PIN_NOKIA_RST, PIN_NOKIA_BL);
 Keypad keypad(PIN_KEYPAD_MOSI_CS, PIN_KEYPAD_MISO_CS, PIN_BUZZER, configStorage.isWithSounds());
 Headline headline(&configStorage, &lcd, &RTC, PIN_VOLTAGE_READ);
-Eeprom24C eeprom24c08(8, Eeprom24C08_address);
-BitmapLoader bitmapLoader(&eeprom24c08);
+//Eeprom24C eeprom24c08(8, Eeprom24C08_address); // Availble for a use
+Eeprom24C eeprom24c32(32, Eeprom24C32_address);
+BitmapLoader bitmapLoader(&eeprom24c32);
 ServiceContainer serviceContainer(&configStorage, &lcd, &keypad, &headline, &bitmapLoader, PIN_BUZZER);
 ServiceContainer *AbstractApp::sc = &serviceContainer;
+RoborallyApp::GameStates RoborallyApp::gameState = RoborallyApp::CONNECTING;
+uint8_t RoborallyApp::round = 0;
 
 void setup()
 {
@@ -78,7 +82,7 @@ bool writeBitmap(unsigned int address, unsigned short int length, const unsigned
 {
     // Write main screen
     for (unsigned short int i = 0; i < length; i++) {
-        eeprom24c08.write_1_byte(address + i, bitmap[i]);
+        eeprom24c32.write_1_byte(address + i, bitmap[i]);
         lcd.clear(false);
         lcd.setCursor(0, 0);
         lcd.print("Writing GFX..");
@@ -101,7 +105,7 @@ bool writeBitmap(unsigned int address, unsigned short int length, const unsigned
         lcd.print("address");
         lcd.setCursor(0, 2);
         lcd.print((int)(address + i));
-        byte writtenData = eeprom24c08.read_1_byte(address + i);
+        byte writtenData = eeprom24c32.read_1_byte(address + i);
         if (writtenData != bitmap[i]) {
             lcd.clear(false);
             lcd.setCursor(0, 0);
