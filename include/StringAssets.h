@@ -5,6 +5,9 @@ namespace StringAssets {
     const char games[] = "Games";
     const char roborally[] = "Roborally";
     const char configs[] = "Configs";
+    const char clockCtrl[] = "Clock";
+    const char clockCtrlTime[] = "Set time";
+    const char clockCtrlDate[] = "Set date";
     const char contrast[] = "Contrast";
     const char loading[] = "Loading";
     const char about[] = "About";
@@ -16,6 +19,9 @@ namespace StringAssets {
     const char version[] = "ver. 0.1";
     const char createdBy[] = "created by";
     const char mihailBubnov[] = "Mihail Bubnov";
+    const char space[] = " ";
+    const char dot[] = ".";
+    const char colon[] = ":";
 
     //Roborally game
     const char connecting[] = "Connecting";

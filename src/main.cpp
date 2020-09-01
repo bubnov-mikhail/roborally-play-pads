@@ -3,7 +3,6 @@
 //#define DEBUG true
 //#define SET_CONFIG_DEFAULTS true
 //#define SET_GFX_ASSETS true
-#define SET_CLOCK true
 #define Eeprom24C32_capacity 32 // Size in bytes
 #define Eeprom24C32_address 0x50
 #define Eeprom24C08_capacity 8 // Size in bytes
@@ -27,7 +26,7 @@ Headline headline(&configStorage, &lcd, &RTC, PIN_VOLTAGE_READ);
 //Eeprom24C eeprom24c08(Eeprom24C08_capacity, Eeprom24C08_address); // Availble for a use
 Eeprom24C eeprom24c32(Eeprom24C32_capacity, Eeprom24C32_address);
 BitmapLoader bitmapLoader(&eeprom24c32);
-ServiceContainer serviceContainer(&configStorage, &lcd, &keypad, &headline, &bitmapLoader, PIN_BUZZER);
+ServiceContainer serviceContainer(&configStorage, &lcd, &keypad, &headline, &bitmapLoader, &RTC, PIN_BUZZER);
 ServiceContainer *AbstractApp::sc = &serviceContainer;
 RoborallyApp::GameStates RoborallyApp::gameState = RoborallyApp::CONNECTING;
 uint8_t RoborallyApp::round = 0;
@@ -50,7 +49,7 @@ void setup()
   pinMode(SDA, OUTPUT); //A4
   pinMode(SCL, OUTPUT); //A5
 
-  #if defined(SET_CLOCK)
+  if (!RTC.isRunning()) {
     tmElements_t tm;
     tm.Day = BUILD_DAY;
     tm.Month = BUILD_MONTH;
@@ -60,7 +59,7 @@ void setup()
     tm.Second = BUILD_SEC;
 
     RTC.write(tm);
-  #endif
+  }
 
   #if defined(SET_GFX_ASSETS)
     lcd.clear(false);

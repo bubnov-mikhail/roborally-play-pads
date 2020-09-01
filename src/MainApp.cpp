@@ -29,9 +29,11 @@ void MainApp::execute(void) {
     MenuItem menuItemBacklight(MainApp::getBacklightMenuName(config), MainApp::handleConfigBacklight);
     MenuItem menuItemSounds(MainApp::getSoundsMenuName(config), MainApp::handleConfigSound);
     MenuItem menuItemContrast(StringAssets::contrast, MainApp::handleConfigContrast);
+    MenuItem menuItemClockCtrl(StringAssets::clockCtrl, MainApp::handleConfigClockCtrl);
     menuConfigs.add_item(&menuItemBacklight);
     menuConfigs.add_item(&menuItemSounds);
     menuConfigs.add_item(&menuItemContrast);
+    menuConfigs.add_item(&menuItemClockCtrl);
 
     MenuItem menuAbout(StringAssets::about, MainApp::handleAbout);
    
@@ -117,6 +119,12 @@ void MainApp::handleAbout(MenuComponent* p_menu_component)
 void MainApp::handleConfigContrast(MenuComponent* p_menu_component)
 {
     ContrastCtlApp app;
+    app.execute();
+}
+
+void MainApp::handleConfigClockCtrl(MenuComponent* p_menu_component)
+{
+    ClockSetupApp app;
     app.execute();
 }
 
