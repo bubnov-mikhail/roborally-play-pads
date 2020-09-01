@@ -1,13 +1,21 @@
 #include <ServiceContainer.h>
 
-ServiceContainer::ServiceContainer(ConfigStorage *_configStorage, Nokia_LCD *_lcd, Keypad *_keypad, Headline *_headline, BitmapLoader* _bitmapLoader, uint8_t _buzzerPin)
-{
+ServiceContainer::ServiceContainer(
+    ConfigStorage* _configStorage, 
+    Nokia_LCD* _lcd, 
+    Keypad* _keypad, 
+    Headline* _headline, 
+    BitmapLoader* _bitmapLoader, 
+    DS1307RTC* _rtc, 
+    uint8_t _buzzerPin
+) {
     configStorage = _configStorage;
     lcd = _lcd;
     keypad = _keypad;
     headline = _headline;
     buzzerPin = _buzzerPin;
     bitmapLoader = _bitmapLoader;
+    rtc = _rtc;
 
     lcd->setBacklight(configStorage->isWithBacklight());
     lcd->begin();
@@ -43,4 +51,9 @@ MenuRenderer* ServiceContainer::getMenuRenderer(void)
 BitmapLoader* ServiceContainer::getBitmapLoader(void)
 {
     return bitmapLoader;
+}
+
+DS1307RTC* ServiceContainer::getRtc(void)
+{
+    return rtc;
 }
