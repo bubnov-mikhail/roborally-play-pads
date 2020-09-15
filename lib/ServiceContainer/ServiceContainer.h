@@ -25,7 +25,7 @@ class ServiceContainer {
         Headline* getHeadline(void);
         MenuRenderer* getMenuRenderer(void);
         BitmapLoader* getBitmapLoader(void);
-        DS1307RTC* ServiceContainer::getRtc(void);
+        DS1307RTC* getRtc(void);
     private:
         ConfigStorage* configStorage;
         MenuRenderer* menuRenderer;

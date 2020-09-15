@@ -53,7 +53,7 @@ void setup()
     tmElements_t tm;
     tm.Day = BUILD_DAY;
     tm.Month = BUILD_MONTH;
-    tm.Year = BUILD_YEAR;
+    tm.Year = BUILD_YEAR - 1970;
     tm.Hour = BUILD_HOUR;
     tm.Minute = BUILD_MIN;
     tm.Second = BUILD_SEC;

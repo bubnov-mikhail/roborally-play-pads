@@ -17,4 +17,6 @@ const unsigned char* BitmapLoader::loadBitmap(unsigned char* bitmap, unsigned in
 const unsigned char* BitmapLoader::loadByteToPosition(unsigned char* bitmap, unsigned int address, unsigned int position)
 {
     bitmap[position] = eeprom24c->read_1_byte(address);
+
+    return bitmap;
 }

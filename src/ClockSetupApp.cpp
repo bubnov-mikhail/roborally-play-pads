@@ -223,5 +223,7 @@ void ClockSetupApp::setComponentValue(void) {
         case YEAR:
             componentValue = yearOffset + tm.Year;
             break;
+        default:
+            componentValue = 0;
     }
 }
