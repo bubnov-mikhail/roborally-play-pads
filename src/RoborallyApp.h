@@ -1,13 +1,23 @@
 #pragma once
 
 #include "AbstractApp.h"
-#include <BitmapLoader.h>
+#include <ByteLoader.h>
 #include <ProgressBar.h>
 
 class RoborallyApp : public AbstractApp {
     public:
         void execute(void);
         enum GameStates {NOT_DEFINED, CONNECTING, ENTERING_CARD, CONFIRMING_CARD, WAITING, YOUR_MOVE, POWER_DOWN, SCREEN_REFRESH_REQUIRED};
+        enum Moves {
+            NONE = 0, 
+            U_TURN = 1, 
+            BACKUP = 2, 
+            ROTATE_RIGHT = 3, 
+            ROTATE_LEFT = 4, 
+            FORWARD = 5, 
+            FORWARD_2 = 6, 
+            FORWARD_3 = 7
+        };
         static GameStates gameState;
         GameStates screenState;
         GameStates monitorState;

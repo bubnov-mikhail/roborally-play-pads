@@ -6,6 +6,7 @@
 class ClockSetupApp : public AbstractApp {
     public:
         void execute(void);
+        const static unsigned short int yearOffset = 1970;
     private:
         enum ClockComponent {HOUR, MINUTE, DAY, MONTH, YEAR};
         ClockComponent currentComponent;
@@ -13,7 +14,6 @@ class ClockSetupApp : public AbstractApp {
         unsigned long blinkLastUpdated;
         bool selectComponent = true; //Highligh a selected component with inverted color
         const static unsigned short int blinkRefreshMilis = 500;
-        const static unsigned short int yearOffset = 1970;
         void drawComponents(void);
         void printValue(short int value);
         void setComponentValue(void);

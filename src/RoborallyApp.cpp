@@ -42,7 +42,7 @@ void RoborallyApp::drawMainScreen(void) {
         return;
     }
     Nokia_LCD* lcd = AbstractApp::sc->getLcd();
-    BitmapLoader* bitmapLoader = AbstractApp::sc->getBitmapLoader();
+    ByteLoader* byteLoader32 = AbstractApp::sc->getByteLoader32();
     Headline* headline = AbstractApp::sc->getHeadline();
     MenuRenderer* menuRenderer = AbstractApp::sc->getMenuRenderer();
 
@@ -55,7 +55,7 @@ void RoborallyApp::drawMainScreen(void) {
     unsigned char* bitmap = new unsigned char[LcdAssets::roborallyMainScreenLength];
 
     for (unsigned int i = 0; i < LcdAssets::roborallyMainScreenLength; i++) {
-        bitmapLoader->loadByteToPosition(bitmap, LcdAssets::roborallyMainScreenAddress + i, i);
+        byteLoader32->loadByteToPosition(bitmap, LcdAssets::roborallyMainScreenAddress + i, i);
         progressBar->render(i * 100 / LcdAssets::roborallyMainScreenLength);
         headline->update();
     }

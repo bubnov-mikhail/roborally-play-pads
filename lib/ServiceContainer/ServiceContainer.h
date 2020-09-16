@@ -5,7 +5,7 @@
 #include <Nokia_LCD.h>
 #include <MenuRenderer.h>
 #include <Headline.h>
-#include <BitmapLoader.h>
+#include <ByteLoader.h>
 #include <DS1307RTC.h>
 
 class ServiceContainer {
@@ -15,7 +15,8 @@ class ServiceContainer {
             Nokia_LCD* _lcd, 
             Keypad* _keypad, 
             Headline* _headline, 
-            BitmapLoader* _bitmapLoader, 
+            ByteLoader* _ByteLoader32, 
+            ByteLoader* _ByteLoader08, 
             DS1307RTC* _rtc, 
             uint8_t _buzzerPin
         );
@@ -24,7 +25,8 @@ class ServiceContainer {
         Keypad* getKeypad(void);
         Headline* getHeadline(void);
         MenuRenderer* getMenuRenderer(void);
-        BitmapLoader* getBitmapLoader(void);
+        ByteLoader* getByteLoader32(void);
+        ByteLoader* getByteLoader08(void);
         DS1307RTC* getRtc(void);
     private:
         ConfigStorage* configStorage;
@@ -32,7 +34,8 @@ class ServiceContainer {
         Nokia_LCD* lcd;
         Keypad* keypad;
         Headline* headline;
-        BitmapLoader* bitmapLoader;
+        ByteLoader* byteLoader32;
+        ByteLoader* byteLoader08;
         DS1307RTC* rtc;
         uint8_t buzzerPin;
 };

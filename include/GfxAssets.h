@@ -13,3 +13,93 @@ const unsigned char roborallyMainScreen[] = {
   0xe4, 0xc0, 0x50, 0x5f, 0x57, 0x54, 0x54, 0x57, 0x50, 0x5f, 0x5f, 0x5c, 0x44, 0x40, 0x50, 0x5f, 0x57, 0x54, 0x54, 0x57, 0x50, 0x5f, 0x5f, 0x5c, 0x44, 0x40, 0x50, 0x5f, 0x57, 0x54, 0x54, 0x57, 0x50, 0x5f, 0x5f, 0x5c, 0x44, 0x40, 0x50, 0x5f, 0x57, 0x54, 0x54, 0x57, 0x50, 0x5f, 0x5f, 0x5c, 0x44, 0x40, 0x50, 0x5f, 0x57, 0x54, 0x54, 0x57, 0x50, 0x5f, 0x5c, 0x59, 0x5a, 0x5a, 0x5a, 0x4a, 0x5a, 0x4a, 0x5a, 0x4a, 0x5a, 0x4a, 0x5a, 0x4a, 0x5a, 0x4a, 0x5a, 0x4a, 0x59, 0x5c, 0x5f, 0x5f, 0x5f, 0x51, 0x9d, 0x05, 
   0xff, 0x80, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x80, 0x7f, 0x00
 }; // 420 elements
+
+const unsigned int roborallyCardsAddress = 0;
+const unsigned short int roborallyCardsLength = 86;
+const unsigned char roborallyCards[roborallyCardsLength] = {
+  RoborallyApp::NONE,
+  RoborallyApp::U_TURN, // 1
+  RoborallyApp::U_TURN, // 2
+  RoborallyApp::U_TURN, // 3
+  RoborallyApp::U_TURN, // 4
+  RoborallyApp::U_TURN, // 5
+  RoborallyApp::U_TURN, // 6
+  RoborallyApp::ROTATE_LEFT, // 7
+  RoborallyApp::ROTATE_RIGHT, // 8
+  RoborallyApp::ROTATE_LEFT, // 9
+  RoborallyApp::ROTATE_RIGHT, // 10
+  RoborallyApp::ROTATE_LEFT, // 11
+  RoborallyApp::ROTATE_RIGHT, // 12
+  RoborallyApp::ROTATE_LEFT, // 13
+  RoborallyApp::ROTATE_RIGHT, // 14
+  RoborallyApp::ROTATE_LEFT, // 15
+  RoborallyApp::ROTATE_RIGHT, // 16
+  RoborallyApp::ROTATE_LEFT, // 17
+  RoborallyApp::ROTATE_RIGHT, // 18
+  RoborallyApp::ROTATE_LEFT, // 19
+  RoborallyApp::ROTATE_RIGHT, // 20
+  RoborallyApp::ROTATE_LEFT, // 21
+  RoborallyApp::ROTATE_RIGHT, // 22
+  RoborallyApp::ROTATE_LEFT, // 23
+  RoborallyApp::ROTATE_RIGHT, // 24
+  RoborallyApp::ROTATE_LEFT, // 25
+  RoborallyApp::ROTATE_RIGHT, // 26
+  RoborallyApp::ROTATE_LEFT, // 27
+  RoborallyApp::ROTATE_RIGHT, // 28
+  RoborallyApp::ROTATE_LEFT, // 29
+  RoborallyApp::ROTATE_RIGHT, // 30
+  RoborallyApp::ROTATE_LEFT, // 31
+  RoborallyApp::ROTATE_RIGHT, // 32
+  RoborallyApp::ROTATE_LEFT, // 33
+  RoborallyApp::ROTATE_RIGHT, // 34
+  RoborallyApp::ROTATE_LEFT, // 35
+  RoborallyApp::ROTATE_RIGHT, // 36
+  RoborallyApp::ROTATE_LEFT, // 37
+  RoborallyApp::ROTATE_RIGHT, // 38
+  RoborallyApp::ROTATE_LEFT, // 39
+  RoborallyApp::ROTATE_RIGHT, // 40
+  RoborallyApp::ROTATE_LEFT, // 41
+  RoborallyApp::ROTATE_RIGHT, // 42
+  RoborallyApp::BACKUP, // 43
+  RoborallyApp::BACKUP, // 44
+  RoborallyApp::BACKUP, // 45
+  RoborallyApp::BACKUP, // 46
+  RoborallyApp::BACKUP, // 47
+  RoborallyApp::BACKUP, // 48
+  RoborallyApp::FORWARD, // 49
+  RoborallyApp::FORWARD, // 50
+  RoborallyApp::FORWARD, // 51
+  RoborallyApp::FORWARD, // 52
+  RoborallyApp::FORWARD, // 53
+  RoborallyApp::FORWARD, // 54
+  RoborallyApp::FORWARD, // 55
+  RoborallyApp::FORWARD, // 56
+  RoborallyApp::FORWARD, // 57
+  RoborallyApp::FORWARD, // 58
+  RoborallyApp::FORWARD, // 59
+  RoborallyApp::FORWARD, // 60
+  RoborallyApp::FORWARD, // 61
+  RoborallyApp::FORWARD, // 62
+  RoborallyApp::FORWARD, // 63
+  RoborallyApp::FORWARD, // 64
+  RoborallyApp::FORWARD, // 65
+  RoborallyApp::FORWARD, // 66
+  RoborallyApp::FORWARD_2, // 67
+  RoborallyApp::FORWARD_2, // 68
+  RoborallyApp::FORWARD_2, // 69
+  RoborallyApp::FORWARD_2, // 70
+  RoborallyApp::FORWARD_2, // 71
+  RoborallyApp::FORWARD_2, // 72
+  RoborallyApp::FORWARD_2, // 73
+  RoborallyApp::FORWARD_2, // 74
+  RoborallyApp::FORWARD_2, // 75
+  RoborallyApp::FORWARD_2, // 76
+  RoborallyApp::FORWARD_2, // 77
+  RoborallyApp::FORWARD_2, // 78
+  RoborallyApp::FORWARD_3, // 79
+  RoborallyApp::FORWARD_3, // 80
+  RoborallyApp::FORWARD_3, // 81
+  RoborallyApp::FORWARD_3, // 82
+  RoborallyApp::FORWARD_3, // 83
+  RoborallyApp::FORWARD_3, // 84
+};

@@ -5,7 +5,8 @@ ServiceContainer::ServiceContainer(
     Nokia_LCD* _lcd, 
     Keypad* _keypad, 
     Headline* _headline, 
-    BitmapLoader* _bitmapLoader, 
+    ByteLoader* _byteLoader32, 
+    ByteLoader* _byteLoader08, 
     DS1307RTC* _rtc, 
     uint8_t _buzzerPin
 ) {
@@ -14,7 +15,8 @@ ServiceContainer::ServiceContainer(
     keypad = _keypad;
     headline = _headline;
     buzzerPin = _buzzerPin;
-    bitmapLoader = _bitmapLoader;
+    byteLoader32 = _byteLoader32;
+    byteLoader08 = _byteLoader08;
     rtc = _rtc;
 
     lcd->setBacklight(configStorage->isWithBacklight());
@@ -48,9 +50,14 @@ MenuRenderer* ServiceContainer::getMenuRenderer(void)
     return menuRenderer;
 }
 
-BitmapLoader* ServiceContainer::getBitmapLoader(void)
+ByteLoader* ServiceContainer::getByteLoader32(void)
 {
-    return bitmapLoader;
+    return byteLoader32;
+}
+
+ByteLoader* ServiceContainer::getByteLoader08(void)
+{
+    return byteLoader08;
 }
 
 DS1307RTC* ServiceContainer::getRtc(void)

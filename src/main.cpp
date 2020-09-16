@@ -1,16 +1,5 @@
 #include <main.h>
 
-//#define DEBUG true
-//#define SET_CONFIG_DEFAULTS true
-//#define SET_GFX_ASSETS true
-#define Eeprom24C32_capacity 32 // Size in bytes
-#define Eeprom24C32_address 0x50
-#define Eeprom24C08_capacity 8 // Size in bytes
-#define Eeprom24C08_address 0x54
-#if defined(SET_GFX_ASSETS)
-  #include "GfxAssets.h"
-  #include <ProgressBar.h>
-#endif
 /**
  * Init services
  */
@@ -23,10 +12,11 @@
 Nokia_LCD lcd(SCK, MOSI, PIN_NOKIA_DC, PIN_NOKIA_CE, PIN_NOKIA_RST, PIN_NOKIA_BL);
 Keypad keypad(PIN_KEYPAD_MOSI_CS, PIN_KEYPAD_MISO_CS, PIN_BUZZER, configStorage.isWithSounds());
 Headline headline(&configStorage, &lcd, &RTC, PIN_VOLTAGE_READ);
-//Eeprom24C eeprom24c08(Eeprom24C08_capacity, Eeprom24C08_address); // Availble for a use
 Eeprom24C eeprom24c32(Eeprom24C32_capacity, Eeprom24C32_address);
-BitmapLoader bitmapLoader(&eeprom24c32);
-ServiceContainer serviceContainer(&configStorage, &lcd, &keypad, &headline, &bitmapLoader, &RTC, PIN_BUZZER);
+Eeprom24C eeprom24c08(Eeprom24C08_capacity, Eeprom24C08_address);
+ByteLoader byteLoader32(&eeprom24c32);
+ByteLoader byteLoader08(&eeprom24c08);
+ServiceContainer serviceContainer(&configStorage, &lcd, &keypad, &headline, &byteLoader32, &byteLoader08, &RTC, PIN_BUZZER);
 ServiceContainer *AbstractApp::sc = &serviceContainer;
 RoborallyApp::GameStates RoborallyApp::gameState = RoborallyApp::CONNECTING;
 uint8_t RoborallyApp::round = 0;
@@ -48,12 +38,13 @@ void setup()
   pinMode(PIN_NOKIA_BL, OUTPUT);
   pinMode(SDA, OUTPUT); //A4
   pinMode(SCL, OUTPUT); //A5
+  Wire.setClock(400000);
 
   if (!RTC.isRunning()) {
     tmElements_t tm;
     tm.Day = BUILD_DAY;
     tm.Month = BUILD_MONTH;
-    tm.Year = BUILD_YEAR - 1970;
+    tm.Year = BUILD_YEAR - ClockSetupApp::yearOffset;
     tm.Hour = BUILD_HOUR;
     tm.Minute = BUILD_MIN;
     tm.Second = BUILD_SEC;
@@ -72,10 +63,11 @@ void setup()
         continue;
     }
 
-    unsigned int totalCapacity = Eeprom24C32_capacity * 128;
+    unsigned int total32Capacity = Eeprom24C32_capacity * 128;
+    unsigned int total08Capacity = Eeprom24C32_capacity * 128;
     if (
-      writeBitmap(LcdAssets::roborallyMainScreenAddress, totalCapacity, LcdAssets::roborallyMainScreenLength, roborallyMainScreen)
-      //&& writeBitmap(...)
+      writeBytes(&eeprom24c32, LcdAssets::roborallyMainScreenAddress, total32Capacity, LcdAssets::roborallyMainScreenLength, roborallyMainScreen)
+      && writeBytes(&eeprom24c08, roborallyCardsAddress, total08Capacity, roborallyCardsLength, roborallyCards)
     ) {
       //Nothing here
     }
@@ -92,13 +84,13 @@ void loop()
 }
 
 #if defined(SET_GFX_ASSETS)
-bool writeBitmap(unsigned int address, unsigned int totalCapacity, unsigned short int length, const unsigned char* bitmap) {
+bool writeBytes(Eeprom24C* eeprom24C, unsigned int address, unsigned int totalCapacity, unsigned short int length, const unsigned char* bytes) {
     ProgressBar* progressBarBitmap = new ProgressBar(&lcd, 10, 74, 1, true);
     ProgressBar* progressBarTotal = new ProgressBar(&lcd, 10, 74, 4, true);
 
     lcd.clear(false);
     lcd.setCursor(0, 0);
-    lcd.print("Writing image");
+    lcd.print("Writing bytes");
     lcd.setCursor(0, 3);
     lcd.print("Total capacity");
 
@@ -106,7 +98,7 @@ bool writeBitmap(unsigned int address, unsigned int totalCapacity, unsigned shor
     progressBarTotal->render(0);
 
     for (unsigned short int i = 0; i < length; i++) {
-        eeprom24c32.write_1_byte(address + i, bitmap[i]);
+        eeprom24C->write_1_byte(address + i, bytes[i]);
         progressBarBitmap->render(i * 100 / length);
         progressBarTotal->render(i * 100 / totalCapacity);
         delay(10);
@@ -119,16 +111,16 @@ bool writeBitmap(unsigned int address, unsigned int totalCapacity, unsigned shor
 
     for (unsigned short int i = 0; i < length; i++) {
         progressBarBitmap->render(i * 100 / length);
-        byte writtenData = eeprom24c32.read_1_byte(address + i);
-        if (writtenData != bitmap[i]) {
+        byte writtenData = eeprom24C->read_1_byte(address + i);
+        if (writtenData != bytes[i]) {
             lcd.clear(false);
             lcd.setCursor(0, 0);
-            lcd.print("Wrong data");
+            lcd.print("Wrong byte");
             lcd.setCursor(0, 1);
             lcd.print(writtenData);
             lcd.setCursor(0, 2);
             lcd.print("expected ");
-            lcd.print(bitmap[i]);
+            lcd.print(bytes[i]);
             lcd.setCursor(0, 3);
             lcd.print("at address");
             lcd.setCursor(0, 4);
