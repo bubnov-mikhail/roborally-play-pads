@@ -38,7 +38,6 @@ void setup()
   pinMode(PIN_NOKIA_BL, OUTPUT);
   pinMode(SDA, OUTPUT); //A4
   pinMode(SCL, OUTPUT); //A5
-  Wire.setClock(400000);
 
   if (!RTC.isRunning()) {
     tmElements_t tm;
@@ -66,8 +65,23 @@ void setup()
     unsigned int total32Capacity = Eeprom24C32_capacity * 128;
     unsigned int total08Capacity = Eeprom24C32_capacity * 128;
     if (
-      writeBytes(&eeprom24c32, LcdAssets::roborallyMainScreenAddress, total32Capacity, LcdAssets::roborallyMainScreenLength, roborallyMainScreen)
-      && writeBytes(&eeprom24c08, roborallyCardsAddress, total08Capacity, roborallyCardsLength, roborallyCards)
+      writeBytes(&eeprom24c32, LcdAssets::roborallyMainScreenAddress, total32Capacity, LcdAssets::roborallyMainScreenLength, roborallyMainScreenBitmap, false)
+      && writeBytes(&eeprom24c32, LcdAssets::roborallyMoveForwardAddress, total32Capacity, LcdAssets::roborallyMovesLength, roborallyMoveForwardBitmap, true)
+      && writeBytes(&eeprom24c32, LcdAssets::roborallyMoveForward2Address, total32Capacity, LcdAssets::roborallyMovesLength, roborallyMoveForward2Bitmap, true)
+      && writeBytes(&eeprom24c32, LcdAssets::roborallyMoveForward3Address, total32Capacity, LcdAssets::roborallyMovesLength, roborallyMoveForward3Bitmap, true)
+      && writeBytes(&eeprom24c32, LcdAssets::roborallyMoveBackAddress, total32Capacity, LcdAssets::roborallyMovesLength, roborallyMoveBackBitmap, true)
+      && writeBytes(&eeprom24c32, LcdAssets::roborallyMovePowerDownAddress, total32Capacity, LcdAssets::roborallyMovesLength, roborallyMovePowerDownBitmap, true)
+      && writeBytes(&eeprom24c32, LcdAssets::roborallyMoveLeftAddress, total32Capacity, LcdAssets::roborallyMovesLength, roborallyMoveLeftBitmap, true)
+      && writeBytes(&eeprom24c32, LcdAssets::roborallyMoveRightAddress, total32Capacity, LcdAssets::roborallyMovesLength, roborallyMoveRightBitmap, true)
+      && writeBytes(&eeprom24c32, LcdAssets::roborallyMoveUTurnAddress, total32Capacity, LcdAssets::roborallyMovesLength, roborallyMoveUTurnBitmap, true)
+      && writeBytes(&eeprom24c32, LcdAssets::roborallyMoveWait1Address, total32Capacity, LcdAssets::roborallyMovesLength, roborallyMoveWait1Bitmap, true)
+      && writeBytes(&eeprom24c32, LcdAssets::roborallyMoveWait2Address, total32Capacity, LcdAssets::roborallyMovesLength, roborallyMoveWait2Bitmap, true)
+      && writeBytes(&eeprom24c32, LcdAssets::roborallyMoveWait3Address, total32Capacity, LcdAssets::roborallyMovesLength, roborallyMoveWait3Bitmap, true)
+      && writeBytes(&eeprom24c32, LcdAssets::roborallyMoveWait4Address, total32Capacity, LcdAssets::roborallyMovesLength, roborallyMoveWait4Bitmap, true)
+      && writeBytes(&eeprom24c32, LcdAssets::roborallyMoveWait5Address, total32Capacity, LcdAssets::roborallyMovesLength, roborallyMoveWait5Bitmap, true)
+      && writeBytes(&eeprom24c32, LcdAssets::roborallyMoveWait6Address, total32Capacity, LcdAssets::roborallyMovesLength, roborallyMoveWait6Bitmap, true)
+      && writeBytes(&eeprom24c32, LcdAssets::roborallyMoveWait7Address, total32Capacity, LcdAssets::roborallyMovesLength, roborallyMoveWait7Bitmap, true)
+      && writeBytes(&eeprom24c08, roborallyCardsAddress, total08Capacity, roborallyCardsLength, roborallyCards, false)
     ) {
       //Nothing here
     }
@@ -84,35 +98,60 @@ void loop()
 }
 
 #if defined(SET_GFX_ASSETS)
-bool writeBytes(Eeprom24C* eeprom24C, unsigned int address, unsigned int totalCapacity, unsigned short int length, const unsigned char* bytes) {
+bool writeBytes(Eeprom24C* eeprom24C, unsigned int address, unsigned int totalCapacity, unsigned short int length, const unsigned char* bytes, bool doubleRows) {
     ProgressBar* progressBarBitmap = new ProgressBar(&lcd, 10, 74, 1, true);
     ProgressBar* progressBarTotal = new ProgressBar(&lcd, 10, 74, 4, true);
 
+    if (address + length > totalCapacity) {
+      lcd.clear(false);
+      lcd.setCursor(0, 0);
+      lcd.print("Wrong address");
+      lcd.setCursor(0, 2);
+      lcd.print(address);
+      lcd.setCursor(0, 3);
+      lcd.print("Total ");
+      lcd.print(totalCapacity / 128);
+      lcd.print(" kB only");
+
+      return false;
+    }
     lcd.clear(false);
     lcd.setCursor(0, 0);
     lcd.print("Writing bytes");
     lcd.setCursor(0, 3);
-    lcd.print("Total capacity");
+    lcd.print("Total ");
+    lcd.print(totalCapacity / 128);
+    lcd.print(" kB");
 
     progressBarBitmap->render(0);
-    progressBarTotal->render(0);
+    progressBarTotal->render(address * 100 / totalCapacity);
 
+    delay(200);
     for (unsigned short int i = 0; i < length; i++) {
         eeprom24C->write_1_byte(address + i, bytes[i]);
         progressBarBitmap->render(i * 100 / length);
-        progressBarTotal->render(i * 100 / totalCapacity);
-        delay(10);
+        progressBarTotal->render((address + i) * 100 / totalCapacity);
+        delay(5);
     }
     lcd.clear(false);
     lcd.setCursor(0, 0);
     lcd.print("Verify...");
-    progressBarBitmap->reset();
-    delay(200);
+    lcd.setCursor(0, 0);
+    delay(1000);
+    lcd.clear(false);
 
     for (unsigned short int i = 0; i < length; i++) {
-        progressBarBitmap->render(i * 100 / length);
+        delay(5);
         byte writtenData = eeprom24C->read_1_byte(address + i);
-        if (writtenData != bytes[i]) {
+        unsigned char* bitmap = new unsigned char[1];
+        bitmap[0] = writtenData;
+        if (doubleRows && i == length / 2) {
+          lcd.setCursor(0, 1);
+        }
+        lcd.draw(bitmap, 1, false);
+        delete bitmap;
+
+        if (writtenData != bytes[i]) {          
             lcd.clear(false);
             lcd.setCursor(0, 0);
             lcd.print("Wrong byte");
@@ -126,14 +165,15 @@ bool writeBytes(Eeprom24C* eeprom24C, unsigned int address, unsigned int totalCa
             lcd.setCursor(0, 4);
             lcd.print(address + i);
 
+            
             delete progressBarBitmap;
             delete progressBarTotal;
 
             return false;
         }
-        delay(10);
+        
     }
-
+    delay(3000);
     lcd.clear(false);
     lcd.print("Done");
 
