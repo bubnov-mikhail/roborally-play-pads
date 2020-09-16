@@ -15,7 +15,7 @@
 
 //#define DEBUG true
 //#define SET_CONFIG_DEFAULTS true
-#define SET_GFX_ASSETS true
+//#define SET_GFX_ASSETS true
 #define Eeprom24C32_capacity 32 // Size in bytes
 #define Eeprom24C32_address 0x50
 #define Eeprom24C08_capacity 8 // Size in bytes
