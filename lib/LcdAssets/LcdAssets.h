@@ -13,23 +13,23 @@ namespace LcdAssets {
     const unsigned int roborallyMainScreenAddress = 0;
     const unsigned short int roborallyMainScreenLength = 420;
 
-    const unsigned short int roborallyMovesLength = 32;
+    const unsigned short int roborallyMovesBitmapLength = 32;
 
     const unsigned int roborallyMoveForwardAddress = roborallyMainScreenAddress + roborallyMainScreenLength;
-    const unsigned int roborallyMoveForward2Address = roborallyMoveForwardAddress + roborallyMovesLength;
-    const unsigned int roborallyMoveForward3Address = roborallyMoveForward2Address + roborallyMovesLength;
-    const unsigned int roborallyMoveBackAddress = roborallyMoveForward3Address + roborallyMovesLength;
-    const unsigned int roborallyMovePowerDownAddress = roborallyMoveBackAddress + roborallyMovesLength;
-    const unsigned int roborallyMoveLeftAddress = roborallyMovePowerDownAddress + roborallyMovesLength;
-    const unsigned int roborallyMoveRightAddress = roborallyMoveLeftAddress + roborallyMovesLength;
-    const unsigned int roborallyMoveUTurnAddress = roborallyMoveRightAddress + roborallyMovesLength;
-    const unsigned int roborallyMoveWait1Address = roborallyMoveUTurnAddress + roborallyMovesLength;
-    const unsigned int roborallyMoveWait2Address = roborallyMoveWait1Address + roborallyMovesLength;
-    const unsigned int roborallyMoveWait3Address = roborallyMoveWait2Address + roborallyMovesLength;
-    const unsigned int roborallyMoveWait4Address = roborallyMoveWait3Address + roborallyMovesLength;
-    const unsigned int roborallyMoveWait5Address = roborallyMoveWait4Address + roborallyMovesLength;
-    const unsigned int roborallyMoveWait6Address = roborallyMoveWait5Address + roborallyMovesLength;
-    const unsigned int roborallyMoveWait7Address = roborallyMoveWait6Address + roborallyMovesLength;
+    const unsigned int roborallyMoveForward2Address = roborallyMoveForwardAddress + roborallyMovesBitmapLength;
+    const unsigned int roborallyMoveForward3Address = roborallyMoveForward2Address + roborallyMovesBitmapLength;
+    const unsigned int roborallyMoveBackAddress = roborallyMoveForward3Address + roborallyMovesBitmapLength;
+    const unsigned int roborallyMovePowerDownAddress = roborallyMoveBackAddress + roborallyMovesBitmapLength;
+    const unsigned int roborallyMoveLeftAddress = roborallyMovePowerDownAddress + roborallyMovesBitmapLength;
+    const unsigned int roborallyMoveRightAddress = roborallyMoveLeftAddress + roborallyMovesBitmapLength;
+    const unsigned int roborallyMoveUTurnAddress = roborallyMoveRightAddress + roborallyMovesBitmapLength;
+    const unsigned int roborallyMoveWait1Address = roborallyMoveUTurnAddress + roborallyMovesBitmapLength;
+    const unsigned int roborallyMoveWait2Address = roborallyMoveWait1Address + roborallyMovesBitmapLength;
+    const unsigned int roborallyMoveWait3Address = roborallyMoveWait2Address + roborallyMovesBitmapLength;
+    const unsigned int roborallyMoveWait4Address = roborallyMoveWait3Address + roborallyMovesBitmapLength;
+    const unsigned int roborallyMoveWait5Address = roborallyMoveWait4Address + roborallyMovesBitmapLength;
+    const unsigned int roborallyMoveWait6Address = roborallyMoveWait5Address + roborallyMovesBitmapLength;
+    const unsigned int roborallyMoveWait7Address = roborallyMoveWait6Address + roborallyMovesBitmapLength;
     
     // Bitmaps
     const unsigned char batteryFull[] PROGMEM = {0x1f, 0x1f, 0x1f, 0x1f, 0x1f, 0x1f, 0x11, 0x0e};

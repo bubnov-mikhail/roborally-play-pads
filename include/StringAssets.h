@@ -26,7 +26,6 @@ namespace StringAssets {
     //Roborally game
     const char connecting[] = "Connecting";
     const char enterCard[] = "Enter card";
-    const char confirmCard[] = "Confirm card";
     const char waiting[] = "Waiting";
     const char yourMove[] = "Your move";
     const char powerDown[] = "Power down";

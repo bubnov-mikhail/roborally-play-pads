@@ -7,7 +7,7 @@
 class RoborallyApp : public AbstractApp {
     public:
         void execute(void);
-        enum GameStates {NOT_DEFINED, CONNECTING, ENTERING_CARD, CONFIRMING_CARD, WAITING, YOUR_MOVE, POWER_DOWN, SCREEN_REFRESH_REQUIRED};
+        enum GameStates {NOT_DEFINED, CONNECTING, ENTERING_CARD, CONFIRMING_CARD, WAITING_OTHERS, YOUR_MOVE, NEXT_PHASE_WAITING, POWER_DOWN, SCREEN_REFRESH_REQUIRED, EXIT};
         enum Moves {
             NONE = 0, 
             U_TURN = 1, 
@@ -22,21 +22,25 @@ class RoborallyApp : public AbstractApp {
         GameStates screenState;
         GameStates monitorState;
         GameStates messageState;
-        static uint8_t round;
+        uint8_t round;
     private:
-        int16_t cardNumber = 0;
-        int16_t renderedCardNumber;
+        uint16_t cardNumber = 0;
+        uint8_t waitingPhase = 0;
+        bool correctCardNumberEntered = false;
         bool roundDisplayCurrent = true;
         unsigned long monitorLastUpdated;
         unsigned long roundLastUpdated;
-        const static unsigned short int monitorRefreshTimeMilis = 100;
+        const static unsigned short int noiseRefreshTimeMilis = 100;
+        const static unsigned short int waitingRefreshTimeMilis = 100;
         const static unsigned short int roundRefreshTimeMilis = 400;
-        const static uint8_t monitorBitmapLength = 14;
+        const static uint16_t maxCardNumber = 840;
+        const static uint8_t waitingPhaseMax = 6;
         void drawMainScreen(void);
         void drawRound();
         void printCardNumber();
         void printMessage();
+        void handleKeypad();
         void updateMonitor(void);
-        void drawMonitor(unsigned char* bitmapUpper, unsigned char* bitmapLower);
+        void drawMonitor(unsigned char* bitmap);
         void generateNoise(unsigned char* bitmapUpper);
 };

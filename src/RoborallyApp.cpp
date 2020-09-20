@@ -1,10 +1,9 @@
 #include "RoborallyApp.h"
 
 void RoborallyApp::execute(void) {
-    Keypad* keypad = AbstractApp::sc->getKeypad();
     Headline* headline = AbstractApp::sc->getHeadline();
 
-    monitorLastUpdated = millis() - monitorRefreshTimeMilis;
+    monitorLastUpdated = millis() - noiseRefreshTimeMilis;
     roundLastUpdated = millis() - roundRefreshTimeMilis;
     gameState = CONNECTING;
     screenState = SCREEN_REFRESH_REQUIRED;
@@ -20,20 +19,90 @@ void RoborallyApp::execute(void) {
         updateMonitor();
         printMessage();
         printCardNumber();
+        handleKeypad();
 
-        if (!keypad->read()) {
-            continue;
+        if (gameState == EXIT) {
+            return;
         }
+    }
+}
 
-        switch (keypad->getKeypadSymbol()) {
-            case Keypad::keyC: //Demo
+void RoborallyApp::handleKeypad(void) {
+    Keypad* keypad = AbstractApp::sc->getKeypad();
+
+    if (!keypad->read()) {
+        return;
+    }
+
+    if (keypad->getKeypadSymbol() == Keypad::keyA)
+    {
+        //Demo. Later we will control the game menu with Keypad::keyA instead.
+        gameState = EXIT;
+        return;
+    }
+
+    uint8_t keypadSymbol = keypad->getKeypadSymbol();
+    switch (gameState) {
+        case CONNECTING:
+            //Demo
+            if (keypadSymbol == Keypad::keyC) {
                 gameState = ENTERING_CARD;
+                round = 1; //Start the game
+            }
+            break;
+        case ENTERING_CARD:
+            if (keypadSymbol <= Keypad::key9) {
+                uint16_t cardNumberNew = cardNumber * 10 + keypadSymbol;
+                if (cardNumberNew > maxCardNumber) {
+                    break;
+                }
+                cardNumber = cardNumberNew;
                 break;
-            case Keypad::keyD: //Demo
-                return;
-        }
-        
-        screenState = gameState;
+
+            }
+
+            if (keypadSymbol == Keypad::keyD) {
+                cardNumber = 0;
+                break;
+            }
+
+            if (keypadSymbol == Keypad::keyHash) {
+                cardNumber = max(0, cardNumber / 10);
+                break;
+            }
+
+            if (keypadSymbol == Keypad::keyStar && correctCardNumberEntered) {
+                gameState = WAITING_OTHERS;
+                break;
+            }
+
+            // Any other key
+            break;
+        case WAITING_OTHERS:
+            //Demo
+            if (keypadSymbol == Keypad::keyC) {
+                gameState = YOUR_MOVE;
+            }
+            // Waiting for the command from tha main unit
+            break;
+        case YOUR_MOVE:
+            //Demo
+            if (keypadSymbol == Keypad::keyStar) {
+                gameState = NEXT_PHASE_WAITING;
+                cardNumber = 0;
+            }
+            break;
+        case NEXT_PHASE_WAITING:
+            //Demo. Waiting for the command from tha main unit
+            if (keypadSymbol == Keypad::keyC) {
+                round += 1;
+                if (round > 5) {
+                    round = 1;
+                }
+                gameState = ENTERING_CARD;
+            }
+            
+            break;
     }
 }
 
@@ -88,26 +157,21 @@ void RoborallyApp::drawRound() {
 }
 
 void RoborallyApp::printCardNumber() {
-    if (renderedCardNumber == cardNumber) {
-        return;
-    }
     Nokia_LCD* lcd = AbstractApp::sc->getLcd();
     lcd->setCursor(4, 2);
-    if (gameState != ENTERING_CARD && gameState != CONFIRMING_CARD) {
+    if (gameState != ENTERING_CARD) {
         for (uint8_t i = 0; i < 4; i++) {
             lcd->print("-");
         }
     } else {
-        for (uint8_t i = 0; i < 4; i++) {
+        for (uint8_t i = 4; i > 0; i--) {
+            if (pow(10, i - 1) <= cardNumber) {
+                lcd->print(cardNumber);
+                break;
+            }
             lcd->print("_");
         }
-        if (cardNumber > 0) {
-            lcd->setCursor(4, 2);
-            lcd->print(cardNumber);
-        }
     }
-    
-    renderedCardNumber = cardNumber;
 }
 
 void RoborallyApp::printMessage() {
@@ -128,10 +192,8 @@ void RoborallyApp::printMessage() {
         case ENTERING_CARD:
             lcd->print(StringAssets::enterCard);
             break;
-        case CONFIRMING_CARD:
-            lcd->print(StringAssets::confirmCard);
-            break;
-        case WAITING:
+        case WAITING_OTHERS:
+        case NEXT_PHASE_WAITING:
             lcd->print(StringAssets::waiting);
             break;
         case YOUR_MOVE:
@@ -147,41 +209,147 @@ void RoborallyApp::printMessage() {
 }
 
 void RoborallyApp::updateMonitor(void) {
-    if (gameState == monitorState && gameState != ENTERING_CARD && gameState != WAITING && gameState != CONNECTING) {
+    if (gameState == monitorState 
+        && gameState != ENTERING_CARD 
+        && gameState != WAITING_OTHERS 
+        && gameState != NEXT_PHASE_WAITING 
+        && gameState != CONNECTING
+    ) {
         return;
     }
+
+    unsigned short int monitorRefreshTimeMilis = (gameState == CONNECTING || gameState == WAITING_OTHERS || gameState == NEXT_PHASE_WAITING)
+        ? waitingRefreshTimeMilis
+        : noiseRefreshTimeMilis
+    ;
 
     if (millis() - monitorLastUpdated < monitorRefreshTimeMilis) {
         return;
     }
-    
-    unsigned char* bitmapUpper = new unsigned char[monitorBitmapLength];
-    unsigned char* bitmapLower = new unsigned char[monitorBitmapLength];  
 
-    //switch state
-    // other cards
+    unsigned char* bitmap = new unsigned char[LcdAssets::roborallyMovesBitmapLength];
+    // if (cardNumber > 0) {
 
-    // fallback to noise
-    generateNoise(bitmapUpper);
-    generateNoise(bitmapLower);
+    // }
+    // Moves enteredMove = 
+    ByteLoader* bitmapLoader = AbstractApp::sc->getByteLoader32();
+    switch (gameState) {
+        case CONNECTING:
+        case WAITING_OTHERS:
+        case NEXT_PHASE_WAITING:
+            bitmapLoader->loadBitmap(
+                bitmap, 
+                LcdAssets::roborallyMoveWait1Address + waitingPhase * LcdAssets::roborallyMovesBitmapLength, 
+                LcdAssets::roborallyMovesBitmapLength
+            );
+            waitingPhase++;
+            if (waitingPhase > waitingPhaseMax) {
+                waitingPhase = 0;
+            }
+            break;
+        case POWER_DOWN:
+            bitmapLoader->loadBitmap(
+                bitmap, 
+                LcdAssets::roborallyMovePowerDownAddress, 
+                LcdAssets::roborallyMovesBitmapLength
+            );
+            break;
+        case ENTERING_CARD:
+        case YOUR_MOVE:
+            if (cardNumber > maxCardNumber) {
+                generateNoise(bitmap);
+                break;
+            }
+            ByteLoader* cardsLoader = AbstractApp::sc->getByteLoader08();
+            unsigned int moveCardAddress = cardNumber / 10;
+
+            uint8_t moveCard = moveCardAddress * 10 == cardNumber
+                ? uint8_t(cardsLoader->loadByte(cardNumber / 10))
+                : 0
+            ;
+            
+            unsigned int moveAddress = 0;
+            switch (moveCard) {
+                case U_TURN:
+                    moveAddress = LcdAssets::roborallyMoveUTurnAddress;
+                    break;
+                case BACKUP:
+                    moveAddress = LcdAssets::roborallyMoveBackAddress;
+                    break;
+                case ROTATE_RIGHT:
+                    moveAddress = LcdAssets::roborallyMoveRightAddress;
+                    break;
+                case ROTATE_LEFT:
+                    moveAddress = LcdAssets::roborallyMoveLeftAddress;
+                    break;
+                case FORWARD:
+                    moveAddress = LcdAssets::roborallyMoveForwardAddress;
+                    break;
+                case FORWARD_2:
+                    moveAddress = LcdAssets::roborallyMoveForward2Address;
+                    break;
+                case FORWARD_3:
+                    moveAddress = LcdAssets::roborallyMoveForward3Address;
+                    break;
+            }
+
+            if (moveAddress == 0) {
+                // unknown card
+                generateNoise(bitmap);
+                correctCardNumberEntered = false;
+                break;
+            }
+
+            correctCardNumberEntered = true;
+            bitmapLoader->loadBitmap(
+                bitmap, 
+                moveAddress, 
+                LcdAssets::roborallyMovesBitmapLength
+            );
+            break;
+        default:
+            // fallback to noise
+            generateNoise(bitmap);
+    }
     
-    drawMonitor(bitmapUpper, bitmapLower);
-    delete bitmapUpper;
-    delete bitmapLower;
+    drawMonitor(bitmap);
     monitorLastUpdated = millis();
     monitorState = gameState;
+    delete bitmap;
 }
 
-void RoborallyApp::drawMonitor(unsigned char* bitmapUpper, unsigned char* bitmapLower) {
+void RoborallyApp::drawMonitor(unsigned char* bitmap) {
     Nokia_LCD* lcd = AbstractApp::sc->getLcd();
-    lcd->setCursor(61, 2);
-    lcd->draw(bitmapUpper, monitorBitmapLength, false);
-    lcd->setCursor(61, 3);
-    lcd->draw(bitmapLower, monitorBitmapLength, false);
+    lcd->setCursor(60, 2);
+
+    unsigned char* bitmapUpper = new unsigned char[LcdAssets::roborallyMovesBitmapLength / 2];
+    unsigned char* bitmapLower = new unsigned char[LcdAssets::roborallyMovesBitmapLength / 2];
+    for (uint8_t i = 0; i < LcdAssets::roborallyMovesBitmapLength; i++) {
+        if (i < LcdAssets::roborallyMovesBitmapLength / 2) {
+            bitmapUpper[i] = bitmap[i];
+        } else {
+            bitmapLower[i - LcdAssets::roborallyMovesBitmapLength / 2] = bitmap[i];
+        }
+    }
+
+    lcd->draw(bitmapUpper, LcdAssets::roborallyMovesBitmapLength / 2, false);
+    lcd->setCursor(60, 3);
+    lcd->draw(bitmapLower, LcdAssets::roborallyMovesBitmapLength / 2, false);
+
+    delete bitmapUpper;
+    delete bitmapLower;
 }
 
 void RoborallyApp::generateNoise(unsigned char* bitmap) {
-    for (uint8_t i = 0; i < monitorBitmapLength; i++) {
+    for (uint8_t i = 0; i < LcdAssets::roborallyMovesBitmapLength; i++) {
+        if (i == 0 
+            || i == LcdAssets::roborallyMovesBitmapLength / 2 - 1
+            || i == LcdAssets::roborallyMovesBitmapLength / 2
+            || i == LcdAssets::roborallyMovesBitmapLength - 1
+        ) {
+            bitmap[i] = 0x0;
+            continue;
+        }
         bitmap[i] = LcdAssets::noise[random(0, 5)];
     }
 }
