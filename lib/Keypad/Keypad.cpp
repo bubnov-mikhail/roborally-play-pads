@@ -41,6 +41,10 @@ uint16_t Keypad::getKeypadCode(void)
 
 bool Keypad::read(void)
 {
+  if (keypadCode != 0x00 && millis() - debounceDelayMilis < keyLastUpdated) {
+      return false;
+  }
+
   uint16_t lastCode = keypadCode;
   keypadCode = 0x00;
 
@@ -64,6 +68,8 @@ bool Keypad::read(void)
     
     keypadCode = keypadCode | inputData;
   }
+
+  // Turn off the keypad lines
   digitalWrite(_keypadMoSiCS, LOW);
   SPI.transfer(0x00);
   digitalWrite(_keypadMoSiCS, HIGH);
@@ -71,6 +77,7 @@ bool Keypad::read(void)
 
   bool updated = lastCode != keypadCode;
   if (updated && keypadCode > 0) {
+    keyLastUpdated = millis();
     beepOnClick();
   }
   return updated;
@@ -84,8 +91,6 @@ void Keypad::setBeepOnClick(bool beepOnClick)
 void Keypad::beepOnClick(void)
 {
     if (_beepOnClick && _buzzerPin) {
-        TimerFreeTone(_buzzerPin, beepFreq, delayOnClick);
-        return;
+        TimerFreeTone(_buzzerPin, beepFreq, beepDelayMilis);
     }
-    delay(delayOnClick);
 }
