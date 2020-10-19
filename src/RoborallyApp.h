@@ -2,6 +2,7 @@
 
 #include "AbstractApp.h"
 #include <ByteLoader.h>
+#include <SPI.h>
 #include <ProgressBar.h>
 
 class RoborallyApp : public AbstractApp {
@@ -19,6 +20,7 @@ class RoborallyApp : public AbstractApp {
             FORWARD_3 = 7
         };
         static GameStates gameState;
+        static uint8_t spiMoSiCs; // Used to flash lights using spi
         GameStates screenState;
         GameStates monitorState;
         GameStates messageState;
@@ -33,6 +35,13 @@ class RoborallyApp : public AbstractApp {
         const static unsigned short int noiseRefreshTimeMilis = 100;
         const static unsigned short int waitingRefreshTimeMilis = 100;
         const static unsigned short int roundRefreshTimeMilis = 400;
+        const static unsigned short int flashlightBlinkMilis = 100;
+        bool flashlightOn = false;
+        unsigned long flashlightCreated = 0;
+        const static uint8_t flashlightBlinks = 10;
+        uint8_t flashlightLastState = 0x00;
+        const static uint8_t flashlightAAddress = 0x01;
+        const static uint8_t flashlightBAddress = 0x32;
         const static uint16_t maxCardNumber = 840;
         const static uint8_t waitingPhaseMax = 6;
         void drawMainScreen(void);
@@ -43,4 +52,7 @@ class RoborallyApp : public AbstractApp {
         void updateMonitor(void);
         void drawMonitor(unsigned char* bitmap);
         void generateNoise(unsigned char* bitmapUpper);
+        void flashlightBlink();
+        void flashlightTurnOn();
+        void flashlightTurnOff();
 };

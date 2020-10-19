@@ -19,6 +19,7 @@ ByteLoader byteLoader08(&eeprom24c08);
 ServiceContainer serviceContainer(&configStorage, &lcd, &keypad, &headline, &byteLoader32, &byteLoader08, &RTC, PIN_BUZZER);
 ServiceContainer *AbstractApp::sc = &serviceContainer;
 RoborallyApp::GameStates RoborallyApp::gameState = RoborallyApp::CONNECTING;
+uint8_t RoborallyApp::spiMoSiCs = PIN_KEYPAD_MOSI_CS;
 
 void setup()
 {

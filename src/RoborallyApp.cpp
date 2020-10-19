@@ -20,8 +20,9 @@ void RoborallyApp::execute(void) {
         printMessage();
         printCardNumber();
         handleKeypad();
-
+        flashlightBlink();
         if (gameState == EXIT) {
+            flashlightTurnOff();
             return;
         }
     }
@@ -48,6 +49,7 @@ void RoborallyApp::handleKeypad(void) {
             if (keypadSymbol == Keypad::keyC) {
                 gameState = ENTERING_CARD;
                 round = 1; //Start the game
+                flashlightTurnOn();
             }
             break;
         case ENTERING_CARD:
@@ -82,6 +84,7 @@ void RoborallyApp::handleKeypad(void) {
             //Demo
             if (keypadSymbol == Keypad::keyC) {
                 gameState = YOUR_MOVE;
+                flashlightTurnOn();
             }
             // Waiting for the command from tha main unit
             break;
@@ -100,6 +103,7 @@ void RoborallyApp::handleKeypad(void) {
                     round = 1;
                 }
                 gameState = ENTERING_CARD;
+                flashlightTurnOn();
             }
             
             break;
@@ -228,10 +232,7 @@ void RoborallyApp::updateMonitor(void) {
     }
 
     unsigned char* bitmap = new unsigned char[LcdAssets::roborallyMovesBitmapLength];
-    // if (cardNumber > 0) {
 
-    // }
-    // Moves enteredMove = 
     ByteLoader* bitmapLoader = AbstractApp::sc->getByteLoader32();
     switch (gameState) {
         case CONNECTING:
@@ -352,4 +353,44 @@ void RoborallyApp::generateNoise(unsigned char* bitmap) {
         }
         bitmap[i] = LcdAssets::noise[random(0, 5)];
     }
+}
+
+void RoborallyApp::flashlightBlink() {
+    if (!flashlightOn) {
+        return;
+    }
+
+    if (millis() - flashlightCreated > flashlightBlinkMilis * flashlightBlinks) {
+        flashlightTurnOff();
+        return;
+    }
+
+    uint8_t flashState = ((millis() - flashlightCreated) / flashlightBlinkMilis) % 2 == 0
+        ? flashlightAAddress
+        : flashlightBAddress
+    ;
+
+    if (flashlightLastState == flashState) {
+        return;
+    }
+
+    SPI.begin();
+    digitalWrite(spiMoSiCs, LOW);
+    SPI.transfer(flashState);
+    digitalWrite(spiMoSiCs, HIGH);
+    SPI.end();
+}
+
+void RoborallyApp::flashlightTurnOn() {
+    flashlightOn = true;
+    flashlightCreated = millis();
+    flashlightBlink();
+}
+void RoborallyApp::flashlightTurnOff() {
+    flashlightOn = false;
+    SPI.begin();
+    digitalWrite(spiMoSiCs, LOW);
+    SPI.transfer(0x00);
+    digitalWrite(spiMoSiCs, HIGH);
+    SPI.end();
 }
