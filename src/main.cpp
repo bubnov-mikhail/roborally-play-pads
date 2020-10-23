@@ -11,14 +11,15 @@
   ConfigStorage configStorage;
 #endif
 
+TonePlayer tonePlayer(&configStorage, PIN_BUZZER);
 Nokia_LCD lcd(SCK, MOSI, PIN_NOKIA_DC, PIN_NOKIA_CE, PIN_NOKIA_RST, PIN_NOKIA_BL);
-Keypad keypad(PIN_KEYPAD_MOSI_CS, PIN_KEYPAD_MISO_CS, PIN_BUZZER, configStorage.isWithSounds());
+Keypad keypad(&tonePlayer, PIN_KEYPAD_MOSI_CS, PIN_KEYPAD_MISO_CS, PIN_BUZZER, configStorage.isWithSounds());
 Headline headline(&configStorage, &lcd, &RTC, PIN_VOLTAGE_READ);
 Eeprom24C eeprom24c32(Eeprom24C32_capacity, Eeprom24C32_address);
 Eeprom24C eeprom24c08(Eeprom24C08_capacity, Eeprom24C08_address);
 ByteLoader byteLoader32(&eeprom24c32);
 ByteLoader byteLoader08(&eeprom24c08);
-TonePlayer tonePlayer(&configStorage, PIN_BUZZER);
+
 ServiceContainer serviceContainer(&configStorage, &lcd, &keypad, &headline, &byteLoader32, &byteLoader08, &RTC, &tonePlayer);
 ServiceContainer *AbstractApp::sc = &serviceContainer;
 RoborallyApp::GameStates RoborallyApp::gameState = RoborallyApp::CONNECTING;

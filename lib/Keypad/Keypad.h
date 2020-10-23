@@ -15,6 +15,7 @@
 #include <Arduino.h>
 #include <SPI.h>
 #include <TimerFreeTone.h>
+#include <TonePlayer.h>
 
 class Keypad
 {
@@ -38,6 +39,7 @@ class Keypad
         static const uint8_t keyMultiSymbol = 0x10; //16 //Psevdo symbol to indicate that there are more then one key pressed
         static const uint8_t keyReleasedSymbol = 0x11; //17 Psevdo symbol to indicate that no key is pressed
         Keypad(uint8_t keypadMoSiCS, uint8_t keypadMiSoCS, uint8_t buzzerPin, bool beepOnClick);
+        Keypad(TonePlayer* _tonePlayer, uint8_t keypadMoSiCS, uint8_t keypadMiSoCS, uint8_t buzzerPin, bool beepOnClick);
         Keypad(uint8_t keypadMoSiCS, uint8_t keypadMiSoCS);
         uint16_t getKeypadCode(void);
         uint8_t getKeypadSymbol(void);
@@ -48,6 +50,7 @@ class Keypad
         uint16_t _keypadMoSiCS, _keypadMiSoCS, _buzzerPin;
         static const uint8_t buttons = 16;
         unsigned long keyLastUpdated = 0;
+        TonePlayer* _tonePlayer;
         static const unsigned short int debounceDelayMilis = 20; //ms
         static const unsigned int beepDelayMilis = 40; //ms
         static const unsigned long beepFreq = 450;
@@ -63,6 +66,20 @@ class Keypad
             0x800, 0x400, 0x200, 0x100,
             0x8000, 0x4000, 0x2000, 0x1000,
         };
+        const uint8_t inButtonTonesLength = 4;
+        const TonePlayer::Tone inButtonTones[4] = {
+            {1024, 70},
+            {520, 130},
+            {1024, 200},
+            {580, 270},
+        };
+        const uint8_t outButtonTonesLength = 4;
+        const TonePlayer::Tone outButtonTones[4] = {
+            {700, 70},
+            {360, 130},
+            {700, 200},
+            {360, 270},
+        };
         bool _beepOnClick;
-        void beepOnClick(void);
+        void beepOnClick(uint16_t keypadCode);
 };

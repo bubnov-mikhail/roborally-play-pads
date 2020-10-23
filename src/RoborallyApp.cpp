@@ -55,6 +55,8 @@ void RoborallyApp::handleKeypad(void) {
             if (keypadSymbol == Keypad::keyC) {
                 gameState = ENTERING_CARD;
                 round = 1; //Start the game
+                TonePlayer* tonePlayer = AbstractApp::sc->getTonePlayer();
+                tonePlayer->playTones(AudioAssets::roborallyAction, AudioAssets::roborallyActionLength, false, true);
                 flashlightTurnOn();
             }
             break;
@@ -90,6 +92,8 @@ void RoborallyApp::handleKeypad(void) {
             //Demo
             if (keypadSymbol == Keypad::keyC) {
                 gameState = YOUR_MOVE;
+                TonePlayer* tonePlayer = AbstractApp::sc->getTonePlayer();
+                tonePlayer->playTones(AudioAssets::roborallyAction, AudioAssets::roborallyActionLength, false, true);
                 flashlightTurnOn();
             }
             // Waiting for the command from tha main unit
@@ -109,6 +113,8 @@ void RoborallyApp::handleKeypad(void) {
                     round = 1;
                 }
                 gameState = ENTERING_CARD;
+                TonePlayer* tonePlayer = AbstractApp::sc->getTonePlayer();
+                tonePlayer->playTones(AudioAssets::roborallyAction, AudioAssets::roborallyActionLength, false, true);
                 flashlightTurnOn();
             }
             

@@ -8,6 +8,15 @@ Keypad::Keypad(uint8_t keypadMoSiCS, uint8_t keypadMiSoCS, uint8_t buzzerPin, bo
     _beepOnClick = beepOnClick;
 }
 
+Keypad::Keypad(TonePlayer* tonePlayer, uint8_t keypadMoSiCS, uint8_t keypadMiSoCS, uint8_t buzzerPin, bool beepOnClick)
+{
+    _tonePlayer = tonePlayer;
+    _keypadMoSiCS = keypadMoSiCS;
+    _keypadMiSoCS = keypadMiSoCS;
+    _buzzerPin = buzzerPin;
+    _beepOnClick = beepOnClick;
+}
+
 Keypad::Keypad(uint8_t keypadMoSiCS, uint8_t keypadMiSoCS)
 {
     _keypadMoSiCS = keypadMoSiCS;
@@ -78,7 +87,7 @@ bool Keypad::read(void)
   bool updated = lastCode != keypadCode;
   if (updated && keypadCode > 0) {
     keyLastUpdated = millis();
-    beepOnClick();
+    beepOnClick(keypadCode);
   }
   return updated;
 }
@@ -88,9 +97,24 @@ void Keypad::setBeepOnClick(bool beepOnClick)
     _beepOnClick = beepOnClick;
 }
 
-void Keypad::beepOnClick(void)
+void Keypad::beepOnClick(uint16_t keypadCode)
 {
-    if (_beepOnClick && _buzzerPin) {
-        TimerFreeTone(_buzzerPin, beepFreq, beepDelayMilis);
+    if(!_beepOnClick || !_buzzerPin) {
+      return;
     }
+
+    if (_tonePlayer == NULL) {
+      TimerFreeTone(_buzzerPin, beepFreq, beepDelayMilis);
+    }
+    
+    switch(getKeypadSymbol()) {
+      case keyStar:
+        _tonePlayer->playTones(inButtonTones, inButtonTonesLength, false, true);
+        return;
+      case keyD:
+        _tonePlayer->playTones(outButtonTones, outButtonTonesLength, false, true);
+        return;
+      default:
+        TimerFreeTone(_buzzerPin, beepFreq, beepDelayMilis);
+    } 
 }

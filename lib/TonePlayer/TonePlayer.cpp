@@ -6,7 +6,7 @@ TonePlayer::TonePlayer(ConfigStorage* _configStorage, uint8_t _buzzerPin)
     buzzerPin = _buzzerPin;
 }
 
-void TonePlayer::loadTones(const Tone* _tones, const unsigned short int _tonesLength, bool _playLoop = false, bool _tonePriority = false)
+void TonePlayer::loadTones(const Tone* _tones, const uint8_t _tonesLength, bool _playLoop = false, bool _tonePriority = false)
 {
     if (!configStorage->isWithSounds()) {
         return;
@@ -18,7 +18,7 @@ void TonePlayer::loadTones(const Tone* _tones, const unsigned short int _tonesLe
     startAt = millis();
 }
 
-void TonePlayer::playTones(const Tone* _tones, const unsigned short int _tonesLength, bool _playLoop = false, bool _tonePriority = false)
+void TonePlayer::playTones(const Tone* _tones, const uint8_t _tonesLength, bool _playLoop = false, bool _tonePriority = false)
 {
     loadTones(_tones, _tonesLength, _playLoop, _tonePriority);
     while(play()) {
