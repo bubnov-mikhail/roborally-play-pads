@@ -1,5 +1,7 @@
 #include <main.h>
 
+//#define DEBUG true
+
 /**
  * Init services
  */
@@ -16,7 +18,8 @@ Eeprom24C eeprom24c32(Eeprom24C32_capacity, Eeprom24C32_address);
 Eeprom24C eeprom24c08(Eeprom24C08_capacity, Eeprom24C08_address);
 ByteLoader byteLoader32(&eeprom24c32);
 ByteLoader byteLoader08(&eeprom24c08);
-ServiceContainer serviceContainer(&configStorage, &lcd, &keypad, &headline, &byteLoader32, &byteLoader08, &RTC, PIN_BUZZER);
+TonePlayer tonePlayer(&configStorage, PIN_BUZZER);
+ServiceContainer serviceContainer(&configStorage, &lcd, &keypad, &headline, &byteLoader32, &byteLoader08, &RTC, &tonePlayer);
 ServiceContainer *AbstractApp::sc = &serviceContainer;
 RoborallyApp::GameStates RoborallyApp::gameState = RoborallyApp::CONNECTING;
 uint8_t RoborallyApp::spiMoSiCs = PIN_KEYPAD_MOSI_CS;

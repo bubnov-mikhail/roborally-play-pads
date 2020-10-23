@@ -7,6 +7,7 @@
 #include <Headline.h>
 #include <ByteLoader.h>
 #include <DS1307RTC.h>
+#include <TonePlayer.h>
 
 class ServiceContainer {
     public:
@@ -18,7 +19,7 @@ class ServiceContainer {
             ByteLoader* _ByteLoader32, 
             ByteLoader* _ByteLoader08, 
             DS1307RTC* _rtc, 
-            uint8_t _buzzerPin
+            TonePlayer* _tonePlayer
         );
         ConfigStorage* getConfigStorage(void);
         Nokia_LCD* getLcd(void);
@@ -27,6 +28,7 @@ class ServiceContainer {
         MenuRenderer* getMenuRenderer(void);
         ByteLoader* getByteLoader32(void);
         ByteLoader* getByteLoader08(void);
+        TonePlayer* getTonePlayer(void);
         DS1307RTC* getRtc(void);
     private:
         ConfigStorage* configStorage;
@@ -37,5 +39,5 @@ class ServiceContainer {
         ByteLoader* byteLoader32;
         ByteLoader* byteLoader08;
         DS1307RTC* rtc;
-        uint8_t buzzerPin;
+        TonePlayer* tonePlayer;
 };

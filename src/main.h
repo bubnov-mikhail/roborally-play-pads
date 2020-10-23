@@ -6,6 +6,7 @@
 #include <ServiceContainer.h>
 #include <buildTime.h>
 #include <Keypad.h>
+#include <TonePlayer.h>
 #include <Nokia_LCD.h>
 #include <ConfigStorage.h>
 #include <TimeLib.h>
@@ -13,7 +14,6 @@
 #include <Headline.h>
 #include "MainApp.h"
 
-//#define DEBUG true
 //#define SET_CONFIG_DEFAULTS true
 //#define SET_GFX_ASSETS true
 #define Eeprom24C32_capacity 32 // Size in bytes

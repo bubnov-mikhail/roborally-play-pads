@@ -2,6 +2,7 @@
 
 void RoborallyApp::execute(void) {
     Headline* headline = AbstractApp::sc->getHeadline();
+    TonePlayer* tonePlayer = AbstractApp::sc->getTonePlayer();
 
     monitorLastUpdated = millis() - noiseRefreshTimeMilis;
     roundLastUpdated = millis() - roundRefreshTimeMilis;
@@ -12,7 +13,10 @@ void RoborallyApp::execute(void) {
     round = 0;
 
     while(true) {
-        drawMainScreen();
+        if (drawMainScreen()) {
+            // Main screen just loaded.
+            tonePlayer->playTones(AudioAssets::roborallyIntro, AudioAssets::roborallyIntroLength, false, true);
+        }
         headline->update();
         
         drawRound();
@@ -21,8 +25,10 @@ void RoborallyApp::execute(void) {
         printCardNumber();
         handleKeypad();
         flashlightBlink();
+        tonePlayer->play();
         if (gameState == EXIT) {
             flashlightTurnOff();
+            tonePlayer->stop();
             return;
         }
     }
@@ -110,9 +116,9 @@ void RoborallyApp::handleKeypad(void) {
     }
 }
 
-void RoborallyApp::drawMainScreen(void) {
+bool RoborallyApp::drawMainScreen(void) {
     if (screenState != SCREEN_REFRESH_REQUIRED) {
-        return;
+        return false;
     }
     Nokia_LCD* lcd = AbstractApp::sc->getLcd();
     ByteLoader* byteLoader32 = AbstractApp::sc->getByteLoader32();
@@ -138,6 +144,8 @@ void RoborallyApp::drawMainScreen(void) {
     delete bitmap;
     delete progressBar;
     screenState = gameState;
+
+    return true;
 }
 
 void RoborallyApp::drawRound() {

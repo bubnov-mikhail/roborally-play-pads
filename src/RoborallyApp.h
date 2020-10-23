@@ -4,6 +4,7 @@
 #include <ByteLoader.h>
 #include <SPI.h>
 #include <ProgressBar.h>
+#include "AudioAssets.h"
 
 class RoborallyApp : public AbstractApp {
     public:
@@ -44,7 +45,7 @@ class RoborallyApp : public AbstractApp {
         const static uint8_t flashlightBAddress = 0x32;
         const static uint16_t maxCardNumber = 840;
         const static uint8_t waitingPhaseMax = 6;
-        void drawMainScreen(void);
+        bool drawMainScreen(void);
         void drawRound();
         void printCardNumber();
         void printMessage();

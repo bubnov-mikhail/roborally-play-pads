@@ -7,16 +7,16 @@ ServiceContainer::ServiceContainer(
     Headline* _headline, 
     ByteLoader* _byteLoader32, 
     ByteLoader* _byteLoader08, 
-    DS1307RTC* _rtc, 
-    uint8_t _buzzerPin
+    DS1307RTC* _rtc,
+    TonePlayer* _tonePlayer
 ) {
     configStorage = _configStorage;
     lcd = _lcd;
     keypad = _keypad;
     headline = _headline;
-    buzzerPin = _buzzerPin;
     byteLoader32 = _byteLoader32;
     byteLoader08 = _byteLoader08;
+    tonePlayer = _tonePlayer;
     rtc = _rtc;
 
     lcd->setBacklight(configStorage->isWithBacklight());
@@ -63,4 +63,9 @@ ByteLoader* ServiceContainer::getByteLoader08(void)
 DS1307RTC* ServiceContainer::getRtc(void)
 {
     return rtc;
+}
+
+TonePlayer* ServiceContainer::getTonePlayer(void)
+{
+    return tonePlayer;
 }
