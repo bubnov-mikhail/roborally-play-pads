@@ -44,6 +44,7 @@ class Keypad
         uint16_t getKeypadCode(void);
         uint8_t getKeypadSymbol(void);
         bool read(void);
+        void begin(void);
         void setBeepOnClick(bool beepOnClick);
     private:
         uint16_t keypadCode = 0x00;

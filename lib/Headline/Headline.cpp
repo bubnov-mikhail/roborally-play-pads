@@ -17,6 +17,7 @@ void Headline::update(bool forceUpdate /*= false*/)
 
     updateRtc();
     updateBattery();
+    updateRadio();
 
     lastUpdated = millis();
     displayClockDots = !displayClockDots;
@@ -36,6 +37,20 @@ inline void Headline::updateRtc(void)
         }
         printValue(tm.Minute);
     }
+}
+
+inline void Headline::updateRadio(void)
+{
+    lcd->setCursor(65, 0);
+    lcd->draw(LcdAssets::radioSignal, 5, true);
+
+    if (!configStorage->isRadioConnected()) {
+        lcd->setCursor(lcd->getCursorX() + 1, 0);
+        lcd->draw(LcdAssets::radioNotAvailable, 3, true);
+        return;
+    }
+
+    printDigit(configStorage->getRadioAddress());
 }
 
 inline void Headline::updateBattery(void)

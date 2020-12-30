@@ -6,7 +6,7 @@
  * Init services
  */
 #if defined(SET_CONFIG_DEFAULTS)
-  ConfigStorage configStorage(true, true, 50);
+  ConfigStorage configStorage(true, true, DEFAULT_CONTRAST, DEFAULT_RADIO_CHANNEL, DEFAULT_RADIO_LEVEL, DEFAULT_RADIO_ADDRESS);
 #else
   ConfigStorage configStorage;
 #endif
@@ -19,11 +19,18 @@ Eeprom24C eeprom24c32(Eeprom24C32_capacity, Eeprom24C32_address);
 Eeprom24C eeprom24c08(Eeprom24C08_capacity, Eeprom24C08_address);
 ByteLoader byteLoader32(&eeprom24c32);
 ByteLoader byteLoader08(&eeprom24c08);
+RF24 radio(PIN_RADIO_CE, PIN_RADIO_CS);
 
-ServiceContainer serviceContainer(&configStorage, &lcd, &keypad, &headline, &byteLoader32, &byteLoader08, &RTC, &tonePlayer);
+ServiceContainer serviceContainer(&configStorage, &lcd, &keypad, &headline, &byteLoader32, &byteLoader08, &RTC, &tonePlayer, &radio);
 ServiceContainer *AbstractApp::sc = &serviceContainer;
 RoborallyApp::GameStates RoborallyApp::gameState = RoborallyApp::CONNECTING;
 uint8_t RoborallyApp::spiMoSiCs = PIN_KEYPAD_MOSI_CS;
+
+char MainApp::backlightMenuName[14];
+char MainApp::soundsMenuName[11];
+char MainApp::radioChannelMenuName[13];
+char MainApp::radioAddressMenuName[11];
+char MainApp::radioLevelMenuName[11];
 
 void setup()
 {
@@ -42,6 +49,21 @@ void setup()
   pinMode(PIN_NOKIA_BL, OUTPUT);
   pinMode(SDA, OUTPUT); //A4
   pinMode(SCL, OUTPUT); //A5
+
+  lcd.setBacklight(configStorage.isWithBacklight());
+  lcd.begin();
+  lcd.setContrast(configStorage.getContrast());
+
+  keypad.begin();
+
+  // Setup the radio module
+  radio.begin();
+  
+  //configStorage.setRadioConnected(radio.isChipConnected());
+  configStorage.setRadioConnected(true);
+  //radio.setPALevel(configStorage.getRadioLevel());
+  //radio.setChannel(configStorage.getRadioChannel());
+  //radio.powerDown();
 
   if (!RTC.isRunning()) {
     tmElements_t tm;

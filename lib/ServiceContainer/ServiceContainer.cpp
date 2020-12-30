@@ -8,7 +8,8 @@ ServiceContainer::ServiceContainer(
     ByteLoader* _byteLoader32, 
     ByteLoader* _byteLoader08, 
     DS1307RTC* _rtc,
-    TonePlayer* _tonePlayer
+    TonePlayer* _tonePlayer,
+    RF24* _radio
 ) {
     configStorage = _configStorage;
     lcd = _lcd;
@@ -18,10 +19,7 @@ ServiceContainer::ServiceContainer(
     byteLoader08 = _byteLoader08;
     tonePlayer = _tonePlayer;
     rtc = _rtc;
-
-    lcd->setBacklight(configStorage->isWithBacklight());
-    lcd->begin();
-    lcd->setContrast(configStorage->getContrast());
+    radio = _radio;
     menuRenderer = new MenuRenderer(lcd);
 }
 
@@ -68,4 +66,9 @@ DS1307RTC* ServiceContainer::getRtc(void)
 TonePlayer* ServiceContainer::getTonePlayer(void)
 {
     return tonePlayer;
+}
+
+RF24* ServiceContainer::getRadio(void)
+{
+    return radio;
 }

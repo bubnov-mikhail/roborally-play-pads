@@ -27,14 +27,17 @@ void ContrastCtlApp::execute(void) {
                 tmpContrast = increment(keypad, lcd, progressBar, headline, tmpContrast, -1);
                 break;
             case Keypad::keyHash:
+                // Reset to config
                 tmpContrast = config->getContrast();
                 update(lcd, progressBar, tmpContrast);
                 break;
             case Keypad::keyStar:
+                // Save and exit
                 config->setContrast(tmpContrast);
                 delete progressBar;
                 return;
             case Keypad::keyD:
+                // Exit without saving
                 tmpContrast = config->getContrast();
                 update(lcd, progressBar, tmpContrast);
                 delete progressBar;

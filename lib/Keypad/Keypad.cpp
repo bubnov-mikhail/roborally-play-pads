@@ -92,6 +92,12 @@ bool Keypad::read(void)
   return updated;
 }
 
+void Keypad::begin(void)
+{
+    digitalWrite(_keypadMiSoCS, HIGH);
+    digitalWrite(_keypadMoSiCS, HIGH);
+}
+
 void Keypad::setBeepOnClick(bool beepOnClick)
 {
     _beepOnClick = beepOnClick;

@@ -10,3 +10,7 @@
 
 // Voltage reader
 #define PIN_VOLTAGE_READ A0
+
+// nRF24L01+
+#define PIN_RADIO_CE 10 // Chip enabled
+#define PIN_RADIO_CS 9 // Chip select

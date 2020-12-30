@@ -10,9 +10,10 @@ namespace StringAssets {
     const char clockCtrlDate[] = "Set date";
     const char contrast[] = "Contrast";
     const char loading[] = "Loading";
-    const char about[] = "About";
+    const char backlight[] = "Backlight";
     const char backlightOn[] = "Backlight:on";
     const char backlightOff[] = "Backlight:off";
+    const char sounds[] = "Sounds";
     const char soundsOn[] = "Sounds:on";
     const char soundsOff[] = "Sounds:off";
     const char playpad[] = "Playpad";
@@ -21,7 +22,19 @@ namespace StringAssets {
     const char mihailBubnov[] = "Mihail Bubnov";
     const char space[] = " ";
     const char dot[] = ".";
+    const char stateOn[] = "on";
+    const char stateOff[] = "off";
     const char colon[] = ":";
+    const char radio[] = "Network";
+    const char radioLevel[] = "Level";
+    const char radioChannel[] = "Channel";
+    const char radioChannelScan[] = "Scan";
+    const char radioSuggestedChannels[] = "Suggested";
+    const char radioAddress[] = "Address";
+    const char radioLevelMin[] = "MIN";
+    const char radioLevelLow[] = "LOW";
+    const char radioLevelMax[] = "MAX";
+
 
     //Roborally game
     const char connecting[] = "Connecting";

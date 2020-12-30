@@ -30,17 +30,26 @@ void MainApp::execute(void) {
     MenuItem menuItemSounds(MainApp::getSoundsMenuName(config), MainApp::handleConfigSound);
     MenuItem menuItemContrast(StringAssets::contrast, MainApp::handleConfigContrast);
     MenuItem menuItemClockCtrl(StringAssets::clockCtrl, MainApp::handleConfigClockCtrl);
+
     menuConfigs.add_item(&menuItemBacklight);
     menuConfigs.add_item(&menuItemSounds);
     menuConfigs.add_item(&menuItemContrast);
     menuConfigs.add_item(&menuItemClockCtrl);
 
-    MenuItem menuAbout(StringAssets::about, MainApp::handleAbout);
+    if (config->isRadioConnected()) {
+        MenuItem menuItemRadioCtrlChannel(MainApp::getRadioChannelMenuName(config), MainApp::handleConfigRadioChannel);
+        MenuItem menuItemRadioCtrlChannelScan(StringAssets::radioChannelScan, MainApp::handleConfigRadioChannel);
+        MenuItem menuItemRadioCtrlLevel(MainApp::getRadioLevelMenuName(config), MainApp::handleConfigRadioChannel);
+        MenuItem menuItemRadioCtrlAddress(MainApp::getRadioAddressMenuName(config), MainApp::handleConfigRadioChannel);
+        menuConfigs.add_item(&menuItemRadioCtrlChannel);
+        menuConfigs.add_item(&menuItemRadioCtrlChannelScan);
+        menuConfigs.add_item(&menuItemRadioCtrlLevel);
+        menuConfigs.add_item(&menuItemRadioCtrlAddress);
+    }
    
     menuSystem.get_root_menu().set_name(StringAssets::mainMenu);
     menuSystem.get_root_menu().add_menu(&menuGames);
     menuSystem.get_root_menu().add_menu(&menuConfigs);
-    menuSystem.get_root_menu().add_item(&menuAbout);
 
     menuSystem.display();
     
@@ -59,12 +68,66 @@ void MainApp::execute(void) {
 
 const char* MainApp::getBacklightMenuName(ConfigStorage* config)
 {
-    return config->isWithBacklight() ? StringAssets::backlightOn : StringAssets::backlightOff;
+    strcpy(MainApp::backlightMenuName, StringAssets::backlight);
+    strcat(MainApp::backlightMenuName, StringAssets::colon);
+    config->isWithBacklight() ? strcat(MainApp::backlightMenuName, StringAssets::stateOn) : strcat(MainApp::backlightMenuName, StringAssets::stateOff);
+
+    return MainApp::backlightMenuName;
 }
 
 const char* MainApp::getSoundsMenuName(ConfigStorage* config)
 {
-    return config->isWithSounds() ? StringAssets::soundsOn : StringAssets::soundsOff;
+    strcpy(MainApp::soundsMenuName, StringAssets::sounds);
+    strcat(MainApp::soundsMenuName, StringAssets::colon);
+    config->isWithSounds() ? strcat(MainApp::soundsMenuName, StringAssets::stateOn) : strcat(MainApp::soundsMenuName, StringAssets::stateOff);
+
+    return MainApp::soundsMenuName;
+}
+
+const char* MainApp::getRadioChannelMenuName(ConfigStorage* config)
+{
+    strcpy(MainApp::radioChannelMenuName, StringAssets::radioChannel);
+    strcat(MainApp::radioChannelMenuName, StringAssets::colon);
+    strcat(MainApp::radioChannelMenuName, StringAssets::space);
+
+    char ch[3];
+    sprintf(ch, "%d", config->getRadioChannel());
+    strcat(MainApp::radioChannelMenuName, ch);
+
+    return MainApp::radioChannelMenuName;
+}
+
+const char* MainApp::getRadioAddressMenuName(ConfigStorage* config)
+{
+    strcpy(MainApp::radioAddressMenuName, StringAssets::radioAddress);
+    strcat(MainApp::radioAddressMenuName, StringAssets::colon);
+    strcat(MainApp::radioAddressMenuName, StringAssets::space);
+
+    char ch[2];
+    sprintf(ch, "%d", config->getRadioAddress());
+    strcat(MainApp::radioAddressMenuName, ch);
+
+    return MainApp::radioAddressMenuName;
+}
+
+const char* MainApp::getRadioLevelMenuName(ConfigStorage* config)
+{
+    strcpy(MainApp::radioLevelMenuName, StringAssets::radioLevel);
+    strcat(MainApp::radioLevelMenuName, StringAssets::colon);
+    strcat(MainApp::radioLevelMenuName, StringAssets::space);
+    switch (config->getRadioLevel()) {
+        case 0:
+            strcat(MainApp::radioLevelMenuName, StringAssets::radioLevelMin);
+            break;
+        case 1:
+            strcat(MainApp::radioLevelMenuName, StringAssets::radioLevelLow);
+            break;
+        case 3:
+            strcat(MainApp::radioLevelMenuName, StringAssets::radioLevelMax);
+            break;
+    }
+
+    return MainApp::radioLevelMenuName;
 }
 
 void MainApp::handleConfigBacklight(MenuComponent* p_menu_component)
@@ -91,31 +154,6 @@ void MainApp::handleGamesRoborally(MenuComponent* p_menu_component)
     app.execute();
 }
 
-void MainApp::handleAbout(MenuComponent* p_menu_component)
-{
-    Nokia_LCD* lcd = AbstractApp::sc->getLcd();
-    Keypad* keypad = AbstractApp::sc->getKeypad();
-    MenuRenderer* menuRenderer = AbstractApp::sc->getMenuRenderer();
-    Headline* headline = AbstractApp::sc->getHeadline();
-
-    lcd->clear(false);
-    menuRenderer->render_header(StringAssets::playpad);
-    lcd->setCursor(0, 2);
-    lcd->println(StringAssets::version);
-    lcd->println(StringAssets::createdBy);
-    lcd->println(StringAssets::mihailBubnov);
-    headline->update(true);
-    while(true) {
-        headline->update();
-        if (!keypad->read()) {
-            continue;
-        }
-        if (keypad->getKeypadSymbol() == Keypad::keyD) {
-            break;
-        }
-    }
-}
-
 void MainApp::handleConfigContrast(MenuComponent* p_menu_component)
 {
     ContrastCtlApp app;
@@ -126,6 +164,12 @@ void MainApp::handleConfigClockCtrl(MenuComponent* p_menu_component)
 {
     ClockSetupApp app;
     app.execute();
+}
+
+void MainApp::handleConfigRadioChannel(MenuComponent* p_menu_component)
+{
+    //RadioChannelApp app;
+    //app.execute();
 }
 
 bool MainApp::handleKeypadSymbol(uint8_t keypadSymbol, MenuSystem* menuSystem)
