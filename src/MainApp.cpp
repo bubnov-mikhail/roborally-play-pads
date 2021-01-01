@@ -39,8 +39,8 @@ void MainApp::execute(void) {
     if (config->isRadioConnected()) {
         MenuItem menuItemRadioCtrlChannel(MainApp::getRadioChannelMenuName(config), MainApp::handleConfigRadioChannel);
         MenuItem menuItemRadioCtrlChannelScan(StringAssets::radioChannelScan, MainApp::handleConfigRadioChannel);
-        MenuItem menuItemRadioCtrlLevel(MainApp::getRadioLevelMenuName(config), MainApp::handleConfigRadioChannel);
-        MenuItem menuItemRadioCtrlAddress(MainApp::getRadioAddressMenuName(config), MainApp::handleConfigRadioChannel);
+        MenuItem menuItemRadioCtrlLevel(MainApp::getRadioLevelMenuName(config), MainApp::handleConfigRadioLevel);
+        MenuItem menuItemRadioCtrlAddress(MainApp::getRadioAddressMenuName(config), MainApp::handleConfigRadioAddress);
         menuConfigs.add_item(&menuItemRadioCtrlChannel);
         menuConfigs.add_item(&menuItemRadioCtrlChannelScan);
         menuConfigs.add_item(&menuItemRadioCtrlLevel);
@@ -143,8 +143,7 @@ void MainApp::handleConfigSound(MenuComponent* p_menu_component)
 {
     ConfigStorage* config = AbstractApp::sc->getConfigStorage();
     config->setWithSounds(!config->isWithSounds());
-    Keypad* keypad = AbstractApp::sc->getKeypad();
-    keypad->setBeepOnClick(config->isWithSounds());
+    AbstractApp::sc->getKeypad()->setBeepOnClick(config->isWithSounds());
     p_menu_component->set_name(MainApp::getSoundsMenuName(config));
 }
 
@@ -168,8 +167,36 @@ void MainApp::handleConfigClockCtrl(MenuComponent* p_menu_component)
 
 void MainApp::handleConfigRadioChannel(MenuComponent* p_menu_component)
 {
-    //RadioChannelApp app;
-    //app.execute();
+    RadioChannelApp app;
+    app.execute();
+    p_menu_component->set_name(MainApp::getRadioChannelMenuName(AbstractApp::sc->getConfigStorage()));
+}
+
+void MainApp::handleConfigRadioAddress(MenuComponent* p_menu_component)
+{
+    RadioAddressApp app;
+    app.execute();
+    p_menu_component->set_name(MainApp::getRadioAddressMenuName(AbstractApp::sc->getConfigStorage()));
+}
+
+void MainApp::handleConfigRadioLevel(MenuComponent* p_menu_component)
+{
+    ConfigStorage* config = AbstractApp::sc->getConfigStorage();
+    uint8_t newLevel;
+    switch (config->getRadioLevel()) {
+        case 0:
+            newLevel = 1;
+            break;
+        case 1:
+            newLevel = 3;
+            break;
+        case 3:
+            newLevel = 0;
+            break;
+    }
+    config->setRadioLevel(newLevel);
+    AbstractApp::sc->getRadio()->setPALevel(newLevel);
+    p_menu_component->set_name(MainApp::getRadioLevelMenuName(config));
 }
 
 bool MainApp::handleKeypadSymbol(uint8_t keypadSymbol, MenuSystem* menuSystem)

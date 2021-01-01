@@ -3,7 +3,8 @@
 #include "AbstractApp.h"
 #include "ContrastCtlApp.h"
 #include "ClockSetupApp.h"
-//#include "RadioChannelApp.h"
+#include "RadioChannelApp.h"
+#include "RadioAddressApp.h"
 #include "RoborallyApp.h"
 #include "RF24.h"
 
@@ -15,6 +16,8 @@ class MainApp : public AbstractApp {
         static void handleConfigContrast(MenuComponent* p_menu_component);
         static void handleConfigClockCtrl(MenuComponent* p_menu_component);
         static void handleConfigRadioChannel(MenuComponent* p_menu_component);
+        static void handleConfigRadioLevel(MenuComponent* p_menu_component);
+        static void handleConfigRadioAddress(MenuComponent* p_menu_component);
         static void handleGamesRoborally(MenuComponent* p_menu_component);
         static char backlightMenuName[14];
         static char soundsMenuName[11];
