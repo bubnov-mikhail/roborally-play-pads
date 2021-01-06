@@ -1,27 +1,33 @@
 #include <Keypad.h>
+#include <Arduino.h>
+#include <SPI.h>
 
-Keypad::Keypad(uint8_t keypadMoSiCS, uint8_t keypadMiSoCS, uint8_t buzzerPin, bool beepOnClick)
+Keypad::Keypad(uint8_t keypadMoSiCS, uint8_t keypadMiSoData, uint8_t keypadMiSoSck, uint8_t buzzerPin, bool beepOnClick)
 {
     _keypadMoSiCS = keypadMoSiCS;
-    _keypadMiSoCS = keypadMiSoCS;
+    _keypadMiSoData = keypadMiSoData;
+    _keypadMiSoSck = keypadMiSoSck;
     _buzzerPin = buzzerPin;
     _beepOnClick = beepOnClick;
 }
 
-Keypad::Keypad(TonePlayer* tonePlayer, uint8_t keypadMoSiCS, uint8_t keypadMiSoCS, uint8_t buzzerPin, bool beepOnClick)
+Keypad::Keypad(TonePlayer* tonePlayer, uint8_t keypadMoSiCS, uint8_t keypadMiSoData, uint8_t keypadMiSoSck, uint8_t buzzerPin, bool beepOnClick)
 {
     _tonePlayer = tonePlayer;
     _keypadMoSiCS = keypadMoSiCS;
-    _keypadMiSoCS = keypadMiSoCS;
+    _keypadMiSoData = keypadMiSoData;
+    _keypadMiSoSck = keypadMiSoSck;
     _buzzerPin = buzzerPin;
     _beepOnClick = beepOnClick;
 }
 
-Keypad::Keypad(uint8_t keypadMoSiCS, uint8_t keypadMiSoCS)
+Keypad::Keypad(uint8_t keypadMoSiCS, uint8_t keypadMiSoData, uint8_t keypadMiSoSck)
 {
     _keypadMoSiCS = keypadMoSiCS;
-    _keypadMiSoCS = keypadMiSoCS;
+    _keypadMiSoData = keypadMiSoData;
+    _keypadMiSoSck = keypadMiSoSck;
     _beepOnClick = false;
+
 }
 
 uint8_t Keypad::getKeypadSymbol(void)
@@ -70,11 +76,8 @@ bool Keypad::read(void)
     //Reload the lock on the input
     digitalWrite(_keypadMoSiCS, LOW);
     digitalWrite(_keypadMoSiCS, HIGH);
+    uint8_t inputData = shiftIn(_keypadMiSoData, _keypadMiSoSck, MSBFIRST) >> 1;
 
-    digitalWrite(_keypadMiSoCS, LOW);
-    uint8_t inputData = SPI.transfer(0x00);
-    digitalWrite(_keypadMiSoCS, HIGH);
-    
     keypadCode = keypadCode | inputData;
   }
 
@@ -94,7 +97,12 @@ bool Keypad::read(void)
 
 void Keypad::begin(void)
 {
-    digitalWrite(_keypadMiSoCS, HIGH);
+    pinMode(_keypadMoSiCS, OUTPUT);
+    pinMode(_keypadMiSoSck, OUTPUT);
+    pinMode(_keypadMiSoData, INPUT);    
+
+    digitalWrite(_keypadMiSoSck, HIGH);
+    digitalWrite(_keypadMiSoData, LOW);
     digitalWrite(_keypadMoSiCS, HIGH);
 }
 

@@ -1,5 +1,10 @@
+#pragma once
+
+#include <Arduino.h>
+
 #define PIN_KEYPAD_MOSI_CS 8
-#define PIN_KEYPAD_MISO_CS 7 //CLK INH, Latch on the output is connected to the SS output.
+#define PIN_KEYPAD_MISO_DATA 7 //Data pin
+#define PIN_KEYPAD_MOSI_SCK A1 // Clk
 #define PIN_BUZZER 6
 
 // 5110

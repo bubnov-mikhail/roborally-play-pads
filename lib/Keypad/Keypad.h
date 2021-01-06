@@ -12,8 +12,6 @@
 
 #pragma once
 
-#include <Arduino.h>
-#include <SPI.h>
 #include <TimerFreeTone.h>
 #include <TonePlayer.h>
 
@@ -38,9 +36,9 @@ class Keypad
         static const uint8_t keyHash = 0x0F; //15
         static const uint8_t keyMultiSymbol = 0x10; //16 //Psevdo symbol to indicate that there are more then one key pressed
         static const uint8_t keyReleasedSymbol = 0x11; //17 Psevdo symbol to indicate that no key is pressed
-        Keypad(uint8_t keypadMoSiCS, uint8_t keypadMiSoCS, uint8_t buzzerPin, bool beepOnClick);
-        Keypad(TonePlayer* _tonePlayer, uint8_t keypadMoSiCS, uint8_t keypadMiSoCS, uint8_t buzzerPin, bool beepOnClick);
-        Keypad(uint8_t keypadMoSiCS, uint8_t keypadMiSoCS);
+        Keypad(uint8_t keypadMoSiCS, uint8_t keypadMiSoData, uint8_t keypadMiSoSck, uint8_t buzzerPin, bool beepOnClick);
+        Keypad(TonePlayer* tonePlayer, uint8_t keypadMoSiCS, uint8_t keypadMiSoData, uint8_t keypadMiSoSck, uint8_t buzzerPin, bool beepOnClick);
+        Keypad(uint8_t keypadMoSiCS, uint8_t keypadMiSoData, uint8_t keypadMiSoSck);
         uint16_t getKeypadCode(void);
         uint8_t getKeypadSymbol(void);
         bool read(void);
@@ -48,7 +46,7 @@ class Keypad
         void setBeepOnClick(bool beepOnClick);
     private:
         uint16_t keypadCode = 0x00;
-        uint16_t _keypadMoSiCS, _keypadMiSoCS, _buzzerPin;
+        uint16_t _keypadMoSiCS, _keypadMiSoData, _keypadMiSoSck, _buzzerPin;
         static const uint8_t buttons = 16;
         unsigned long keyLastUpdated = 0;
         TonePlayer* _tonePlayer;

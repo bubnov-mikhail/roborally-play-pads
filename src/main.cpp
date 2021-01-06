@@ -13,7 +13,7 @@
 
 TonePlayer tonePlayer(&configStorage, PIN_BUZZER);
 Nokia_LCD lcd(PIN_NOKIA_DC, PIN_NOKIA_CE, PIN_NOKIA_RST, PIN_NOKIA_BL);
-Keypad keypad(&tonePlayer, PIN_KEYPAD_MOSI_CS, PIN_KEYPAD_MISO_CS, PIN_BUZZER, configStorage.isWithSounds());
+Keypad keypad(&tonePlayer, PIN_KEYPAD_MOSI_CS, PIN_KEYPAD_MISO_DATA, PIN_KEYPAD_MOSI_SCK, PIN_BUZZER, configStorage.isWithSounds());
 Headline headline(&configStorage, &lcd, &RTC, PIN_VOLTAGE_READ);
 Eeprom24C eeprom24c32(Eeprom24C32_capacity, Eeprom24C32_address);
 Eeprom24C eeprom24c08(Eeprom24C08_capacity, Eeprom24C08_address);
@@ -38,28 +38,20 @@ void setup()
     Serial.begin(9600);
   #endif
   analogReference(EXTERNAL);
-  pinMode(PIN_KEYPAD_MOSI_CS, OUTPUT);
-  pinMode(PIN_KEYPAD_MISO_CS, OUTPUT);
   pinMode(PIN_BUZZER, OUTPUT);
-  pinMode(PIN_RADIO_CE, OUTPUT);
-  pinMode(PIN_RADIO_CS, OUTPUT);
   pinMode(SCK, OUTPUT);
   pinMode(MOSI, OUTPUT);
-  pinMode(PIN_NOKIA_DC, OUTPUT);
-  pinMode(PIN_NOKIA_CE, OUTPUT);
-  pinMode(PIN_NOKIA_RST, OUTPUT);
-  pinMode(PIN_NOKIA_BL, OUTPUT);
   pinMode(SDA, OUTPUT); //A4
   pinMode(SCL, OUTPUT); //A5
 
+
+  lcd.setBacklight(configStorage.isWithBacklight());
+  lcd.begin();
+  lcd.setContrast(configStorage.getContrast());
+
+  keypad.begin();
+
   // Setup the radio module
-  radio.begin();
-  configStorage.setRadioConnected(true);
-  radio.setPALevel(configStorage.getRadioLevel());
-  radio.setChannel(configStorage.getRadioChannel());
-  radio.powerDown();
-  /**
-   * Uncomment after finding an issue with the module
   if (radio.begin()) {
     configStorage.setRadioConnected(true);
     radio.setPALevel(configStorage.getRadioLevel());
@@ -68,13 +60,7 @@ void setup()
   } else {
     configStorage.setRadioConnected(false);
   }
-  */
 
-  lcd.setBacklight(configStorage.isWithBacklight());
-  lcd.begin();
-  lcd.setContrast(configStorage.getContrast());
-
-  keypad.begin();
 
   if (!RTC.isRunning()) {
     tmElements_t tm;
