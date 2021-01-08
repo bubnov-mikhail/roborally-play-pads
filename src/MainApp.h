@@ -3,8 +3,7 @@
 #include "AbstractApp.h"
 #include "ContrastCtlApp.h"
 #include "ClockSetupApp.h"
-#include "RadioChannelApp.h"
-#include "RadioAddressApp.h"
+#include "RadioChannelAddressApp.h"
 #include "RoborallyApp.h"
 #include "RF24.h"
 

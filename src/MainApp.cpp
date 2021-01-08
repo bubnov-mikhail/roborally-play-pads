@@ -167,15 +167,15 @@ void MainApp::handleConfigClockCtrl(MenuComponent* p_menu_component)
 
 void MainApp::handleConfigRadioChannel(MenuComponent* p_menu_component)
 {
-    RadioChannelApp app;
-    app.execute();
+    RadioChannelAddressApp app;
+    app.executeChannel();
     p_menu_component->set_name(MainApp::getRadioChannelMenuName(AbstractApp::sc->getConfigStorage()));
 }
 
 void MainApp::handleConfigRadioAddress(MenuComponent* p_menu_component)
 {
-    RadioAddressApp app;
-    app.execute();
+    RadioChannelAddressApp app;
+    app.executeAddress();
     p_menu_component->set_name(MainApp::getRadioAddressMenuName(AbstractApp::sc->getConfigStorage()));
 }
 
