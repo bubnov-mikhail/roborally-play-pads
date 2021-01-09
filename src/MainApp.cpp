@@ -36,11 +36,12 @@ void MainApp::execute(void) {
     menuConfigs.add_item(&menuItemContrast);
     menuConfigs.add_item(&menuItemClockCtrl);
 
+    MenuItem menuItemRadioCtrlChannel(MainApp::getRadioChannelMenuName(config), MainApp::handleConfigRadioChannel);
+    MenuItem menuItemRadioCtrlChannelScan(StringAssets::radioChannelScan, MainApp::handleConfigRadioChannelScan);
+    MenuItem menuItemRadioCtrlLevel(MainApp::getRadioLevelMenuName(config), MainApp::handleConfigRadioLevel);
+    MenuItem menuItemRadioCtrlAddress(MainApp::getRadioAddressMenuName(config), MainApp::handleConfigRadioAddress);
+
     if (config->isRadioConnected()) {
-        MenuItem menuItemRadioCtrlChannel(MainApp::getRadioChannelMenuName(config), MainApp::handleConfigRadioChannel);
-        MenuItem menuItemRadioCtrlChannelScan(StringAssets::radioChannelScan, MainApp::handleConfigRadioChannel);
-        MenuItem menuItemRadioCtrlLevel(MainApp::getRadioLevelMenuName(config), MainApp::handleConfigRadioLevel);
-        MenuItem menuItemRadioCtrlAddress(MainApp::getRadioAddressMenuName(config), MainApp::handleConfigRadioAddress);
         menuConfigs.add_item(&menuItemRadioCtrlChannel);
         menuConfigs.add_item(&menuItemRadioCtrlChannelScan);
         menuConfigs.add_item(&menuItemRadioCtrlLevel);
@@ -60,8 +61,15 @@ void MainApp::execute(void) {
             headline->update();
             continue;
         }
-        if(handleKeypadSymbol(keypad->getKeypadSymbol(), &menuSystem)) {
+
+        uint8_t keypadSymbol = keypad->getKeypadSymbol();
+        if(handleKeypadSymbol(keypadSymbol, &menuSystem)) {
             headline->update(true);
+        }
+
+        if (config->isRadioConnected() && keypadSymbol == Keypad::keyStar) {
+            menuItemRadioCtrlChannel.set_name(MainApp::getRadioChannelMenuName(AbstractApp::sc->getConfigStorage()));
+            menuSystem.display();
         }
     }
 }
@@ -170,6 +178,12 @@ void MainApp::handleConfigRadioChannel(MenuComponent* p_menu_component)
     RadioChannelAddressApp app;
     app.executeChannel();
     p_menu_component->set_name(MainApp::getRadioChannelMenuName(AbstractApp::sc->getConfigStorage()));
+}
+
+void MainApp::handleConfigRadioChannelScan(MenuComponent* p_menu_component)
+{
+    RadioChannelScanApp app;
+    app.execute();
 }
 
 void MainApp::handleConfigRadioAddress(MenuComponent* p_menu_component)
