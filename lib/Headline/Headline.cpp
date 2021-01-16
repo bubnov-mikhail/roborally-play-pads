@@ -41,7 +41,7 @@ inline void Headline::updateRtc(void)
 
 inline void Headline::updateRadio(void)
 {
-    lcd->setCursor(65, 0);
+    lcd->setCursor(55, 0);
     lcd->draw(LcdAssets::radioSignal, 5, true);
 
     if (!configStorage->isRadioConnected()) {
@@ -50,7 +50,7 @@ inline void Headline::updateRadio(void)
         return;
     }
 
-    printDigit(configStorage->getRadioAddress());
+    printDigits(configStorage->getRadioChannel());
 }
 
 inline void Headline::updateBattery(void)
@@ -81,4 +81,15 @@ void Headline::printDigit(uint8_t value)
 {
     lcd->setCursor(lcd->getCursorX() + 1, 0);
     lcd->draw(LcdAssets::smallInts[value], 3, true);
+}
+
+void Headline::printDigits(uint8_t value)
+{
+    if(value >= 10) {
+       printDigits(value / 10);
+    }
+
+    int digit = value % 10;
+    lcd->setCursor(lcd->getCursorX() + 1, 0);
+    lcd->draw(LcdAssets::smallInts[digit], 3, true);
 }

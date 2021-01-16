@@ -15,19 +15,17 @@
 class ConfigStorage {
     public:
         ConfigStorage(void);
-        ConfigStorage(bool _withBacklight, bool _withSounds, uint8_t _contrast, uint8_t _radioChannel, uint8_t _radioLevel, uint8_t _radioAddress);
+        ConfigStorage(bool _withBacklight, bool _withSounds, uint8_t _contrast, uint8_t _radioChannel, uint8_t _radioLevel);
         bool isWithBacklight();
         bool isWithSounds();
         uint8_t getContrast();
         uint8_t getRadioChannel();
         uint8_t getRadioLevel();
-        uint8_t getRadioAddress();
         void setWithBacklight(bool value);
         void setWithSounds(bool value);
         void setContrast(uint8_t value);
         void setRadioChannel(uint8_t value);
         void setRadioLevel(uint8_t value);
-        void setRadioAddress(uint8_t value);
         void setRadioConnected(bool value);
         bool isRadioConnected();
     protected:
@@ -36,13 +34,11 @@ class ConfigStorage {
         int contrastAddress;
         int radioChannelAddress;
         int radioLevelAddress;
-        int radioAddressAddress;
         bool withBacklight;
         bool withSounds;
         uint8_t contrast;
         uint8_t radioChannel;
         uint8_t radioLevel;
-        uint8_t radioAddress;
         bool radioConnected;
         void initAddresses(void);
 };

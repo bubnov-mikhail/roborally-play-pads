@@ -26,7 +26,6 @@ namespace StringAssets {
     const char radioChannel[] = "Channel";
     const char radioChannelScan[] = "Scan";
     const char radioSuggestedChannels[] = "Suggested";
-    const char radioAddress[] = "Address";
     const char radioLevelMin[] = "MIN";
     const char radioLevelLow[] = "LOW";
     const char radioLevelMax[] = "MAX";

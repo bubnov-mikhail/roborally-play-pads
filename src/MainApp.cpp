@@ -36,16 +36,13 @@ void MainApp::execute(void) {
     menuConfigs.add_item(&menuItemContrast);
     menuConfigs.add_item(&menuItemClockCtrl);
 
-    MenuItem menuItemRadioCtrlChannel(MainApp::getRadioChannelMenuName(config), MainApp::handleConfigRadioChannel);
-    MenuItem menuItemRadioCtrlChannelScan(StringAssets::radioChannelScan, MainApp::handleConfigRadioChannelScan);
-    MenuItem menuItemRadioCtrlLevel(MainApp::getRadioLevelMenuName(config), MainApp::handleConfigRadioLevel);
-    MenuItem menuItemRadioCtrlAddress(MainApp::getRadioAddressMenuName(config), MainApp::handleConfigRadioAddress);
-
     if (config->isRadioConnected()) {
+        MenuItem menuItemRadioCtrlChannel(MainApp::getRadioChannelMenuName(config), MainApp::handleConfigRadioChannel);
+        MenuItem menuItemRadioCtrlChannelScan(StringAssets::radioChannelScan, MainApp::handleConfigRadioChannelScan);
+        MenuItem menuItemRadioCtrlLevel(MainApp::getRadioLevelMenuName(config), MainApp::handleConfigRadioLevel);
         menuConfigs.add_item(&menuItemRadioCtrlChannel);
         menuConfigs.add_item(&menuItemRadioCtrlChannelScan);
         menuConfigs.add_item(&menuItemRadioCtrlLevel);
-        menuConfigs.add_item(&menuItemRadioCtrlAddress);
     }
    
     menuSystem.get_root_menu().set_name(StringAssets::mainMenu);
@@ -65,11 +62,6 @@ void MainApp::execute(void) {
         uint8_t keypadSymbol = keypad->getKeypadSymbol();
         if(handleKeypadSymbol(keypadSymbol, &menuSystem)) {
             headline->update(true);
-        }
-
-        if (config->isRadioConnected() && keypadSymbol == Keypad::keyStar) {
-            menuItemRadioCtrlChannel.set_name(MainApp::getRadioChannelMenuName(AbstractApp::sc->getConfigStorage()));
-            menuSystem.display();
         }
     }
 }
@@ -98,24 +90,11 @@ const char* MainApp::getRadioChannelMenuName(ConfigStorage* config)
     strcat(MainApp::radioChannelMenuName, StringAssets::colon);
     strcat(MainApp::radioChannelMenuName, StringAssets::space);
 
-    char ch[3];
+    char ch[4];
     sprintf(ch, "%d", config->getRadioChannel());
     strcat(MainApp::radioChannelMenuName, ch);
 
     return MainApp::radioChannelMenuName;
-}
-
-const char* MainApp::getRadioAddressMenuName(ConfigStorage* config)
-{
-    strcpy(MainApp::radioAddressMenuName, StringAssets::radioAddress);
-    strcat(MainApp::radioAddressMenuName, StringAssets::colon);
-    strcat(MainApp::radioAddressMenuName, StringAssets::space);
-
-    char ch[2];
-    sprintf(ch, "%d", config->getRadioAddress());
-    strcat(MainApp::radioAddressMenuName, ch);
-
-    return MainApp::radioAddressMenuName;
 }
 
 const char* MainApp::getRadioLevelMenuName(ConfigStorage* config)
@@ -175,22 +154,15 @@ void MainApp::handleConfigClockCtrl(MenuComponent* p_menu_component)
 
 void MainApp::handleConfigRadioChannel(MenuComponent* p_menu_component)
 {
-    RadioChannelAddressApp app;
-    app.executeChannel();
-    p_menu_component->set_name(MainApp::getRadioChannelMenuName(AbstractApp::sc->getConfigStorage()));
+    RadioChannelApp app;
+    app.execute();
 }
 
 void MainApp::handleConfigRadioChannelScan(MenuComponent* p_menu_component)
 {
     RadioChannelScanApp app;
     app.execute();
-}
-
-void MainApp::handleConfigRadioAddress(MenuComponent* p_menu_component)
-{
-    RadioChannelAddressApp app;
-    app.executeAddress();
-    p_menu_component->set_name(MainApp::getRadioAddressMenuName(AbstractApp::sc->getConfigStorage()));
+    p_menu_component->set_name(MainApp::getRadioChannelMenuName(AbstractApp::sc->getConfigStorage()));
 }
 
 void MainApp::handleConfigRadioLevel(MenuComponent* p_menu_component)

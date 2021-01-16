@@ -10,10 +10,9 @@ ConfigStorage::ConfigStorage(void)
     EEPROM.get(contrastAddress, contrast);
     EEPROM.get(radioChannelAddress, radioChannel);
     EEPROM.get(radioLevelAddress, radioLevel);
-    EEPROM.get(radioAddressAddress, radioAddress);
 }
 
-ConfigStorage::ConfigStorage(bool _withBacklight, bool _withSounds, uint8_t _contrast, uint8_t _radioChannel, uint8_t _radioLevel, uint8_t _radioAddress)
+ConfigStorage::ConfigStorage(bool _withBacklight, bool _withSounds, uint8_t _contrast, uint8_t _radioChannel, uint8_t _radioLevel)
 {
     initAddresses();
     withBacklight = _withBacklight;
@@ -21,13 +20,11 @@ ConfigStorage::ConfigStorage(bool _withBacklight, bool _withSounds, uint8_t _con
     contrast = _contrast;
     radioChannel = _radioChannel;
     radioLevel = _radioLevel;
-    radioAddress = _radioAddress;
     setWithBacklight(withBacklight);
     setWithSounds(withSounds);
     setContrast(contrast);
     setRadioChannel(radioChannel);
     setRadioLevel(radioLevel);
-    setRadioAddress(radioAddress);
 }
 
 bool ConfigStorage::isWithBacklight()
@@ -85,17 +82,6 @@ void ConfigStorage::setRadioLevel(uint8_t value)
     EEPROM.put(radioLevelAddress, radioLevel);
 }
 
-uint8_t ConfigStorage::getRadioAddress()
-{
-    return radioAddress;
-}
-
-void ConfigStorage::setRadioAddress(uint8_t value)
-{
-    radioAddress = value;
-    EEPROM.put(radioAddressAddress, radioAddress);
-}
-
 void ConfigStorage::setRadioConnected(bool value)
 {
     radioConnected = value;
@@ -113,12 +99,10 @@ void ConfigStorage::initAddresses(void)
     static uint8_t EEMEM _contrastAddress;
     static uint8_t EEMEM _radioChannelAddress;
     static uint8_t EEMEM _radioLevelAddress;
-    static uint8_t EEMEM _radioAddressAddress;
 
     withBacklightAddress = (int)&_withBacklightAddress;
     withSoundsAddress = (int)&_withSoundsAddress;
     contrastAddress = (int)&_contrastAddress;
     radioChannelAddress = (int)&_radioChannelAddress;
     radioLevelAddress = (int)&_radioLevelAddress;
-    radioAddressAddress = (int)&_radioAddressAddress;
 }

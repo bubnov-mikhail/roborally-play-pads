@@ -33,5 +33,6 @@ class Headline {
         inline void updateRadio(void);
         void printValue(uint8_t value);
         void printDigit(uint8_t value);
+        void Headline::printDigits(uint8_t value);
         const static unsigned short int refreshTimeMilis = 500;
 };

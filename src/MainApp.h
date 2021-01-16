@@ -3,7 +3,7 @@
 #include "AbstractApp.h"
 #include "ContrastCtlApp.h"
 #include "ClockSetupApp.h"
-#include "RadioChannelAddressApp.h"
+#include "RadioChannelApp.h"
 #include "RadioChannelScanApp.h"
 #include "RoborallyApp.h"
 #include "RF24.h"
@@ -18,12 +18,10 @@ class MainApp : public AbstractApp {
         static void handleConfigRadioChannel(MenuComponent* p_menu_component);
         static void handleConfigRadioLevel(MenuComponent* p_menu_component);
         static void handleConfigRadioChannelScan(MenuComponent* p_menu_component);
-        static void handleConfigRadioAddress(MenuComponent* p_menu_component);
         static void handleGamesRoborally(MenuComponent* p_menu_component);
         static char backlightMenuName[14];
         static char soundsMenuName[11];
         static char radioChannelMenuName[13];
-        static char radioAddressMenuName[11];
         static char radioLevelMenuName[11];
     private:
         bool handleKeypadSymbol(uint8_t keypadSymbol, MenuSystem* menuSystem);
@@ -31,5 +29,4 @@ class MainApp : public AbstractApp {
         static const char* getSoundsMenuName(ConfigStorage* config);
         static const char* getRadioChannelMenuName(ConfigStorage* config);
         static const char* getRadioLevelMenuName(ConfigStorage* config);
-        static const char* getRadioAddressMenuName(ConfigStorage* config);
 };

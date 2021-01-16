@@ -1,36 +1,19 @@
-#include "RadioChannelAddressApp.h"
+#include "RadioChannelApp.h"
 
-void RadioChannelAddressApp::execute(void) 
+void RadioChannelApp::execute(void) 
 {
     Nokia_LCD* lcd = AbstractApp::sc->getLcd();
     Keypad* keypad = AbstractApp::sc->getKeypad();
     ConfigStorage* config = AbstractApp::sc->getConfigStorage();
     MenuRenderer* menuRenderer = AbstractApp::sc->getMenuRenderer();
     Headline* headline = AbstractApp::sc->getHeadline();
-    uint8_t vMin;
-    uint8_t vMax;
     uint8_t tmp;
 
     lcd->clear(false);
-    
-    switch (currentAction) {
-        case CHANNEL:
-            tmp = config->getRadioChannel();
-            vMin = channelMin;
-            vMax = channelMax;
-            menuRenderer->render_header(StringAssets::radioChannel);
-            lcd->setCursor(0, 3);
-            lcd->print(StringAssets::radioChannel);
-            break;
-        case ADDRESS:
-            tmp = config->getRadioAddress();
-            vMin = addressMin;
-            vMax = addressMax;
-            menuRenderer->render_header(StringAssets::radioAddress);
-            lcd->setCursor(0, 3);
-            lcd->print(StringAssets::radioAddress);
-            break;
-    }
+    tmp = config->getRadioChannel();
+    menuRenderer->render_header(StringAssets::radioChannel);
+    lcd->setCursor(0, 3);
+    lcd->print(StringAssets::radioChannel);
     lcd->print(StringAssets::colon);
     headline->update(true);
     update(lcd, tmp);
@@ -49,28 +32,13 @@ void RadioChannelAddressApp::execute(void)
                 break;
             case Keypad::keyHash:
                 // Reset to config
-                switch (currentAction) {
-                    case CHANNEL:
-                        tmp = config->getRadioChannel();
-                        break;
-                    case ADDRESS:
-                        tmp = config->getRadioAddress();
-                        break;
-                }
-                
+                tmp = config->getRadioChannel();                
                 update(lcd, tmp);
                 break;
             case Keypad::keyStar:
                 // Save and exit
-                switch (currentAction) {
-                    case CHANNEL:
-                        config->setRadioChannel(tmp);
-                        AbstractApp::sc->getRadio()->setChannel(tmp);
-                        break;
-                    case ADDRESS:
-                        config->setRadioAddress(tmp);
-                        break;
-                }
+                config->setRadioChannel(tmp);
+                AbstractApp::sc->getRadio()->setChannel(tmp);
                 return;
             case Keypad::keyD:
                 // Exit without saving
@@ -79,19 +47,7 @@ void RadioChannelAddressApp::execute(void)
     }
 }
 
-void RadioChannelAddressApp::executeChannel(void) 
-{
-    currentAction = CHANNEL;
-    execute();
-}
-
-void RadioChannelAddressApp::executeAddress(void) 
-{
-    currentAction = ADDRESS;
-    execute();
-}
-
-uint8_t RadioChannelAddressApp::increment(Keypad* keypad, Nokia_LCD* lcd, Headline* headline, uint8_t vMin, uint8_t vMax, uint8_t tmp, int8_t direction)
+uint8_t RadioChannelApp::increment(Keypad* keypad, Nokia_LCD* lcd, Headline* headline, uint8_t vMin, uint8_t vMax, uint8_t tmp, int8_t direction)
 {
     tmp = min(vMax, max(vMin, tmp + direction));
     update(lcd, tmp);
@@ -122,7 +78,7 @@ uint8_t RadioChannelAddressApp::increment(Keypad* keypad, Nokia_LCD* lcd, Headli
     return tmp;
 }
 
-void RadioChannelAddressApp::update(Nokia_LCD* lcd, uint8_t value)
+void RadioChannelApp::update(Nokia_LCD* lcd, uint8_t value)
 {
     lcd->setCursor(54, 3);
     lcd->print(StringAssets::space);

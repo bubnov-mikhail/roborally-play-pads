@@ -25,7 +25,7 @@
 
 #define DEFAULT_RADIO_CHANNEL 5
 #define DEFAULT_RADIO_LEVEL 1
-#define DEFAULT_RADIO_ADDRESS 0
+#define RADIO_ADDRESS 0
 #if defined(SET_GFX_ASSETS)
   #include "GfxAssets.h"
   #include <ProgressBar.h>

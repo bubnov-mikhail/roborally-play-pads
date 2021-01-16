@@ -6,7 +6,7 @@
  * Init services
  */
 #if defined(SET_CONFIG_DEFAULTS)
-  ConfigStorage configStorage(true, true, DEFAULT_CONTRAST, DEFAULT_RADIO_CHANNEL, DEFAULT_RADIO_LEVEL, DEFAULT_RADIO_ADDRESS);
+  ConfigStorage configStorage(true, true, DEFAULT_CONTRAST, DEFAULT_RADIO_CHANNEL, DEFAULT_RADIO_LEVEL);
 #else
   ConfigStorage configStorage;
 #endif
@@ -29,7 +29,6 @@ uint8_t RoborallyApp::spiMoSiCs = PIN_KEYPAD_MOSI_CS;
 char MainApp::backlightMenuName[14];
 char MainApp::soundsMenuName[11];
 char MainApp::radioChannelMenuName[13];
-char MainApp::radioAddressMenuName[11];
 char MainApp::radioLevelMenuName[11];
 
 void setup()
