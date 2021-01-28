@@ -3,7 +3,6 @@
 
 uint8_t RadioChannelScanApp::getBestChannel(void) {
     Nokia_LCD* lcd = AbstractApp::sc->getLcd();
-    Keypad* keypad = AbstractApp::sc->getKeypad();
     ConfigStorage* config = AbstractApp::sc->getConfigStorage();
     MenuRenderer* menuRenderer = AbstractApp::sc->getMenuRenderer();
     Headline* headline = AbstractApp::sc->getHeadline();

@@ -27,6 +27,5 @@ class MainApp : public AbstractApp {
         bool handleKeypadSymbol(uint8_t keypadSymbol, MenuSystem* menuSystem);
         static const char* getBacklightMenuName(ConfigStorage* config);
         static const char* getSoundsMenuName(ConfigStorage* config);
-        static const char* getRadioChannelMenuName(ConfigStorage* config);
         static const char* getRadioLevelMenuName(ConfigStorage* config);
 };

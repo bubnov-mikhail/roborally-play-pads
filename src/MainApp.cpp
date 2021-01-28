@@ -37,7 +37,7 @@ void MainApp::execute(void) {
     menuConfigs.add_item(&menuItemClockCtrl);
 
     if (config->isRadioConnected()) {
-        MenuItem menuItemRadioCtrlChannel(MainApp::getRadioChannelMenuName(config), MainApp::handleConfigRadioChannel);
+        MenuItem menuItemRadioCtrlChannel(StringAssets::radioChannel, MainApp::handleConfigRadioChannel);
         MenuItem menuItemRadioCtrlChannelScan(StringAssets::radioChannelScan, MainApp::handleConfigRadioChannelScan);
         MenuItem menuItemRadioCtrlLevel(MainApp::getRadioLevelMenuName(config), MainApp::handleConfigRadioLevel);
         menuConfigs.add_item(&menuItemRadioCtrlChannel);
@@ -82,19 +82,6 @@ const char* MainApp::getSoundsMenuName(ConfigStorage* config)
     config->isWithSounds() ? strcat(MainApp::soundsMenuName, StringAssets::stateOn) : strcat(MainApp::soundsMenuName, StringAssets::stateOff);
 
     return MainApp::soundsMenuName;
-}
-
-const char* MainApp::getRadioChannelMenuName(ConfigStorage* config)
-{
-    strcpy(MainApp::radioChannelMenuName, StringAssets::radioChannel);
-    strcat(MainApp::radioChannelMenuName, StringAssets::colon);
-    strcat(MainApp::radioChannelMenuName, StringAssets::space);
-
-    char ch[4];
-    sprintf(ch, "%d", config->getRadioChannel());
-    strcat(MainApp::radioChannelMenuName, ch);
-
-    return MainApp::radioChannelMenuName;
 }
 
 const char* MainApp::getRadioLevelMenuName(ConfigStorage* config)
@@ -162,7 +149,6 @@ void MainApp::handleConfigRadioChannelScan(MenuComponent* p_menu_component)
 {
     RadioChannelScanApp app;
     app.execute();
-    p_menu_component->set_name(MainApp::getRadioChannelMenuName(AbstractApp::sc->getConfigStorage()));
 }
 
 void MainApp::handleConfigRadioLevel(MenuComponent* p_menu_component)
