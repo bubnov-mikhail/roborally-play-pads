@@ -1,21 +1,15 @@
 namespace StringAssets {
-    const char mainMenu[] = "Main menu";
-    const char intro[] = "Intro";
-    const char pressAnyKey[] = "Press any key";
-    const char games[] = "Games";
-    const char roborally[] = "Roborally";
+    const char mainMenu[] = "Menu";
+    const char games[] = "Apps";
+    const char roborally[] = "Robopad";
     const char configs[] = "Configs";
     const char clockCtrl[] = "Clock";
-    const char clockCtrlTime[] = "Set time";
-    const char clockCtrlDate[] = "Set date";
+    const char clockCtrlTime[] = "Time";
+    const char clockCtrlDate[] = "Date";
     const char contrast[] = "Contrast";
     const char loading[] = "Loading";
-    const char backlight[] = "Backlight";
+    const char backlight[] = "Light";
     const char sounds[] = "Sounds";
-    const char playpad[] = "Playpad";
-    const char version[] = "ver. 0.1";
-    const char createdBy[] = "created by";
-    const char mihailBubnov[] = "Mihail Bubnov";
     const char space[] = " ";
     const char dot[] = ".";
     const char stateOn[] = "on";

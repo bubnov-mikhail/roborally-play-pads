@@ -10,10 +10,7 @@ void MainApp::execute(void) {
     headline->update(true);
     lcd->setCursor(27, 2);
     lcd->setInverted(true);
-    lcd->print(StringAssets::intro);
-    lcd->setInverted(false);
-    lcd->setCursor(5, 3);
-    lcd->print(StringAssets::pressAnyKey);
+    lcd->print(StringAssets::roborally);
 
     while(!keypad->read()) {
         headline->update();
