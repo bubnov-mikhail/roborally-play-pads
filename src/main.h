@@ -15,9 +15,9 @@
 #include <Headline.h>
 #include "MainApp.h"
 
-#define SET_CONFIG_DEFAULTS true
+//#define SET_CONFIG_DEFAULTS true
 #define DEFAULT_CONTRAST 50
-#define SET_GFX_ASSETS true
+//#define SET_GFX_ASSETS true
 #define Eeprom24C32_capacity 32 // Size in bytes
 #define Eeprom24C32_address 0x50
 #define Eeprom24C08_capacity 8 // Size in bytes
