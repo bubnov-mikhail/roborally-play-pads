@@ -67,14 +67,14 @@ class Keypad
 
         };
         const uint8_t inButtonTonesLength = 4;
-        const TonePlayer::Tone inButtonTones[4] = {
+        TonePlayer::Tone inButtonTones[4] = {
             {1024, 70},
             {520, 130},
             {1024, 200},
             {580, 270},
         };
         const uint8_t outButtonTonesLength = 4;
-        const TonePlayer::Tone outButtonTones[4] = {
+        TonePlayer::Tone outButtonTones[4] = {
             {700, 70},
             {360, 130},
             {700, 200},

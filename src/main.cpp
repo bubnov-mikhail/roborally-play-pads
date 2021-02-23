@@ -1,6 +1,20 @@
 #include <main.h>
 
+//#define SET_CONFIG_DEFAULTS true
+#define DEFAULT_CONTRAST 50
+//#define SET_GFX_ASSETS true
+#define Eeprom24C32_capacity 32 // Size in bytes
+#define Eeprom24C32_address 0x50
+#define Eeprom24C08_capacity 8 // Size in bytes
+#define Eeprom24C08_address 0x54
 //#define DEBUG true
+#define DEFAULT_RADIO_CHANNEL 5
+#define DEFAULT_RADIO_LEVEL 1
+#define RADIO_ADDRESS 0
+#if defined(SET_GFX_ASSETS)
+  #include "GfxAssets.h"
+  #include <ProgressBar.h>
+#endif
 
 /**
  * Init services

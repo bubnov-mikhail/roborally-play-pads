@@ -1,4 +1,8 @@
 #include "RoborallyApp.h"
+#include <ByteLoader.h>
+#include <SPI.h>
+#include <ProgressBar.h>
+#include <AudioAssets.h>
 
 void RoborallyApp::execute(void) {
     Headline* headline = AbstractApp::sc->getHeadline();
@@ -15,7 +19,7 @@ void RoborallyApp::execute(void) {
     while(true) {
         if (drawMainScreen()) {
             // Main screen just loaded.
-            tonePlayer->playTones(AudioAssets::roborallyIntro, AudioAssets::roborallyIntroLength, false, true);
+            tonePlayer->playTones(AudioAssets::roborallyIntro, AudioAssets::roborallyIntroLength, false);
         }
         headline->update();
         
@@ -56,7 +60,7 @@ void RoborallyApp::handleKeypad(void) {
                 gameState = ENTERING_CARD;
                 round = 1; //Start the game
                 TonePlayer* tonePlayer = AbstractApp::sc->getTonePlayer();
-                tonePlayer->playTones(AudioAssets::roborallyAction, AudioAssets::roborallyActionLength, false, true);
+                tonePlayer->playTones(AudioAssets::roborallyAction, AudioAssets::roborallyActionLength, false);
                 flashlightTurnOn();
             }
             break;
@@ -93,7 +97,7 @@ void RoborallyApp::handleKeypad(void) {
             if (keypadSymbol == Keypad::keyC) {
                 gameState = YOUR_MOVE;
                 TonePlayer* tonePlayer = AbstractApp::sc->getTonePlayer();
-                tonePlayer->playTones(AudioAssets::roborallyAction, AudioAssets::roborallyActionLength, false, true);
+                tonePlayer->playTones(AudioAssets::roborallyAction, AudioAssets::roborallyActionLength, false);
                 flashlightTurnOn();
             }
             // Waiting for the command from tha main unit
@@ -114,7 +118,7 @@ void RoborallyApp::handleKeypad(void) {
                 }
                 gameState = ENTERING_CARD;
                 TonePlayer* tonePlayer = AbstractApp::sc->getTonePlayer();
-                tonePlayer->playTones(AudioAssets::roborallyAction, AudioAssets::roborallyActionLength, false, true);
+                tonePlayer->playTones(AudioAssets::roborallyAction, AudioAssets::roborallyActionLength, false);
                 flashlightTurnOn();
             }
             

@@ -123,10 +123,10 @@ void Keypad::beepOnClick(uint16_t keypadCode)
     
     switch(getKeypadSymbol()) {
       case keyStar:
-        _tonePlayer->playTones(inButtonTones, inButtonTonesLength, false, true);
+        _tonePlayer->playTones(inButtonTones, inButtonTonesLength, false);
         return;
       case keyD:
-        _tonePlayer->playTones(outButtonTones, outButtonTonesLength, false, true);
+        _tonePlayer->playTones(outButtonTones, outButtonTonesLength, false);
         return;
       default:
         TimerFreeTone(_buzzerPin, beepFreq, beepDelayMilis);

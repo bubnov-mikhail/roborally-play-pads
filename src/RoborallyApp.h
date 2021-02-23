@@ -1,10 +1,6 @@
 #pragma once
 
 #include "AbstractApp.h"
-#include <ByteLoader.h>
-#include <SPI.h>
-#include <ProgressBar.h>
-#include "AudioAssets.h"
 
 class RoborallyApp : public AbstractApp {
     public:

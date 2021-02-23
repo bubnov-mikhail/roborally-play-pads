@@ -13,7 +13,7 @@ class TonePlayer
         };
         TonePlayer(ConfigStorage* _configStorage, uint8_t _buzzerPin);
         void loadTones(const Tone* _tones, const uint8_t _tonesLength, bool _playLoop = false, bool _tonePriority = false);
-        void playTones(const Tone* _tones, const uint8_t _tonesLength, bool _playLoop = false, bool _tonePriority = false);
+        void playTones(const Tone* _tones, const uint8_t _tonesLength, bool _playLoop = false);
         bool play();
         void stop();
     private:

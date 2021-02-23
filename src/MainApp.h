@@ -7,6 +7,7 @@
 #include "RadioChannelScanApp.h"
 #include "RoborallyApp.h"
 #include "RF24.h"
+#include <AudioAssets.h>
 
 class MainApp : public AbstractApp {
     public:

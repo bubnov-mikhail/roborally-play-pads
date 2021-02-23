@@ -18,9 +18,9 @@ void TonePlayer::loadTones(const Tone* _tones, const uint8_t _tonesLength, bool 
     startAt = millis();
 }
 
-void TonePlayer::playTones(const Tone* _tones, const uint8_t _tonesLength, bool _playLoop = false, bool _tonePriority = false)
+void TonePlayer::playTones(const Tone* _tones, const uint8_t _tonesLength, bool _playLoop = false)
 {
-    loadTones(_tones, _tonesLength, _playLoop, _tonePriority);
+    loadTones(_tones, _tonesLength, _playLoop, true);
     while(play()) {
         // waiting until the end of the tunes
     }
@@ -38,15 +38,17 @@ bool TonePlayer::play()
     }
 
     unsigned long playerHead = millis() - startAt;
+    unsigned long cumulativeEndAt = 0;
     unsigned short int i;
     for (i = 0; i < tonesLength; i++) {
-        if (tones[i].endAt < playerHead) {
+        cumulativeEndAt += tones[i].endAt;
+        if (cumulativeEndAt < playerHead) {
             continue;
         }
         if (tones[i].freq == 0) {
             return true;
         }
-        TimerFreeTone(buzzerPin, tones[i].freq, tonePriority ? tones[i].endAt - playerHead: nonPriorityToneDelay);
+        TimerFreeTone(buzzerPin, tones[i].freq, tonePriority ? cumulativeEndAt - playerHead: nonPriorityToneDelay);
 
         return true;
     }

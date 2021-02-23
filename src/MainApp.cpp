@@ -5,12 +5,14 @@ void MainApp::execute(void) {
     Keypad* keypad = AbstractApp::sc->getKeypad();
     ConfigStorage* config = AbstractApp::sc->getConfigStorage();
     Headline* headline = AbstractApp::sc->getHeadline();
+    TonePlayer* tonePlayer = AbstractApp::sc->getTonePlayer();
 
     lcd->clear(false);
     headline->update(true);
     lcd->setCursor(27, 2);
     lcd->print(StringAssets::roborally);
 
+    tonePlayer->playTones(AudioAssets::splashScreenIntro, AudioAssets::splashScreenIntroLength, false);
     while(!keypad->read()) {
         headline->update();
         continue;
