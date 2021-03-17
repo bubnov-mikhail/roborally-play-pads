@@ -48,6 +48,7 @@ bool TonePlayer::play()
         if (tones[i].freq == 0) {
             return true;
         }
+
         TimerFreeTone(buzzerPin, tones[i].freq, tonePriority ? cumulativeEndAt - playerHead: nonPriorityToneDelay);
 
         return true;

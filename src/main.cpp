@@ -3,6 +3,8 @@
 //#define SET_CONFIG_DEFAULTS true
 #define DEFAULT_CONTRAST 50
 //#define SET_GFX_ASSETS true
+//#define SET_GFX_ASSETS_PART_1 true
+//#define SET_GFX_ASSETS_PART_2 true
 #define Eeprom24C32_capacity 32 // Size in bytes
 #define Eeprom24C32_address 0x50
 #define Eeprom24C08_capacity 8 // Size in bytes
@@ -88,6 +90,7 @@ void setup()
   }
 
   #if defined(SET_GFX_ASSETS)
+  
     lcd.clear(false);
     lcd.setCursor(0, 0);
     lcd.print("Press any key");
@@ -100,24 +103,29 @@ void setup()
 
     unsigned int total32Capacity = Eeprom24C32_capacity * 128;
     unsigned int total08Capacity = Eeprom24C32_capacity * 128;
+    
     if (
-      writeBytes(&eeprom24c32, LcdAssets::roborallyMainScreenAddress, total32Capacity, LcdAssets::roborallyMainScreenLength, roborallyMainScreenBitmap, false)
-      && writeBytes(&eeprom24c32, LcdAssets::roborallyMoveForwardAddress, total32Capacity, LcdAssets::roborallyMovesBitmapLength, roborallyMoveForwardBitmap, true)
-      && writeBytes(&eeprom24c32, LcdAssets::roborallyMoveForward2Address, total32Capacity, LcdAssets::roborallyMovesBitmapLength, roborallyMoveForward2Bitmap, true)
-      && writeBytes(&eeprom24c32, LcdAssets::roborallyMoveForward3Address, total32Capacity, LcdAssets::roborallyMovesBitmapLength, roborallyMoveForward3Bitmap, true)
-      && writeBytes(&eeprom24c32, LcdAssets::roborallyMoveBackAddress, total32Capacity, LcdAssets::roborallyMovesBitmapLength, roborallyMoveBackBitmap, true)
-      && writeBytes(&eeprom24c32, LcdAssets::roborallyMovePowerDownAddress, total32Capacity, LcdAssets::roborallyMovesBitmapLength, roborallyMovePowerDownBitmap, true)
-      && writeBytes(&eeprom24c32, LcdAssets::roborallyMoveLeftAddress, total32Capacity, LcdAssets::roborallyMovesBitmapLength, roborallyMoveLeftBitmap, true)
-      && writeBytes(&eeprom24c32, LcdAssets::roborallyMoveRightAddress, total32Capacity, LcdAssets::roborallyMovesBitmapLength, roborallyMoveRightBitmap, true)
-      && writeBytes(&eeprom24c32, LcdAssets::roborallyMoveUTurnAddress, total32Capacity, LcdAssets::roborallyMovesBitmapLength, roborallyMoveUTurnBitmap, true)
-      && writeBytes(&eeprom24c32, LcdAssets::roborallyMoveWait1Address, total32Capacity, LcdAssets::roborallyMovesBitmapLength, roborallyMoveWait1Bitmap, true)
-      && writeBytes(&eeprom24c32, LcdAssets::roborallyMoveWait2Address, total32Capacity, LcdAssets::roborallyMovesBitmapLength, roborallyMoveWait2Bitmap, true)
-      && writeBytes(&eeprom24c32, LcdAssets::roborallyMoveWait3Address, total32Capacity, LcdAssets::roborallyMovesBitmapLength, roborallyMoveWait3Bitmap, true)
-      && writeBytes(&eeprom24c32, LcdAssets::roborallyMoveWait4Address, total32Capacity, LcdAssets::roborallyMovesBitmapLength, roborallyMoveWait4Bitmap, true)
-      && writeBytes(&eeprom24c32, LcdAssets::roborallyMoveWait5Address, total32Capacity, LcdAssets::roborallyMovesBitmapLength, roborallyMoveWait5Bitmap, true)
-      && writeBytes(&eeprom24c32, LcdAssets::roborallyMoveWait6Address, total32Capacity, LcdAssets::roborallyMovesBitmapLength, roborallyMoveWait6Bitmap, true)
-      && writeBytes(&eeprom24c32, LcdAssets::roborallyMoveWait7Address, total32Capacity, LcdAssets::roborallyMovesBitmapLength, roborallyMoveWait7Bitmap, true)
-      && writeBytes(&eeprom24c08, roborallyCardsAddress, total08Capacity, roborallyCardsLength, roborallyCards, false)
+      #if defined(SET_GFX_ASSETS_PART_1)
+        writeBytes(&eeprom24c32, LcdAssets::roborallyMainScreenAddress, total32Capacity, LcdAssets::roborallyMainScreenLength, roborallyMainScreenBitmap, false)
+        && writeBytes(&eeprom24c32, LcdAssets::roborallyMoveForwardAddress, total32Capacity, LcdAssets::roborallyMovesBitmapLength, roborallyMoveForwardBitmap, true)
+        && writeBytes(&eeprom24c32, LcdAssets::roborallyMoveForward2Address, total32Capacity, LcdAssets::roborallyMovesBitmapLength, roborallyMoveForward2Bitmap, true)
+        && writeBytes(&eeprom24c32, LcdAssets::roborallyMoveForward3Address, total32Capacity, LcdAssets::roborallyMovesBitmapLength, roborallyMoveForward3Bitmap, true)
+        && writeBytes(&eeprom24c32, LcdAssets::roborallyMoveBackAddress, total32Capacity, LcdAssets::roborallyMovesBitmapLength, roborallyMoveBackBitmap, true)
+        && writeBytes(&eeprom24c32, LcdAssets::roborallyMovePowerDownAddress, total32Capacity, LcdAssets::roborallyMovesBitmapLength, roborallyMovePowerDownBitmap, true)
+        && writeBytes(&eeprom24c32, LcdAssets::roborallyMoveLeftAddress, total32Capacity, LcdAssets::roborallyMovesBitmapLength, roborallyMoveLeftBitmap, true)
+        && writeBytes(&eeprom24c32, LcdAssets::roborallyMoveRightAddress, total32Capacity, LcdAssets::roborallyMovesBitmapLength, roborallyMoveRightBitmap, true)
+        && writeBytes(&eeprom24c32, LcdAssets::roborallyMoveUTurnAddress, total32Capacity, LcdAssets::roborallyMovesBitmapLength, roborallyMoveUTurnBitmap, true)
+        && writeBytes(&eeprom24c32, LcdAssets::roborallyMoveWait1Address, total32Capacity, LcdAssets::roborallyMovesBitmapLength, roborallyMoveWait1Bitmap, true)
+        && writeBytes(&eeprom24c32, LcdAssets::roborallyMoveWait2Address, total32Capacity, LcdAssets::roborallyMovesBitmapLength, roborallyMoveWait2Bitmap, true)
+        && writeBytes(&eeprom24c32, LcdAssets::roborallyMoveWait3Address, total32Capacity, LcdAssets::roborallyMovesBitmapLength, roborallyMoveWait3Bitmap, true)
+        && writeBytes(&eeprom24c32, LcdAssets::roborallyMoveWait4Address, total32Capacity, LcdAssets::roborallyMovesBitmapLength, roborallyMoveWait4Bitmap, true)
+        && writeBytes(&eeprom24c32, LcdAssets::roborallyMoveWait5Address, total32Capacity, LcdAssets::roborallyMovesBitmapLength, roborallyMoveWait5Bitmap, true)
+        && writeBytes(&eeprom24c32, LcdAssets::roborallyMoveWait6Address, total32Capacity, LcdAssets::roborallyMovesBitmapLength, roborallyMoveWait6Bitmap, true)
+        && writeBytes(&eeprom24c32, LcdAssets::roborallyMoveWait7Address, total32Capacity, LcdAssets::roborallyMovesBitmapLength, roborallyMoveWait7Bitmap, true)
+        && writeBytes(&eeprom24c08, roborallyCardsAddress, total08Capacity, roborallyCardsLength, roborallyCards, false)
+      #else if defined(SET_GFX_ASSETS_PART_2)
+        writeBytes(&eeprom24c32, LcdAssets::splashScreenAddress, total32Capacity, LcdAssets::fullScreenLength, splashScreenBitmap, false)
+      #endif
     ) {
       //Nothing here
     }

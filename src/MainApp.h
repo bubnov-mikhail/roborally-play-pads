@@ -29,4 +29,5 @@ class MainApp : public AbstractApp {
         static const char* getBacklightMenuName(ConfigStorage* config);
         static const char* getSoundsMenuName(ConfigStorage* config);
         static const char* getRadioLevelMenuName(ConfigStorage* config);
+        inline void drawSplashScreen();
 };

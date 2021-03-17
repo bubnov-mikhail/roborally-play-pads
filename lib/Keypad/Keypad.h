@@ -69,16 +69,16 @@ class Keypad
         const uint8_t inButtonTonesLength = 4;
         TonePlayer::Tone inButtonTones[4] = {
             {1024, 70},
-            {520, 130},
-            {1024, 200},
-            {580, 270},
+            {520, 60},
+            {1024, 70},
+            {580, 70},
         };
         const uint8_t outButtonTonesLength = 4;
         TonePlayer::Tone outButtonTones[4] = {
             {700, 70},
-            {360, 130},
-            {700, 200},
-            {360, 270},
+            {360, 60},
+            {700, 70},
+            {360, 70},
         };
         bool _beepOnClick;
         void beepOnClick(uint16_t keypadCode);

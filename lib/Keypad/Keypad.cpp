@@ -104,6 +104,7 @@ void Keypad::begin(void)
     digitalWrite(_keypadMiSoSck, HIGH);
     digitalWrite(_keypadMiSoData, LOW);
     digitalWrite(_keypadMoSiCS, HIGH);
+    read(); // Read to set all outputs to LOW, including LED outputs.
 }
 
 void Keypad::setBeepOnClick(bool beepOnClick)

@@ -7,14 +7,10 @@ void MainApp::execute(void) {
     Headline* headline = AbstractApp::sc->getHeadline();
     TonePlayer* tonePlayer = AbstractApp::sc->getTonePlayer();
 
-    lcd->clear(false);
-    headline->update(true);
-    lcd->setCursor(27, 2);
-    lcd->print(StringAssets::roborally);
+    drawSplashScreen();
 
     tonePlayer->playTones(AudioAssets::splashScreenIntro, AudioAssets::splashScreenIntroLength, false);
     while(!keypad->read()) {
-        headline->update();
         continue;
     }
 
@@ -191,4 +187,31 @@ bool MainApp::handleKeypadSymbol(uint8_t keypadSymbol, MenuSystem* menuSystem)
     }
 
     return false;
+}
+
+inline void MainApp::drawSplashScreen()
+{
+    Nokia_LCD* lcd = AbstractApp::sc->getLcd();
+    ByteLoader* byteLoader32 = AbstractApp::sc->getByteLoader32();
+    Headline* headline = AbstractApp::sc->getHeadline();
+    MenuRenderer* menuRenderer = AbstractApp::sc->getMenuRenderer();
+
+    lcd->clear(false);
+    headline->update(true);
+    menuRenderer->render_header(StringAssets::loading);
+    ProgressBar* progressBar = new ProgressBar(lcd, 10, 74, 3, true);
+    progressBar->render(0);
+
+    unsigned char* bitmap = new unsigned char[LcdAssets::fullScreenLength];
+
+    for (unsigned int i = 0; i < LcdAssets::fullScreenLength; i++) {
+        byteLoader32->loadByteToPosition(bitmap, LcdAssets::splashScreenAddress + i, i);
+        progressBar->render(i * 100 / LcdAssets::fullScreenLength);
+        headline->update();
+    }
+    
+    lcd->setCursor(0, 0);
+    lcd->draw(bitmap, LcdAssets::fullScreenLength, false);
+    delete bitmap;
+    delete progressBar;
 }

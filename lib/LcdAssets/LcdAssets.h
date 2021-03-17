@@ -11,6 +11,7 @@ namespace LcdAssets {
     static const uint8_t charWidth = 6;
     // Gfx assets stored on Eeprom24C08
     const unsigned int roborallyMainScreenAddress = 0;
+    const unsigned short int fullScreenLength = 504;
     const unsigned short int roborallyMainScreenLength = 420;
 
     const unsigned short int roborallyMovesBitmapLength = 32;
@@ -30,6 +31,7 @@ namespace LcdAssets {
     const unsigned int roborallyMoveWait5Address = roborallyMoveWait4Address + roborallyMovesBitmapLength;
     const unsigned int roborallyMoveWait6Address = roborallyMoveWait5Address + roborallyMovesBitmapLength;
     const unsigned int roborallyMoveWait7Address = roborallyMoveWait6Address + roborallyMovesBitmapLength;
+    const unsigned int splashScreenAddress = roborallyMoveWait7Address + roborallyMovesBitmapLength;
     
     // Bitmaps
     const unsigned char radioSignal[] PROGMEM = {0x10, 0x00, 0x1c, 0x00, 0x1f};
