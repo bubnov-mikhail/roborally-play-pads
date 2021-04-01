@@ -20,7 +20,7 @@ AbstractApp::APPS MainApp::execute(void) {
     MenuItem menuItemSounds(MainApp::getSoundsMenuName(config), MainApp::handleConfigSound);
     MenuItem menuItemContrast(StringAssets::contrast, MainApp::handleConfigContrast);
     MenuItem menuItemClockCtrl(StringAssets::clockCtrl, MainApp::handleConfigClockCtrl);
-    MenuItem aboutPad(StringAssets::pad + PAD_NUMBER, NULL);
+    MenuItem aboutPad(StringAssets::pad, NULL);
 
     menuConfigs.add_item(&menuItemBacklight);
     menuConfigs.add_item(&menuItemSounds);

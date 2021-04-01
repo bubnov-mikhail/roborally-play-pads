@@ -32,7 +32,7 @@ namespace StringAssets {
     const char robopad[] = "Robopad";
     const char players[] = "P";
     const char connecting[] = "Connecting";
-    const char connected[] = "OK to";
+    const char connected[] = "OK to start";
     const char enterCard[] = "Enter card";
     const char waiting[] = "Waiting";
     const char yourMove[] = "Your move";

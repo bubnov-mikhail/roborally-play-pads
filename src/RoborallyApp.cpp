@@ -448,33 +448,16 @@ void RoborallyApp::communicate(void) {
     PlayPad* self = getSelf();
     RF24* radio = AbstractApp::sc->getRadio();
 
-    #if PAD_NUMBER != 0
+    if (playPadNumber != 0) {
         radio->openReadingPipe(0, addresses[0]);
-    #endif
+    }
 
     switch (self->state) {
         case GameState::OFFLINE:
-            radio->stopListening();
             self->state = GameState::CONNECTING;
 
             // Init the connection to other, already online pads
-            for (uint8_t i = 0; i < maxPlayers; i++) {
-                if (radio->write(self, sizeof(PlayPad))) {
-                    playPads[i].state = GameState::CONNECTING;
-                }
-            }
-
-            switch (getPlayPadsConnected()) {
-                case 1:
-                    self->state = GameState::CONNECTING; // If no one responds
-                    break;
-                case maxPlayers:
-                    self->state = GameState::ENTERING_CARD; // If all responds
-                    break;
-                default:
-                    self->state = GameState::CONNECTED; // If at leas one responds
-            }
-            radio->startListening();
+            anounceSelf();
             break;
         case GameState::CONNECTING: 
         case GameState::CONNECTED: 
@@ -483,14 +466,40 @@ void RoborallyApp::communicate(void) {
             if (radio->available(&pipe)) {
                 if (pipe < maxPlayers) {
                     // Valid pipe
+                    GameState lastState = playPads[pipe].state;
                     radio->read(&(playPads[pipe]), sizeof(PlayPad));
-                    if (getPlayPadsConnected() == maxPlayers) {
-                        self->state = GameState::ENTERING_CARD;
+                    if (lastState == playPads[pipe].state) {
+                        // Stop the infinit loop
+                        return;
                     }
+                    switch (getPlayPadsConnected()) {
+                        case 1:
+                            self->state = GameState::CONNECTING; // If no one responds
+                            break;
+                        case maxPlayers:
+                            self->state = GameState::ENTERING_CARD; // If all responds
+                            break;
+                        default:
+                            self->state = GameState::CONNECTED; // If at leas one responds
+                    }
+                    anounceSelf();
                 }
             }
-            break;
     }
+}
+
+void RoborallyApp::anounceSelf(void) {
+    PlayPad* self = getSelf();
+    RF24* radio = AbstractApp::sc->getRadio();
+
+    radio->stopListening();
+    for (uint8_t i = 0; i < maxPlayers; i++) {
+        if (playPadNumber == i) {
+            continue;
+        }
+        radio->write(self, sizeof(PlayPad));
+    }
+    radio->startListening();
 }
 
 void RoborallyApp::startRound(uint8_t _round) {
@@ -515,6 +524,13 @@ void RoborallyApp::initRadio(void) {
     RF24* radio = AbstractApp::sc->getRadio();
     radio->powerUp();
     radio->setPayloadSize(sizeof(PlayPad));
+
+    /**
+     * According to the datasheet, the auto-retry features's delay value should
+     * be "skewed" to allow the RX node to receive 1 transmission at a time.
+     * So, use varying delay between retry attempts and 15 (at most) retry attempts
+    */
+    radio->setRetries(((playPadNumber * 3) % 12) + 3, 15);
     for (uint8_t i = 0; i < maxPlayers; i++) {
         // set pipes
         if (i == playPadNumber) {

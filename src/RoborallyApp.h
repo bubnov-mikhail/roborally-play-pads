@@ -63,13 +63,8 @@ class RoborallyApp : public AbstractApp {
             GameState state = OFFLINE;
             uint16_t cardNumber = 0;
         };
-        const uint64_t addresses[maxPlayers] = {
-            0xABABABABAB,
-            0xCDCDCDCD00,
-            0xCDCDCDCD11,
-            0xCDCDCDCD22,
-            0xCDCDCDCD33,
-            0xCDCDCDCD44,
+        const uint8_t addresses[maxPlayers][6] = {
+            "Prime", "2Node", "3Node", "4Node", "5Node", "6Node"
         };
         PlayPad playPads[maxPlayers];
 
@@ -89,5 +84,6 @@ class RoborallyApp : public AbstractApp {
         void communicate(void);
         void initRadio(void);
         void startRound(uint8_t _round);
+        void anounceSelf(void);
         uint8_t getPlayPadsConnected(void);
 };
