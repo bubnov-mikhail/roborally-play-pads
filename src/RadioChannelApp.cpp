@@ -1,6 +1,6 @@
 #include "RadioChannelApp.h"
 
-void RadioChannelApp::execute(void) 
+AbstractApp::APPS RadioChannelApp::execute(void) 
 {
     Nokia_LCD* lcd = AbstractApp::sc->getLcd();
     Keypad* keypad = AbstractApp::sc->getKeypad();
@@ -39,10 +39,10 @@ void RadioChannelApp::execute(void)
                 // Save and exit
                 config->setRadioChannel(tmp);
                 AbstractApp::sc->getRadio()->setChannel(tmp);
-                return;
+                return AbstractApp::APPS::MAIN_MENU;
             case Keypad::keyD:
                 // Exit without saving
-                return;
+                return AbstractApp::APPS::MAIN_MENU;
         }
     }
 }

@@ -8,5 +8,13 @@
 class AbstractApp {
     public:
         static ServiceContainer* sc; 
-        virtual void execute(void) = 0;
+        enum APPS {
+            MAIN_MENU,
+            CONTRAST,
+            CLOCK,
+            RADIO_CHANNEL,
+            RADIO_CHANNEL_SCAN,
+            ROBORALLY
+        };
+        virtual APPS execute(void) = 0;
 };

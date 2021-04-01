@@ -21,7 +21,8 @@ class ServiceContainer {
             ByteLoader* _ByteLoader08, 
             DS1307RTC* _rtc, 
             TonePlayer* _tonePlayer,
-            RF24* _radio
+            RF24* _radio,
+            MenuRenderer* _menuRenderer
         );
         ConfigStorage* getConfigStorage(void);
         Nokia_LCD* getLcd(void);

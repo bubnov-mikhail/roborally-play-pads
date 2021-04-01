@@ -11,7 +11,8 @@
 
 class MainApp : public AbstractApp {
     public:
-        void execute(void);
+        MainApp();
+        AbstractApp::APPS execute(void);
         static void handleConfigBacklight(MenuComponent* p_menu_component);
         static void handleConfigSound(MenuComponent* p_menu_component);
         static void handleConfigContrast(MenuComponent* p_menu_component);
@@ -24,10 +25,10 @@ class MainApp : public AbstractApp {
         static char soundsMenuName[11];
         static char radioChannelMenuName[13];
         static char radioLevelMenuName[11];
+        static AbstractApp::APPS nextApp;
     private:
         bool handleKeypadSymbol(uint8_t keypadSymbol, MenuSystem* menuSystem);
         static const char* getBacklightMenuName(ConfigStorage* config);
         static const char* getSoundsMenuName(ConfigStorage* config);
         static const char* getRadioLevelMenuName(ConfigStorage* config);
-        inline void drawSplashScreen();
 };

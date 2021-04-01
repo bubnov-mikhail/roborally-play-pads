@@ -9,7 +9,8 @@ ServiceContainer::ServiceContainer(
     ByteLoader* _byteLoader08, 
     DS1307RTC* _rtc,
     TonePlayer* _tonePlayer,
-    RF24* _radio
+    RF24* _radio,
+    MenuRenderer* _menuRenderer
 ) {
     configStorage = _configStorage;
     lcd = _lcd;
@@ -20,7 +21,7 @@ ServiceContainer::ServiceContainer(
     tonePlayer = _tonePlayer;
     rtc = _rtc;
     radio = _radio;
-    menuRenderer = new MenuRenderer(lcd);
+    menuRenderer = _menuRenderer;
 }
 
 ConfigStorage* ServiceContainer::getConfigStorage(void)

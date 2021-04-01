@@ -1,8 +1,11 @@
+#define STR_(X) #X
+#define STR(X) STR_(X)
+
 namespace StringAssets {
     const char mainMenu[] = "Menu";
     const char games[] = "Apps";
-    const char roborally[] = "Robopad";
     const char configs[] = "Configs";
+    const char pad[] = "Pad #" STR(PAD_NUMBER);
     const char clockCtrl[] = "Clock";
     const char clockCtrlTime[] = "Time";
     const char clockCtrlDate[] = "Date";
@@ -26,9 +29,13 @@ namespace StringAssets {
 
 
     //Roborally game
+    const char robopad[] = "Robopad";
+    const char players[] = "P";
     const char connecting[] = "Connecting";
+    const char connected[] = "OK to";
     const char enterCard[] = "Enter card";
     const char waiting[] = "Waiting";
     const char yourMove[] = "Your move";
     const char powerDown[] = "Power down";
+    const char exitConfirmation[] = "OK to exit";
 }

@@ -5,7 +5,7 @@
 
 class ContrastCtlApp : public AbstractApp {
     public:
-        void execute(void);
+        AbstractApp::APPS execute(void);
     private:
         void update(Nokia_LCD* lcd, ProgressBar* progressBar, uint8_t value);
         uint8_t increment(Keypad* keypad, Nokia_LCD* lcd, ProgressBar* progressBar, Headline* headline, uint8_t tmpContrast, int8_t direction);

@@ -1,6 +1,6 @@
 #include "ContrastCtlApp.h"
 
-void ContrastCtlApp::execute(void) {
+AbstractApp::APPS ContrastCtlApp::execute(void) {
     Nokia_LCD* lcd = AbstractApp::sc->getLcd();
     Keypad* keypad = AbstractApp::sc->getKeypad();
     ConfigStorage* config = AbstractApp::sc->getConfigStorage();
@@ -35,13 +35,13 @@ void ContrastCtlApp::execute(void) {
                 // Save and exit
                 config->setContrast(tmpContrast);
                 delete progressBar;
-                return;
+                return AbstractApp::APPS::MAIN_MENU;
             case Keypad::keyD:
                 // Exit without saving
                 tmpContrast = config->getContrast();
                 update(lcd, progressBar, tmpContrast);
                 delete progressBar;
-                return;
+                return AbstractApp::APPS::MAIN_MENU;
         }
     }
 }

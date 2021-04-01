@@ -10,12 +10,11 @@ namespace LcdAssets {
     static const uint8_t displayWidth = 84;
     static const uint8_t charWidth = 6;
     // Gfx assets stored on Eeprom24C08
-    const unsigned int roborallyMainScreenAddress = 0;
     const unsigned short int fullScreenLength = 504;
     const unsigned short int roborallyMainScreenLength = 420;
-
     const unsigned short int roborallyMovesBitmapLength = 32;
 
+    const unsigned int roborallyMainScreenAddress = 0;
     const unsigned int roborallyMoveForwardAddress = roborallyMainScreenAddress + roborallyMainScreenLength;
     const unsigned int roborallyMoveForward2Address = roborallyMoveForwardAddress + roborallyMovesBitmapLength;
     const unsigned int roborallyMoveForward3Address = roborallyMoveForward2Address + roborallyMovesBitmapLength;

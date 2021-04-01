@@ -5,7 +5,7 @@
 
 class ClockSetupApp : public AbstractApp {
     public:
-        void execute(void);
+        AbstractApp::APPS execute(void);
         const static unsigned short int yearOffset = 1970;
     private:
         enum ClockComponent {HOUR, MINUTE, DAY, MONTH, YEAR};

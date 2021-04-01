@@ -1,6 +1,35 @@
 #include "RadioChannelScanApp.h"
 #include "RF24.h"
 
+
+AbstractApp::APPS RadioChannelScanApp::execute(void) {
+    Keypad* keypad = AbstractApp::sc->getKeypad();
+    Headline* headline = AbstractApp::sc->getHeadline();
+    
+    uint8_t bestChannel = getBestChannel();
+
+    while(true) {
+        headline->update();
+        if (!keypad->read()) {
+            continue;
+        }
+        switch (keypad->getKeypadSymbol()) {
+            case Keypad::keyStar:
+                // Save and exit
+                AbstractApp::sc->getConfigStorage()->setRadioChannel(bestChannel);
+                AbstractApp::sc->getRadio()->setChannel(bestChannel);
+                return AbstractApp::APPS::MAIN_MENU;
+            case Keypad::keyHash:
+                // Scan again
+                bestChannel = getBestChannel();
+                break;
+            case Keypad::keyD:
+                // Exit without saving
+                return AbstractApp::APPS::MAIN_MENU;
+        }
+    }
+}
+
 uint8_t RadioChannelScanApp::getBestChannel(void) {
     Nokia_LCD* lcd = AbstractApp::sc->getLcd();
     ConfigStorage* config = AbstractApp::sc->getConfigStorage();
@@ -74,7 +103,7 @@ uint8_t RadioChannelScanApp::getBestChannel(void) {
         delay(20);
         headline->update();
     }
-
+    radio->setAutoAck(true);
     radio->powerDown();
 
     if (bestRangeLength <= 2) {
@@ -94,33 +123,4 @@ uint8_t RadioChannelScanApp::getBestChannel(void) {
     lcd->print(bestChannel);
 
     return bestChannel;
-}
-
-void RadioChannelScanApp::execute(void) {
-    Keypad* keypad = AbstractApp::sc->getKeypad();
-    Headline* headline = AbstractApp::sc->getHeadline();
-    
-    uint8_t bestChannel = getBestChannel();
-
-    while(true) {
-        headline->update();
-        if (!keypad->read()) {
-            continue;
-        }
-        switch (keypad->getKeypadSymbol()) {
-            case Keypad::keyStar:
-                // Save and exit
-                AbstractApp::sc->getConfigStorage()->setRadioChannel(bestChannel);
-                AbstractApp::sc->getRadio()->setChannel(bestChannel);
-                return;
-                break;
-            case Keypad::keyHash:
-                // Scan again
-                bestChannel = getBestChannel();
-                break;
-            case Keypad::keyD:
-                // Exit without saving
-                return;
-        }
-    }
 }

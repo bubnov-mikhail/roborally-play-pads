@@ -2,6 +2,7 @@
 
 //#define SET_CONFIG_DEFAULTS true
 #define DEFAULT_CONTRAST 50
+//#define PAD_NUMBER 1
 //#define SET_GFX_ASSETS true
 //#define SET_GFX_ASSETS_PART_1 true
 //#define SET_GFX_ASSETS_PART_2 true
@@ -36,16 +37,18 @@ Eeprom24C eeprom24c08(Eeprom24C08_capacity, Eeprom24C08_address);
 ByteLoader byteLoader32(&eeprom24c32);
 ByteLoader byteLoader08(&eeprom24c08);
 RF24 radio(PIN_RADIO_CE, PIN_RADIO_CS);
-
-ServiceContainer serviceContainer(&configStorage, &lcd, &keypad, &headline, &byteLoader32, &byteLoader08, &RTC, &tonePlayer, &radio);
+MenuRenderer menuRenderer(&lcd);
+ServiceContainer serviceContainer(&configStorage, &lcd, &keypad, &headline, &byteLoader32, &byteLoader08, &RTC, &tonePlayer, &radio, &menuRenderer);
 ServiceContainer *AbstractApp::sc = &serviceContainer;
-RoborallyApp::GameStates RoborallyApp::gameState = RoborallyApp::CONNECTING;
 uint8_t RoborallyApp::spiMoSiCs = PIN_KEYPAD_MOSI_CS;
 
 char MainApp::backlightMenuName[14];
 char MainApp::soundsMenuName[11];
 char MainApp::radioChannelMenuName[13];
 char MainApp::radioLevelMenuName[11];
+
+AbstractApp::APPS nextApp = AbstractApp::APPS::MAIN_MENU;
+AbstractApp::APPS MainApp::nextApp;
 
 void setup()
 {
@@ -71,6 +74,8 @@ void setup()
     configStorage.setRadioConnected(true);
     radio.setPALevel(configStorage.getRadioLevel());
     radio.setChannel(configStorage.getRadioChannel());
+    radio.enableDynamicPayloads();
+    radio.enableAckPayload();
     radio.powerDown();
   } else {
     configStorage.setRadioConnected(false);
@@ -130,15 +135,70 @@ void setup()
       //Nothing here
     }
     return;
-  #else
-    MainApp mainApp;
-    mainApp.execute();
   #endif
 }
 
 void loop()
 {
-  //nothing in the loop
+  #if !defined(SET_GFX_ASSETS)
+    AbstractApp* app;
+    switch(nextApp) {
+      case AbstractApp::APPS::CONTRAST:
+        app = new ContrastCtlApp();
+        break;
+      case AbstractApp::APPS::CLOCK:
+        app = new ClockSetupApp();
+        break;
+      case AbstractApp::APPS::RADIO_CHANNEL:
+        app = new RadioChannelApp();
+        break;
+      case AbstractApp::APPS::RADIO_CHANNEL_SCAN:
+        app = new RadioChannelScanApp();
+        break;
+      case AbstractApp::APPS::ROBORALLY:
+        drawFullScreen(LcdAssets::fullScreenLength, LcdAssets::splashScreenAddress);
+        tonePlayer.playTones(AudioAssets::splashScreenIntro, AudioAssets::splashScreenIntroLength, false);
+        while(!keypad.read() || keypad.getKeypadCode() == 0) {
+            // Animation on the splash screen...
+        }
+        #if defined(PAD_NUMBER)
+            app = new RoborallyApp(PAD_NUMBER);
+        #else
+          app = new RoborallyApp(0);
+        #endif
+        break;
+      default:
+        app = new MainApp();
+        nextApp = app->execute();
+        delete app;
+        return;
+    }
+
+    app->execute();
+    delete app;
+    resetFunc();
+  #endif
+}
+
+void drawFullScreen(const unsigned short int length, unsigned int address)
+{
+    lcd.clear(false);
+    headline.update(true);
+    AbstractApp::sc->getMenuRenderer()->render_header(StringAssets::loading);
+    ProgressBar* progressBar = new ProgressBar(&lcd, 10, 74, 3, true);
+    progressBar->render(0);
+
+    unsigned char* bitmap = new unsigned char[length];
+    for (unsigned int i = 0; i < length; i++) {
+        byteLoader32.loadByteToPosition(bitmap, address + i, i);
+        progressBar->render(i * 100 / length);
+        headline.update();
+    }
+    delete progressBar;
+    
+    lcd.setCursor(0, 0);
+    lcd.draw(bitmap, length, false);
+    delete bitmap;
 }
 
 #if defined(SET_GFX_ASSETS)

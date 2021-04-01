@@ -1,6 +1,6 @@
 #include "ClockSetupApp.h"
 
-void ClockSetupApp::execute(void) {
+AbstractApp::APPS ClockSetupApp::execute(void) {
     Keypad* keypad = AbstractApp::sc->getKeypad();
     Headline* headline = AbstractApp::sc->getHeadline();
     Nokia_LCD* lcd = AbstractApp::sc->getLcd();
@@ -32,7 +32,7 @@ void ClockSetupApp::execute(void) {
                 prevComponent();
                 break;
             case Keypad::keyD: //Exit
-                return;
+                return AbstractApp::APPS::MAIN_MENU;
         }
     }
 }

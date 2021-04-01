@@ -1,22 +1,18 @@
 #include "MainApp.h"
 
-void MainApp::execute(void) {
+MainApp::MainApp() {
+    nextApp = AbstractApp::APPS::MAIN_MENU;
+}
+
+AbstractApp::APPS MainApp::execute(void) {
     Nokia_LCD* lcd = AbstractApp::sc->getLcd();
     Keypad* keypad = AbstractApp::sc->getKeypad();
     ConfigStorage* config = AbstractApp::sc->getConfigStorage();
     Headline* headline = AbstractApp::sc->getHeadline();
-    TonePlayer* tonePlayer = AbstractApp::sc->getTonePlayer();
-
-    drawSplashScreen();
-
-    tonePlayer->playTones(AudioAssets::splashScreenIntro, AudioAssets::splashScreenIntroLength, false);
-    while(!keypad->read()) {
-        continue;
-    }
 
     MenuSystem menuSystem(*(AbstractApp::sc->getMenuRenderer()));
     Menu menuGames(StringAssets::games);
-    MenuItem menuItemRoborally(StringAssets::roborally, MainApp::handleGamesRoborally);
+    MenuItem menuItemRoborally(StringAssets::robopad, MainApp::handleGamesRoborally);
     menuGames.add_item(&menuItemRoborally);
 
     Menu menuConfigs(StringAssets::configs);
@@ -24,6 +20,7 @@ void MainApp::execute(void) {
     MenuItem menuItemSounds(MainApp::getSoundsMenuName(config), MainApp::handleConfigSound);
     MenuItem menuItemContrast(StringAssets::contrast, MainApp::handleConfigContrast);
     MenuItem menuItemClockCtrl(StringAssets::clockCtrl, MainApp::handleConfigClockCtrl);
+    MenuItem aboutPad(StringAssets::pad + PAD_NUMBER, NULL);
 
     menuConfigs.add_item(&menuItemBacklight);
     menuConfigs.add_item(&menuItemSounds);
@@ -38,7 +35,9 @@ void MainApp::execute(void) {
         menuConfigs.add_item(&menuItemRadioCtrlChannelScan);
         menuConfigs.add_item(&menuItemRadioCtrlLevel);
     }
-   
+
+    menuConfigs.add_item(&aboutPad);
+    
     menuSystem.get_root_menu().set_name(StringAssets::mainMenu);
     menuSystem.get_root_menu().add_menu(&menuGames);
     menuSystem.get_root_menu().add_menu(&menuConfigs);
@@ -47,7 +46,7 @@ void MainApp::execute(void) {
     
     headline->update(true);
 
-    while(true) {
+    while(nextApp == AbstractApp::APPS::MAIN_MENU) {
         if (!keypad->read()) {
             headline->update();
             continue;
@@ -58,10 +57,13 @@ void MainApp::execute(void) {
             headline->update(true);
         }
     }
+
+    return nextApp;
 }
 
 const char* MainApp::getBacklightMenuName(ConfigStorage* config)
 {
+    // inline app
     strcpy(MainApp::backlightMenuName, StringAssets::backlight);
     strcat(MainApp::backlightMenuName, StringAssets::colon);
     config->isWithBacklight() ? strcat(MainApp::backlightMenuName, StringAssets::stateOn) : strcat(MainApp::backlightMenuName, StringAssets::stateOff);
@@ -71,6 +73,7 @@ const char* MainApp::getBacklightMenuName(ConfigStorage* config)
 
 const char* MainApp::getSoundsMenuName(ConfigStorage* config)
 {
+    // inline app
     strcpy(MainApp::soundsMenuName, StringAssets::sounds);
     strcat(MainApp::soundsMenuName, StringAssets::colon);
     config->isWithSounds() ? strcat(MainApp::soundsMenuName, StringAssets::stateOn) : strcat(MainApp::soundsMenuName, StringAssets::stateOff);
@@ -80,6 +83,7 @@ const char* MainApp::getSoundsMenuName(ConfigStorage* config)
 
 const char* MainApp::getRadioLevelMenuName(ConfigStorage* config)
 {
+    // inline app
     strcpy(MainApp::radioLevelMenuName, StringAssets::radioLevel);
     strcat(MainApp::radioLevelMenuName, StringAssets::colon);
     strcat(MainApp::radioLevelMenuName, StringAssets::space);
@@ -100,6 +104,7 @@ const char* MainApp::getRadioLevelMenuName(ConfigStorage* config)
 
 void MainApp::handleConfigBacklight(MenuComponent* p_menu_component)
 {
+    // inline app
     Nokia_LCD* lcd = AbstractApp::sc->getLcd();
     ConfigStorage* config = AbstractApp::sc->getConfigStorage();
     config->setWithBacklight(!config->isWithBacklight());
@@ -109,6 +114,7 @@ void MainApp::handleConfigBacklight(MenuComponent* p_menu_component)
 
 void MainApp::handleConfigSound(MenuComponent* p_menu_component)
 {
+    // inline app
     ConfigStorage* config = AbstractApp::sc->getConfigStorage();
     config->setWithSounds(!config->isWithSounds());
     AbstractApp::sc->getKeypad()->setBeepOnClick(config->isWithSounds());
@@ -117,36 +123,32 @@ void MainApp::handleConfigSound(MenuComponent* p_menu_component)
 
 void MainApp::handleGamesRoborally(MenuComponent* p_menu_component)
 {
-    RoborallyApp app;
-    app.execute();
+    nextApp = AbstractApp::APPS::ROBORALLY;
 }
 
 void MainApp::handleConfigContrast(MenuComponent* p_menu_component)
 {
-    ContrastCtlApp app;
-    app.execute();
+    nextApp = AbstractApp::APPS::CONTRAST;
 }
 
 void MainApp::handleConfigClockCtrl(MenuComponent* p_menu_component)
 {
-    ClockSetupApp app;
-    app.execute();
+    nextApp = AbstractApp::APPS::CLOCK;
 }
 
 void MainApp::handleConfigRadioChannel(MenuComponent* p_menu_component)
 {
-    RadioChannelApp app;
-    app.execute();
+    nextApp = AbstractApp::APPS::RADIO_CHANNEL;
 }
 
 void MainApp::handleConfigRadioChannelScan(MenuComponent* p_menu_component)
 {
-    RadioChannelScanApp app;
-    app.execute();
+    nextApp = AbstractApp::APPS::RADIO_CHANNEL_SCAN;
 }
 
 void MainApp::handleConfigRadioLevel(MenuComponent* p_menu_component)
 {
+    // inline app
     ConfigStorage* config = AbstractApp::sc->getConfigStorage();
     uint8_t newLevel;
     switch (config->getRadioLevel()) {
@@ -187,31 +189,4 @@ bool MainApp::handleKeypadSymbol(uint8_t keypadSymbol, MenuSystem* menuSystem)
     }
 
     return false;
-}
-
-inline void MainApp::drawSplashScreen()
-{
-    Nokia_LCD* lcd = AbstractApp::sc->getLcd();
-    ByteLoader* byteLoader32 = AbstractApp::sc->getByteLoader32();
-    Headline* headline = AbstractApp::sc->getHeadline();
-    MenuRenderer* menuRenderer = AbstractApp::sc->getMenuRenderer();
-
-    lcd->clear(false);
-    headline->update(true);
-    menuRenderer->render_header(StringAssets::loading);
-    ProgressBar* progressBar = new ProgressBar(lcd, 10, 74, 3, true);
-    progressBar->render(0);
-
-    unsigned char* bitmap = new unsigned char[LcdAssets::fullScreenLength];
-
-    for (unsigned int i = 0; i < LcdAssets::fullScreenLength; i++) {
-        byteLoader32->loadByteToPosition(bitmap, LcdAssets::splashScreenAddress + i, i);
-        progressBar->render(i * 100 / LcdAssets::fullScreenLength);
-        headline->update();
-    }
-    
-    lcd->setCursor(0, 0);
-    lcd->draw(bitmap, LcdAssets::fullScreenLength, false);
-    delete bitmap;
-    delete progressBar;
 }
