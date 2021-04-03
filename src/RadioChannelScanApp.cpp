@@ -1,41 +1,45 @@
 #include "RadioChannelScanApp.h"
 #include "RF24.h"
 
+AbstractApp::APPS RadioChannelScanApp::execute(void)
+{
+    Keypad *keypad = AbstractApp::sc->getKeypad();
+    Headline *headline = AbstractApp::sc->getHeadline();
 
-AbstractApp::APPS RadioChannelScanApp::execute(void) {
-    Keypad* keypad = AbstractApp::sc->getKeypad();
-    Headline* headline = AbstractApp::sc->getHeadline();
-    
     uint8_t bestChannel = getBestChannel();
 
-    while(true) {
+    while (true)
+    {
         headline->update();
-        if (!keypad->read()) {
+        if (!keypad->read())
+        {
             continue;
         }
-        switch (keypad->getKeypadSymbol()) {
-            case Keypad::keyStar:
-                // Save and exit
-                AbstractApp::sc->getConfigStorage()->setRadioChannel(bestChannel);
-                AbstractApp::sc->getRadio()->setChannel(bestChannel);
-                return AbstractApp::APPS::MAIN_MENU;
-            case Keypad::keyHash:
-                // Scan again
-                bestChannel = getBestChannel();
-                break;
-            case Keypad::keyD:
-                // Exit without saving
-                return AbstractApp::APPS::MAIN_MENU;
+        switch (keypad->getKeypadSymbol())
+        {
+        case Keypad::keyStar:
+            // Save and exit
+            AbstractApp::sc->getConfigStorage()->setRadioChannel(bestChannel);
+            AbstractApp::sc->getRadio()->setChannel(bestChannel);
+            return AbstractApp::APPS::MAIN_MENU;
+        case Keypad::keyHash:
+            // Scan again
+            bestChannel = getBestChannel();
+            break;
+        case Keypad::keyD:
+            // Exit without saving
+            return AbstractApp::APPS::MAIN_MENU;
         }
     }
 }
 
-uint8_t RadioChannelScanApp::getBestChannel(void) {
-    Nokia_LCD* lcd = AbstractApp::sc->getLcd();
-    ConfigStorage* config = AbstractApp::sc->getConfigStorage();
-    MenuRenderer* menuRenderer = AbstractApp::sc->getMenuRenderer();
-    Headline* headline = AbstractApp::sc->getHeadline();
-    RF24* radio = AbstractApp::sc->getRadio();
+uint8_t RadioChannelScanApp::getBestChannel(void)
+{
+    Nokia_LCD *lcd = AbstractApp::sc->getLcd();
+    ConfigStorage *config = AbstractApp::sc->getConfigStorage();
+    MenuRenderer *menuRenderer = AbstractApp::sc->getMenuRenderer();
+    Headline *headline = AbstractApp::sc->getHeadline();
+    RF24 *radio = AbstractApp::sc->getRadio();
     uint8_t bestChannel = config->getRadioChannel();
     uint8_t bestRangeLength = 0;
     uint8_t bestRangeStartChannel = 0;
@@ -49,27 +53,29 @@ uint8_t RadioChannelScanApp::getBestChannel(void) {
     radio->powerUp();
     radio->setAutoAck(false);
 
-    for (uint8_t ch = channelMin; ch <= channelMax; ch++) {
+    for (uint8_t ch = channelMin; ch <= channelMax; ch++)
+    {
         headline->update();
-        switch (ch) {
-            case 1:
-                lcd->setCursor(0, 3);
-                lcd->print(ch);
-                break;
-            case 32:
-            case 64:
-                lcd->setCursor(ch - 5, 3);
-                lcd->print(ch);
-                break;
-            case 65:
-                lcd->setCursor(0, 5);
-                lcd->print(ch);
-                break;
-            case 96:
-            case 128:
-                lcd->setCursor(ch - 70, 5);
-                lcd->print(ch);
-                break;
+        switch (ch)
+        {
+        case 1:
+            lcd->setCursor(0, 3);
+            lcd->print(ch);
+            break;
+        case 32:
+        case 64:
+            lcd->setCursor(ch - 5, 3);
+            lcd->print(ch);
+            break;
+        case 65:
+            lcd->setCursor(0, 5);
+            lcd->print(ch);
+            break;
+        case 96:
+        case 128:
+            lcd->setCursor(ch - 70, 5);
+            lcd->print(ch);
+            break;
         }
 
         radio->setChannel(ch);
@@ -77,23 +83,31 @@ uint8_t RadioChannelScanApp::getBestChannel(void) {
         delayMicroseconds(scanDelay);
         radio->stopListening();
 
-        if (ch <= 64) {
+        if (ch <= 64)
+        {
             lcd->setCursor(ch - 1, 2);
-        } else {
+        }
+        else
+        {
             lcd->setCursor(ch - 65, 4);
         }
 
-        if (radio->testRPD() || radio->testCarrier()){
+        if (radio->testRPD() || radio->testCarrier())
+        {
             currentRangeLength = 0;
             lcd->draw(LcdAssets::vLine, 1, true);
-        } else {
-            if (currentRangeLength == 0) {
+        }
+        else
+        {
+            if (currentRangeLength == 0)
+            {
                 currentRangeStartChannel = ch;
             }
 
             currentRangeLength++;
-            
-            if (currentRangeLength > bestRangeLength) {
+
+            if (currentRangeLength > bestRangeLength)
+            {
                 bestRangeStartChannel = currentRangeStartChannel;
                 bestRangeLength = currentRangeLength;
             }
@@ -106,9 +120,12 @@ uint8_t RadioChannelScanApp::getBestChannel(void) {
     radio->setAutoAck(true);
     radio->powerDown();
 
-    if (bestRangeLength <= 2) {
+    if (bestRangeLength <= 2)
+    {
         bestChannel = config->getRadioChannel();
-    } else {
+    }
+    else
+    {
         bestChannel = bestRangeStartChannel + bestRangeLength / 2;
     }
 

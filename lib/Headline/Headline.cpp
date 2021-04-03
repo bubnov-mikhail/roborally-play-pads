@@ -1,6 +1,6 @@
 #include <Headline.h>
 
-Headline::Headline(ConfigStorage* _configStorage, Nokia_LCD* _lcd, DS1307RTC* _rtc, uint8_t _pinVoltageRead)
+Headline::Headline(ConfigStorage *_configStorage, Nokia_LCD *_lcd, DS1307RTC *_rtc, uint8_t _pinVoltageRead)
 {
     configStorage = _configStorage;
     lcd = _lcd;
@@ -11,7 +11,8 @@ Headline::Headline(ConfigStorage* _configStorage, Nokia_LCD* _lcd, DS1307RTC* _r
 
 void Headline::update(bool forceUpdate /*= false*/)
 {
-    if (millis() - lastUpdated < refreshTimeMilis && !forceUpdate) {
+    if (millis() - lastUpdated < refreshTimeMilis && !forceUpdate)
+    {
         return;
     }
 
@@ -26,13 +27,17 @@ void Headline::update(bool forceUpdate /*= false*/)
 inline void Headline::updateRtc(void)
 {
     tmElements_t tm;
-    if (rtc->read(tm)) {
+    if (rtc->read(tm))
+    {
         lcd->setCursor(0, 0);
         printValue(tm.Hour);
         lcd->setCursor(lcd->getCursorX() + 1, 0);
-        if (displayClockDots) {
+        if (displayClockDots)
+        {
             lcd->draw(LcdAssets::smallInts[11], 3, true);
-        } else {
+        }
+        else
+        {
             lcd->draw(LcdAssets::smallInts[10], 3, true);
         }
         printValue(tm.Minute);
@@ -44,7 +49,8 @@ inline void Headline::updateRadio(void)
     lcd->setCursor(55, 0);
     lcd->draw(LcdAssets::radioSignal, 5, true);
 
-    if (!configStorage->isRadioConnected()) {
+    if (!configStorage->isRadioConnected())
+    {
         lcd->setCursor(lcd->getCursorX() + 1, 0);
         lcd->draw(LcdAssets::radioNotAvailable, 3, true);
         return;
@@ -55,9 +61,10 @@ inline void Headline::updateRadio(void)
 
 inline void Headline::updateBattery(void)
 {
-    unsigned int voltage = analogRead(pinVoltageRead);    
+    unsigned int voltage = analogRead(pinVoltageRead);
     lcd->setCursor(76, 0);
-    if (voltage < batteryLowThreshold && displayClockDots) {
+    if (voltage < batteryLowThreshold && displayClockDots)
+    {
         lcd->draw(LcdAssets::batteryBlank, 8, true);
         return;
     }
@@ -66,15 +73,16 @@ inline void Headline::updateBattery(void)
 
 void Headline::printValue(uint8_t value)
 {
-    if (value < 10) {
+    if (value < 10)
+    {
         printDigit(0);
         printDigit(value);
-        
+
         return;
     }
     uint8_t tens = value / 10;
     printDigit(tens);
-    printDigit(value - tens*10);
+    printDigit(value - tens * 10);
 }
 
 void Headline::printDigit(uint8_t value)
@@ -85,8 +93,9 @@ void Headline::printDigit(uint8_t value)
 
 void Headline::printDigits(uint8_t value)
 {
-    if(value >= 10) {
-       printDigits(value / 10);
+    if (value >= 10)
+    {
+        printDigits(value / 10);
     }
 
     int digit = value % 10;

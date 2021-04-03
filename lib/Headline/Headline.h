@@ -17,24 +17,26 @@
 #include <TimeLib.h>
 #include <DS1307RTC.h>
 
-class Headline {
-    public:
-        Headline(ConfigStorage* _configStorage, Nokia_LCD* _lcd, DS1307RTC* _rtc, uint8_t _pinVoltageRead);
-        void update(bool forceUpdate = false);
-    protected:
-        ConfigStorage* configStorage;
-        Nokia_LCD* lcd;
-        DS1307RTC* rtc;
-        uint8_t pinVoltageRead;
-        unsigned long lastUpdated;
-        bool displayClockDots = true;
-        inline void updateRtc(void);
-        inline void updateBattery(void);
-        inline void updateRadio(void);
-        void printValue(uint8_t value);
-        void printDigit(uint8_t value);
-        void printDigits(uint8_t value);
-        const static unsigned short int refreshTimeMilis = 500;
-        const static unsigned short int batteryHalfThreshold = 780;
-        const static unsigned short int batteryLowThreshold = 685;
+class Headline
+{
+public:
+    Headline(ConfigStorage *_configStorage, Nokia_LCD *_lcd, DS1307RTC *_rtc, uint8_t _pinVoltageRead);
+    void update(bool forceUpdate = false);
+
+protected:
+    ConfigStorage *configStorage;
+    Nokia_LCD *lcd;
+    DS1307RTC *rtc;
+    uint8_t pinVoltageRead;
+    unsigned long lastUpdated;
+    bool displayClockDots = true;
+    inline void updateRtc(void);
+    inline void updateBattery(void);
+    inline void updateRadio(void);
+    void printValue(uint8_t value);
+    void printDigit(uint8_t value);
+    void printDigits(uint8_t value);
+    const static unsigned short int refreshTimeMilis = 500;
+    const static unsigned short int batteryHalfThreshold = 780;
+    const static unsigned short int batteryLowThreshold = 685;
 };

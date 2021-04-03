@@ -20,6 +20,6 @@
 #include <Nokia_LCD.h>
 #include <ConfigStorage.h>
 
-void(* resetFunc) (void) = 0;
-bool writeBytes(Eeprom24C* eeprom24C, unsigned int address, unsigned int totalCapacity, unsigned short int length, const unsigned char* bytes, bool doubleRows);
+void (*resetFunc)(void) = 0;
+bool writeBytes(Eeprom24C *eeprom24C, unsigned int address, unsigned int totalCapacity, unsigned short int length, const unsigned char *bytes, bool doubleRows);
 void drawFullScreen(const unsigned short int length, unsigned int address);

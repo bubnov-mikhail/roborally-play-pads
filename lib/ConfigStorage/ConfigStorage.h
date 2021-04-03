@@ -12,33 +12,35 @@
 #pragma once
 #include <inttypes.h>
 
-class ConfigStorage {
-    public:
-        ConfigStorage(void);
-        ConfigStorage(bool _withBacklight, bool _withSounds, uint8_t _contrast, uint8_t _radioChannel, uint8_t _radioLevel);
-        bool isWithBacklight();
-        bool isWithSounds();
-        uint8_t getContrast();
-        uint8_t getRadioChannel();
-        uint8_t getRadioLevel();
-        void setWithBacklight(bool value);
-        void setWithSounds(bool value);
-        void setContrast(uint8_t value);
-        void setRadioChannel(uint8_t value);
-        void setRadioLevel(uint8_t value);
-        void setRadioConnected(bool value);
-        bool isRadioConnected();
-    protected:
-        int withBacklightAddress;
-        int withSoundsAddress;
-        int contrastAddress;
-        int radioChannelAddress;
-        int radioLevelAddress;
-        bool withBacklight;
-        bool withSounds;
-        uint8_t contrast;
-        uint8_t radioChannel;
-        uint8_t radioLevel;
-        bool radioConnected;
-        void initAddresses(void);
+class ConfigStorage
+{
+public:
+    ConfigStorage(void);
+    ConfigStorage(bool _withBacklight, bool _withSounds, uint8_t _contrast, uint8_t _radioChannel, uint8_t _radioLevel);
+    bool isWithBacklight();
+    bool isWithSounds();
+    uint8_t getContrast();
+    uint8_t getRadioChannel();
+    uint8_t getRadioLevel();
+    void setWithBacklight(bool value);
+    void setWithSounds(bool value);
+    void setContrast(uint8_t value);
+    void setRadioChannel(uint8_t value);
+    void setRadioLevel(uint8_t value);
+    void setRadioConnected(bool value);
+    bool isRadioConnected();
+
+protected:
+    int withBacklightAddress;
+    int withSoundsAddress;
+    int contrastAddress;
+    int radioChannelAddress;
+    int radioLevelAddress;
+    bool withBacklight;
+    bool withSounds;
+    uint8_t contrast;
+    uint8_t radioChannel;
+    uint8_t radioLevel;
+    bool radioConnected;
+    void initAddresses(void);
 };

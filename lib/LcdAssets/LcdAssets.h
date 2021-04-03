@@ -6,7 +6,8 @@
 #define PROGMEM
 #endif
 
-namespace LcdAssets {
+namespace LcdAssets
+{
     static const uint8_t displayWidth = 84;
     static const uint8_t charWidth = 6;
     // Gfx assets stored on Eeprom24C08
@@ -31,7 +32,7 @@ namespace LcdAssets {
     const unsigned int roborallyMoveWait6Address = roborallyMoveWait5Address + roborallyMovesBitmapLength;
     const unsigned int roborallyMoveWait7Address = roborallyMoveWait6Address + roborallyMovesBitmapLength;
     const unsigned int splashScreenAddress = roborallyMoveWait7Address + roborallyMovesBitmapLength;
-    
+
     // Bitmaps
     const unsigned char radioSignal[] PROGMEM = {0x10, 0x00, 0x1c, 0x00, 0x1f};
     const unsigned char radioNotAvailable[] PROGMEM = {0x0a, 0x04, 0x0a};

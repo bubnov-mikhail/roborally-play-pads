@@ -1,14 +1,16 @@
 #include "MainApp.h"
 
-MainApp::MainApp() {
+MainApp::MainApp()
+{
     nextApp = AbstractApp::APPS::MAIN_MENU;
 }
 
-AbstractApp::APPS MainApp::execute(void) {
-    Nokia_LCD* lcd = AbstractApp::sc->getLcd();
-    Keypad* keypad = AbstractApp::sc->getKeypad();
-    ConfigStorage* config = AbstractApp::sc->getConfigStorage();
-    Headline* headline = AbstractApp::sc->getHeadline();
+AbstractApp::APPS MainApp::execute(void)
+{
+    Nokia_LCD *lcd = AbstractApp::sc->getLcd();
+    Keypad *keypad = AbstractApp::sc->getKeypad();
+    ConfigStorage *config = AbstractApp::sc->getConfigStorage();
+    Headline *headline = AbstractApp::sc->getHeadline();
 
     MenuSystem menuSystem(*(AbstractApp::sc->getMenuRenderer()));
     Menu menuGames(StringAssets::games);
@@ -27,7 +29,8 @@ AbstractApp::APPS MainApp::execute(void) {
     menuConfigs.add_item(&menuItemContrast);
     menuConfigs.add_item(&menuItemClockCtrl);
 
-    if (config->isRadioConnected()) {
+    if (config->isRadioConnected())
+    {
         MenuItem menuItemRadioCtrlChannel(StringAssets::radioChannel, MainApp::handleConfigRadioChannel);
         MenuItem menuItemRadioCtrlChannelScan(StringAssets::radioChannelScan, MainApp::handleConfigRadioChannelScan);
         MenuItem menuItemRadioCtrlLevel(MainApp::getRadioLevelMenuName(config), MainApp::handleConfigRadioLevel);
@@ -37,23 +40,26 @@ AbstractApp::APPS MainApp::execute(void) {
     }
 
     menuConfigs.add_item(&aboutPad);
-    
+
     menuSystem.get_root_menu().set_name(StringAssets::mainMenu);
     menuSystem.get_root_menu().add_menu(&menuGames);
     menuSystem.get_root_menu().add_menu(&menuConfigs);
 
     menuSystem.display();
-    
+
     headline->update(true);
 
-    while(nextApp == AbstractApp::APPS::MAIN_MENU) {
-        if (!keypad->read()) {
+    while (nextApp == AbstractApp::APPS::MAIN_MENU)
+    {
+        if (!keypad->read())
+        {
             headline->update();
             continue;
         }
 
         uint8_t keypadSymbol = keypad->getKeypadSymbol();
-        if(handleKeypadSymbol(keypadSymbol, &menuSystem)) {
+        if (handleKeypadSymbol(keypadSymbol, &menuSystem))
+        {
             headline->update(true);
         }
     }
@@ -61,7 +67,7 @@ AbstractApp::APPS MainApp::execute(void) {
     return nextApp;
 }
 
-const char* MainApp::getBacklightMenuName(ConfigStorage* config)
+const char *MainApp::getBacklightMenuName(ConfigStorage *config)
 {
     // inline app
     strcpy(MainApp::backlightMenuName, StringAssets::backlight);
@@ -71,7 +77,7 @@ const char* MainApp::getBacklightMenuName(ConfigStorage* config)
     return MainApp::backlightMenuName;
 }
 
-const char* MainApp::getSoundsMenuName(ConfigStorage* config)
+const char *MainApp::getSoundsMenuName(ConfigStorage *config)
 {
     // inline app
     strcpy(MainApp::soundsMenuName, StringAssets::sounds);
@@ -81,108 +87,111 @@ const char* MainApp::getSoundsMenuName(ConfigStorage* config)
     return MainApp::soundsMenuName;
 }
 
-const char* MainApp::getRadioLevelMenuName(ConfigStorage* config)
+const char *MainApp::getRadioLevelMenuName(ConfigStorage *config)
 {
     // inline app
     strcpy(MainApp::radioLevelMenuName, StringAssets::radioLevel);
     strcat(MainApp::radioLevelMenuName, StringAssets::colon);
     strcat(MainApp::radioLevelMenuName, StringAssets::space);
-    switch (config->getRadioLevel()) {
-        case 0:
-            strcat(MainApp::radioLevelMenuName, StringAssets::radioLevelMin);
-            break;
-        case 1:
-            strcat(MainApp::radioLevelMenuName, StringAssets::radioLevelLow);
-            break;
-        case 3:
-            strcat(MainApp::radioLevelMenuName, StringAssets::radioLevelMax);
-            break;
+    switch (config->getRadioLevel())
+    {
+    case 0:
+        strcat(MainApp::radioLevelMenuName, StringAssets::radioLevelMin);
+        break;
+    case 1:
+        strcat(MainApp::radioLevelMenuName, StringAssets::radioLevelLow);
+        break;
+    case 3:
+        strcat(MainApp::radioLevelMenuName, StringAssets::radioLevelMax);
+        break;
     }
 
     return MainApp::radioLevelMenuName;
 }
 
-void MainApp::handleConfigBacklight(MenuComponent* p_menu_component)
+void MainApp::handleConfigBacklight(MenuComponent *p_menu_component)
 {
     // inline app
-    Nokia_LCD* lcd = AbstractApp::sc->getLcd();
-    ConfigStorage* config = AbstractApp::sc->getConfigStorage();
+    Nokia_LCD *lcd = AbstractApp::sc->getLcd();
+    ConfigStorage *config = AbstractApp::sc->getConfigStorage();
     config->setWithBacklight(!config->isWithBacklight());
     lcd->setBacklight(config->isWithBacklight());
     p_menu_component->set_name(MainApp::getBacklightMenuName(config));
 }
 
-void MainApp::handleConfigSound(MenuComponent* p_menu_component)
+void MainApp::handleConfigSound(MenuComponent *p_menu_component)
 {
     // inline app
-    ConfigStorage* config = AbstractApp::sc->getConfigStorage();
+    ConfigStorage *config = AbstractApp::sc->getConfigStorage();
     config->setWithSounds(!config->isWithSounds());
     AbstractApp::sc->getKeypad()->setBeepOnClick(config->isWithSounds());
     p_menu_component->set_name(MainApp::getSoundsMenuName(config));
 }
 
-void MainApp::handleGamesRoborally(MenuComponent* p_menu_component)
+void MainApp::handleGamesRoborally(MenuComponent *p_menu_component)
 {
     nextApp = AbstractApp::APPS::ROBORALLY;
 }
 
-void MainApp::handleConfigContrast(MenuComponent* p_menu_component)
+void MainApp::handleConfigContrast(MenuComponent *p_menu_component)
 {
     nextApp = AbstractApp::APPS::CONTRAST;
 }
 
-void MainApp::handleConfigClockCtrl(MenuComponent* p_menu_component)
+void MainApp::handleConfigClockCtrl(MenuComponent *p_menu_component)
 {
     nextApp = AbstractApp::APPS::CLOCK;
 }
 
-void MainApp::handleConfigRadioChannel(MenuComponent* p_menu_component)
+void MainApp::handleConfigRadioChannel(MenuComponent *p_menu_component)
 {
     nextApp = AbstractApp::APPS::RADIO_CHANNEL;
 }
 
-void MainApp::handleConfigRadioChannelScan(MenuComponent* p_menu_component)
+void MainApp::handleConfigRadioChannelScan(MenuComponent *p_menu_component)
 {
     nextApp = AbstractApp::APPS::RADIO_CHANNEL_SCAN;
 }
 
-void MainApp::handleConfigRadioLevel(MenuComponent* p_menu_component)
+void MainApp::handleConfigRadioLevel(MenuComponent *p_menu_component)
 {
     // inline app
-    ConfigStorage* config = AbstractApp::sc->getConfigStorage();
+    ConfigStorage *config = AbstractApp::sc->getConfigStorage();
     uint8_t newLevel;
-    switch (config->getRadioLevel()) {
-        case 0:
-            newLevel = 1;
-            break;
-        case 1:
-            newLevel = 3;
-            break;
-        case 3:
-            newLevel = 0;
-            break;
+    switch (config->getRadioLevel())
+    {
+    case 0:
+        newLevel = 1;
+        break;
+    case 1:
+        newLevel = 3;
+        break;
+    case 3:
+        newLevel = 0;
+        break;
     }
     config->setRadioLevel(newLevel);
     AbstractApp::sc->getRadio()->setPALevel(newLevel);
     p_menu_component->set_name(MainApp::getRadioLevelMenuName(config));
 }
 
-bool MainApp::handleKeypadSymbol(uint8_t keypadSymbol, MenuSystem* menuSystem)
+bool MainApp::handleKeypadSymbol(uint8_t keypadSymbol, MenuSystem *menuSystem)
 {
-    switch (keypadSymbol) {
-      case Keypad::keyB:
+    switch (keypadSymbol)
+    {
+    case Keypad::keyB:
         menuSystem->prev();
         menuSystem->display();
         return true;
-      case Keypad::keyC:
+    case Keypad::keyC:
         menuSystem->next();
         menuSystem->display();
         return true;
-      case Keypad::keyStar:
+    case Keypad::keyStar:
         menuSystem->select();
         menuSystem->display();
         return true;
-      case Keypad::keyD:
+    case Keypad::keyD:
         menuSystem->back();
         menuSystem->display();
         return true;

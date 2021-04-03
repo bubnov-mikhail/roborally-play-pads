@@ -4,7 +4,7 @@
 ConfigStorage::ConfigStorage(void)
 {
     initAddresses();
-    
+
     EEPROM.get(withBacklightAddress, withBacklight);
     EEPROM.get(withSoundsAddress, withSounds);
     EEPROM.get(contrastAddress, contrast);

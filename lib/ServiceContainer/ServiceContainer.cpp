@@ -1,17 +1,17 @@
 #include <ServiceContainer.h>
 
 ServiceContainer::ServiceContainer(
-    ConfigStorage* _configStorage, 
-    Nokia_LCD* _lcd, 
-    Keypad* _keypad, 
-    Headline* _headline, 
-    ByteLoader* _byteLoader32, 
-    ByteLoader* _byteLoader08, 
-    DS1307RTC* _rtc,
-    TonePlayer* _tonePlayer,
-    RF24* _radio,
-    MenuRenderer* _menuRenderer
-) {
+    ConfigStorage *_configStorage,
+    Nokia_LCD *_lcd,
+    Keypad *_keypad,
+    Headline *_headline,
+    ByteLoader *_byteLoader32,
+    ByteLoader *_byteLoader08,
+    DS1307RTC *_rtc,
+    TonePlayer *_tonePlayer,
+    RF24 *_radio,
+    MenuRenderer *_menuRenderer)
+{
     configStorage = _configStorage;
     lcd = _lcd;
     keypad = _keypad;
@@ -24,52 +24,52 @@ ServiceContainer::ServiceContainer(
     menuRenderer = _menuRenderer;
 }
 
-ConfigStorage* ServiceContainer::getConfigStorage(void)
+ConfigStorage *ServiceContainer::getConfigStorage(void)
 {
     return configStorage;
 }
 
-Nokia_LCD* ServiceContainer::getLcd(void)
+Nokia_LCD *ServiceContainer::getLcd(void)
 {
     return lcd;
 }
 
-Keypad* ServiceContainer::getKeypad(void)
+Keypad *ServiceContainer::getKeypad(void)
 {
     return keypad;
 }
 
-Headline* ServiceContainer::getHeadline(void)
+Headline *ServiceContainer::getHeadline(void)
 {
     return headline;
 }
 
-MenuRenderer* ServiceContainer::getMenuRenderer(void)
+MenuRenderer *ServiceContainer::getMenuRenderer(void)
 {
     return menuRenderer;
 }
 
-ByteLoader* ServiceContainer::getByteLoader32(void)
+ByteLoader *ServiceContainer::getByteLoader32(void)
 {
     return byteLoader32;
 }
 
-ByteLoader* ServiceContainer::getByteLoader08(void)
+ByteLoader *ServiceContainer::getByteLoader08(void)
 {
     return byteLoader08;
 }
 
-DS1307RTC* ServiceContainer::getRtc(void)
+DS1307RTC *ServiceContainer::getRtc(void)
 {
     return rtc;
 }
 
-TonePlayer* ServiceContainer::getTonePlayer(void)
+TonePlayer *ServiceContainer::getTonePlayer(void)
 {
     return tonePlayer;
 }
 
-RF24* ServiceContainer::getRadio(void)
+RF24 *ServiceContainer::getRadio(void)
 {
     return radio;
 }
