@@ -55,13 +55,13 @@ inline void Headline::updateRadio(void)
 
 inline void Headline::updateBattery(void)
 {
-    int voltage = analogRead(pinVoltageRead);    
+    unsigned int voltage = analogRead(pinVoltageRead);    
     lcd->setCursor(76, 0);
-    if (voltage < 682 && displayClockDots) {
+    if (voltage < batteryLowThreshold && displayClockDots) {
         lcd->draw(LcdAssets::batteryBlank, 8, true);
         return;
     }
-    lcd->draw((voltage >= 780) ? LcdAssets::batteryFull : (voltage >= 682 ? LcdAssets::batteryHalf : LcdAssets::batteryLow), 8, true);
+    lcd->draw((voltage >= batteryHalfThreshold) ? LcdAssets::batteryFull : (voltage >= batteryLowThreshold ? LcdAssets::batteryHalf : LcdAssets::batteryLow), 8, true);
 }
 
 void Headline::printValue(uint8_t value)

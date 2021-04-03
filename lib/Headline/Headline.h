@@ -35,4 +35,6 @@ class Headline {
         void printDigit(uint8_t value);
         void printDigits(uint8_t value);
         const static unsigned short int refreshTimeMilis = 500;
+        const static unsigned short int batteryHalfThreshold = 780;
+        const static unsigned short int batteryLowThreshold = 685;
 };
