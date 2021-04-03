@@ -39,6 +39,8 @@ AbstractApp::APPS RoborallyApp::execute(void) {
             flashlightTurnOff();
             // tonePlayer->stop(); // In case of a back music
             AbstractApp::sc->getLcd()->clear(false);
+            self->state = OFFLINE;
+            anounceSelf();
             AbstractApp::sc->getRadio()->powerDown();
             return AbstractApp::APPS::MAIN_MENU;
         }
@@ -524,7 +526,7 @@ void RoborallyApp::initRadio(void) {
     RF24* radio = AbstractApp::sc->getRadio();
     radio->powerUp();
     radio->setPayloadSize(sizeof(PlayPad));
-
+    radio->setAutoAck(true);
     /**
      * According to the datasheet, the auto-retry features's delay value should
      * be "skewed" to allow the RX node to receive 1 transmission at a time.
