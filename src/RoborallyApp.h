@@ -67,23 +67,107 @@ class RoborallyApp : public AbstractApp {
             "Prime", "2Node", "3Node", "4Node", "5Node", "6Node"
         };
         PlayPad playPads[maxPlayers];
-
+        
+        /**
+         * Retern pointer the the pad of the device
+         */
         PlayPad* getSelf();
+
+        /**
+         * Return the GameState of the device pad
+         */        
         GameState getGameState();
+
+        /**
+         * Draw the background image. Should be called once.
+         */
         void drawMainScreen(unsigned short int length, unsigned int address, uint8_t lcdY);
+
+        /**
+         * Draw dots for rounds
+         */
         void drawRound();
+
+        /**
+         * Draw custom text in the card area
+         */
         void printCardMonitor();
+
+        /**
+         * Draw custom test in the bottom
+         */
         void printMessage();
+
+        /**
+         * Handle key pressed
+         */
         void handleKeypad();
+
+        /**
+         * Draw right monitor content based on the business logic
+         */
         void updateMonitor(void);
+
+        /**
+         * Draw custom bitmap to the right monitor
+         */
         void drawMonitor(unsigned char* bitmap);
-        void generateNoise(unsigned char* bitmapUpper);
+
+        /**
+         * Generate noise pattern
+         */
+        void generateNoise(unsigned char* bitmap);
+
+        /**
+         * Handle periodic flash blinking
+         * @see flashlightTurnOn
+         * @see flashlightTurnOff
+         */
         void flashlightBlink();
+
+        /**
+         * Turn on the flash LED blinking.
+         * @see flashlightBlink to handle eriodic flash blinking
+         */
         void flashlightTurnOn();
+
+        /**
+         * Turn off the flash LED blinking.
+         */
         void flashlightTurnOff();
+
+        /**
+         * TR/RX business logic based on the GameState of the pad
+         */
         void communicate(void);
+
+        /**
+         * Setup the radio module. open reading and writing pipes
+         */
         void initRadio(void);
+
+        /**
+         * Init a new round
+         */
         void startRound(uint8_t _round);
+
+        /**
+         * Send the device pad's GameState to all other pads
+         */
         void anounceSelf(void);
+
+        /**
+         * Check if all connected pads have the same GameState
+         */
+        void hasQuorum(void);
+
+        /**
+         * Check if all connected pads have the same GameState
+         */
+        GameState getQuorum(void);
+
+        /**
+         * Check how many pads have status not equal OFFLINE
+         */
         uint8_t getPlayPadsConnected(void);
 };
