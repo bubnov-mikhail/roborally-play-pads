@@ -630,8 +630,19 @@ void RoborallyApp::drawMainScreen(const unsigned short int length, unsigned int 
 
 bool RoborallyApp::hasQuorum()
 {
-    GameState gameState;
+    GameState gameState = getGameState();
     for (uint8_t i = 0; i < maxPlayers; i++)
     {
+        if (playPads[i].state == OFFLINE)
+        {
+            continue;
+        }
+
+        if (gameState != playPads[i].state)
+        {
+            return false;
+        }
     }
+
+    return true;
 }
