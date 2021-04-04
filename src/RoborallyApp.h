@@ -9,11 +9,12 @@ public:
      AbstractApp::APPS execute(void);
      enum GameState
      {
-          OFFLINE,
+          OFFLINE = 0,
           CONNECTING,
           CONNECTED,
           ENTERING_CARD,
-          WAITING_OTHERS,
+          WAITING_QUORUM,
+          WAITING_HIGHER_CARD_NUMBER,
           YOUR_MOVE,
           NEXT_PHASE_WAITING,
           POWER_DOWN,
@@ -34,8 +35,7 @@ public:
      };
      static uint8_t spiMoSiCs; // Used to flash lights using spi
 private:
-     uint16_t cardNumber = 0;
-     const uint16_t powerDownCardNumber = 1000;
+     const static uint16_t powerDownCardNumber = 1000;
      uint8_t waitingPhase = 0;
      GameState statePriorExitConfirmation;
      GameState screenState;
@@ -49,7 +49,7 @@ private:
      const static unsigned short int noiseRefreshTimeMilis = 100;
      const static unsigned short int waitingRefreshTimeMilis = 100;
      const static unsigned short int roundRefreshTimeMilis = 400;
-     const static unsigned short int flashlightBlinkMilis = 100;
+     const static unsigned short int flashlightBlinkMillis = 100;
      bool flashlightOn = false;
      unsigned long flashlightCreated = 0;
      const static uint8_t flashlightBlinks = 10;
@@ -74,11 +74,6 @@ private:
          * Retern pointer the the pad of the device
          */
      PlayPad *getSelf();
-
-     /**
-         * Return the GameState of the device pad
-         */
-     GameState getGameState();
 
      /**
          * Draw the background image. Should be called once.
@@ -149,9 +144,9 @@ private:
      void initRadio(void);
 
      /**
-         * Init a new round
+         * Flash the light and play the sound in order the player pays attention
          */
-     void startRound(uint8_t _round);
+     void activityRequired();
 
      /**
          * Send the device pad's GameState to all other pads
@@ -164,7 +159,32 @@ private:
      bool hasQuorum(void);
 
      /**
+         * Set the same GameState for all not OFFLINE pads, inc. self
+         */
+     void setGameStatesLocaly(GameState gameState);
+
+     /**
+         * Check if the provided game state is more or equal OFFLINE and less or equal DO_EXIT
+         */
+     bool isValidGameState(GameState gameState);
+
+     /**
+         * Check if the provided card number is more or equal 0 and less or equal maxCardNumber
+         */
+     bool isValidCardNumber(uint16_t cardNumber);
+
+     /**
+         * Check if time period ends
+         */
+     bool isReachedTimer(unsigned long lastUpdated, unsigned long refreshTimeMilis);
+
+     /**
          * Check how many pads have status not equal OFFLINE
          */
      uint8_t getPlayPadsConnected(void);
+
+     /**
+      * Go to the next game state
+      */
+     void handleGameState(void);
 };

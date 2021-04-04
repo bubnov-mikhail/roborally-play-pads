@@ -12,4 +12,5 @@ private:
     uint8_t increment(Keypad *keypad, Nokia_LCD *lcd, Headline *headline, uint8_t vMin, uint8_t vMax, uint8_t tmp, int8_t direction);
     const uint8_t vMin = 1;
     const uint8_t vMax = 125;
+    bool isReachedTimer(unsigned long lastUpdated, unsigned long refreshTimeMilis);
 };

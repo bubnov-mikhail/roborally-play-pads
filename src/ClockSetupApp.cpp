@@ -43,7 +43,7 @@ AbstractApp::APPS ClockSetupApp::execute(void)
 
 void ClockSetupApp::drawComponents(void)
 {
-    if (millis() - blinkLastUpdated < blinkRefreshMilis)
+    if (!isReachedTimer(blinkLastUpdated, blinkRefreshMilis))
     {
         return;
     }
@@ -249,4 +249,12 @@ void ClockSetupApp::setComponentValue(void)
     default:
         componentValue = 0;
     }
+}
+
+bool ClockSetupApp::isReachedTimer(unsigned long lastUpdated, unsigned long refreshTimeMilis)
+{
+    unsigned long m = millis();
+    return m < lastUpdated
+        ? true
+        : m - lastUpdated > refreshTimeMilis;
 }

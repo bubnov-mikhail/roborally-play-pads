@@ -65,7 +65,7 @@ uint8_t ContrastCtlApp::increment(Keypad *keypad, Nokia_LCD *lcd, ProgressBar *p
             return tmpContrast;
         }
 
-        if ((millis() - longDelay) < 300)
+        if (!isReachedTimer(longDelay, 300))
         {
             continue;
         }
@@ -75,7 +75,7 @@ uint8_t ContrastCtlApp::increment(Keypad *keypad, Nokia_LCD *lcd, ProgressBar *p
             shortDelay = millis();
         }
 
-        if ((millis() - shortDelay) < 50)
+        if (!isReachedTimer(shortDelay, 50))
         {
             continue;
         }
@@ -91,4 +91,12 @@ void ContrastCtlApp::update(Nokia_LCD *lcd, ProgressBar *progressBar, uint8_t va
 {
     lcd->setContrast(value);
     progressBar->render((value - contrastMin) * 100 / (contrastMax - contrastMin));
+}
+
+bool ContrastCtlApp::isReachedTimer(unsigned long lastUpdated, unsigned long refreshTimeMilis)
+{
+    unsigned long m = millis();
+    return m < lastUpdated
+        ? true
+        : m - lastUpdated > refreshTimeMilis;
 }

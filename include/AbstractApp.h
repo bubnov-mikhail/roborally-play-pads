@@ -17,4 +17,5 @@ class AbstractApp {
             ROBORALLY
         };
         virtual APPS execute(void) = 0;
+        virtual ~AbstractApp(){};
 };

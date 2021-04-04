@@ -65,7 +65,7 @@ uint8_t RadioChannelApp::increment(Keypad *keypad, Nokia_LCD *lcd, Headline *hea
             return tmp;
         }
 
-        if ((millis() - longDelay) < 300)
+        if (!isReachedTimer(longDelay, 300))
         {
             continue;
         }
@@ -75,7 +75,7 @@ uint8_t RadioChannelApp::increment(Keypad *keypad, Nokia_LCD *lcd, Headline *hea
             shortDelay = millis();
         }
 
-        if ((millis() - shortDelay) < 50)
+        if (!isReachedTimer(shortDelay, 50))
         {
             continue;
         }
@@ -96,4 +96,12 @@ void RadioChannelApp::update(Nokia_LCD *lcd, uint8_t value)
     lcd->setCursor(48, 3);
 
     lcd->print(value);
+}
+
+bool RadioChannelApp::isReachedTimer(unsigned long lastUpdated, unsigned long refreshTimeMilis)
+{
+    unsigned long m = millis();
+    return m < lastUpdated
+        ? true
+        : m - lastUpdated > refreshTimeMilis;
 }

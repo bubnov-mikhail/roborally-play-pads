@@ -7,7 +7,6 @@ MainApp::MainApp()
 
 AbstractApp::APPS MainApp::execute(void)
 {
-    Nokia_LCD *lcd = AbstractApp::sc->getLcd();
     Keypad *keypad = AbstractApp::sc->getKeypad();
     ConfigStorage *config = AbstractApp::sc->getConfigStorage();
     Headline *headline = AbstractApp::sc->getHeadline();

@@ -185,11 +185,10 @@ void drawFullScreen(const unsigned short int length, unsigned int address)
     progressBar->render(i * 100 / length);
     headline.update();
   }
-  delete progressBar;
 
   lcd.setCursor(0, 0);
   lcd.draw(bitmap, length, false);
-  delete bitmap;
+  delete bitmap, progressBar;
 }
 
 #if defined(SET_GFX_ASSETS)

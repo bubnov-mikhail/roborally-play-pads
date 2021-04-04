@@ -14,6 +14,7 @@ namespace LcdAssets
     const unsigned short int fullScreenLength = 504;
     const unsigned short int roborallyMainScreenLength = 420;
     const unsigned short int roborallyMovesBitmapLength = 32;
+    const unsigned short int roborallyMovesBitmapHalfLength = 16;
 
     const unsigned int roborallyMainScreenAddress = 0;
     const unsigned int roborallyMoveForwardAddress = roborallyMainScreenAddress + roborallyMainScreenLength;

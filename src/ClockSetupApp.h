@@ -32,4 +32,5 @@ private:
     void decreaseValue(void);
     void changeComponent(bool increase);
     void changeValue(bool increase);
+    bool isReachedTimer(unsigned long lastUpdated, unsigned long refreshTimeMilis);
 };
