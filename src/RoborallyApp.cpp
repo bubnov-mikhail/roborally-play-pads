@@ -629,7 +629,7 @@ void RoborallyApp::markOffline(void)
     for (uint8_t i = 0; i < maxPlayers; i++)
     {
         heartBeatLastUpdated = playPads[i].heartBeatLastUpdated;
-        if (m > heartBeatLastUpdated && m - heartBeatLastUpdated > heartBeatMaxMillis)
+        if (playPadNumber != i && m > heartBeatLastUpdated && m - heartBeatLastUpdated > heartBeatMaxMillis)
         {
             playPads[i].state = GameState::OFFLINE;
         }
