@@ -4,9 +4,10 @@
 #include <ProgressBar.h>
 #include <AudioAssets.h>
 
-RoborallyApp::RoborallyApp(unsigned short int _playPadNumber)
+RoborallyApp::RoborallyApp(unsigned short int _playPadNumber, unsigned short int _anounceSelfMillis)
 {
     playPadNumber = _playPadNumber;
+    anounceSelfMillis = _anounceSelfMillis;
 }
 
 AbstractApp::APPS RoborallyApp::execute(void)
@@ -16,6 +17,7 @@ AbstractApp::APPS RoborallyApp::execute(void)
 
     monitorLastUpdated = millis() - noiseRefreshTimeMilis;
     roundLastUpdated = millis() - roundRefreshTimeMilis;
+    anounceSelfLastUpdated = millis() - anounceSelfMillis;
     screenState = GameState::REFRESH_REQUIRED;
     monitorState = GameState::REFRESH_REQUIRED;
     messageState = GameState::REFRESH_REQUIRED;
@@ -24,19 +26,22 @@ AbstractApp::APPS RoborallyApp::execute(void)
     drawMainScreen(LcdAssets::roborallyMainScreenLength, LcdAssets::roborallyMainScreenAddress, 1);
     tonePlayer->playTones(AudioAssets::roborallyIntro, AudioAssets::roborallyIntroLength, false);
 
-    initRadio();
+    init();
     PlayPad *self = getSelf();
+    self->state = GameState::CONNECTING;
     while (true)
     {
         headline->update();
-        communicate();
         drawRound();
         updateMonitor();
         printMessage();
         printCardMonitor();
         handleKeypad();
         flashlightBlink();
+        listen();
+        markOffline();
         handleGameState();
+        anounceSelf();
         // tonePlayer->play(); // In case of a back music
         if (self->state == GameState::DO_EXIT)
         {
@@ -44,7 +49,7 @@ AbstractApp::APPS RoborallyApp::execute(void)
             // tonePlayer->stop(); // In case of a back music
             AbstractApp::sc->getLcd()->clear(false);
             self->state = OFFLINE;
-            anounceSelf();
+            anounceSelf(true);
             AbstractApp::sc->getRadio()->powerDown();
             return AbstractApp::APPS::MAIN_MENU;
         }
@@ -102,7 +107,7 @@ void RoborallyApp::handleKeypad(void)
             validCardNumberEntered = false;
             round = 1;
             activityRequired();
-            anounceSelf();
+            anounceSelf(true);
         }
         break;
     case GameState::ENTERING_CARD:
@@ -133,15 +138,16 @@ void RoborallyApp::handleKeypad(void)
 
         if (keypadSymbol == Keypad::keyStar && validCardNumberEntered)
         {
-            if (self->cardNumber == powerDownCardNumber) {
+            if (self->cardNumber == powerDownCardNumber)
+            {
                 self->cardNumber = 0;
                 self->state = GameState::POWER_DOWN;
-                anounceSelf();
+                anounceSelf(true);
                 return;
             }
 
             self->state = GameState::WAITING_QUORUM;
-            anounceSelf();
+            anounceSelf(true);
             if (hasQuorum())
             {
                 setGameStatesLocaly(GameState::WAITING_HIGHER_CARD_NUMBER);
@@ -156,7 +162,7 @@ void RoborallyApp::handleKeypad(void)
         {
             self->state = GameState::NEXT_PHASE_WAITING;
             self->cardNumber = 0;
-            anounceSelf();
+            anounceSelf(true);
         }
         break;
     }
@@ -176,10 +182,10 @@ void RoborallyApp::drawRound()
     {
         return;
     }
-    roundDisplayCurrent = !roundDisplayCurrent;
+    roundLastUpdated = millis();
 
     Nokia_LCD *lcd = AbstractApp::sc->getLcd();
-
+    roundDisplayCurrent = !roundDisplayCurrent;
     for (uint8_t x = 0; x < 5; x++)
     {
         lcd->setCursor(x * 12 + 5, 4);
@@ -190,8 +196,6 @@ void RoborallyApp::drawRound()
         }
         lcd->draw(round > 0 && (x <= round - 1) ? LcdAssets::roborallyRoundFilled : LcdAssets::roborallyRoundEmpty, 2, true);
     }
-
-    roundLastUpdated = millis();
 }
 
 void RoborallyApp::printCardMonitor()
@@ -235,7 +239,7 @@ void RoborallyApp::printCardMonitor()
 void RoborallyApp::printMessage()
 {
     GameState gameState = playPads[playPadNumber].state;
-    if (gameState == messageState)
+    if (gameState == messageState && (gameState != GameState::ENTERING_CARD || !isReachedTimer(pwdHintLastUpdated, pwdHintBlinkMillis)))
     {
         return;
     }
@@ -248,8 +252,6 @@ void RoborallyApp::printMessage()
     }
     lcd->setCursor(3, 5);
 
-    messageState = gameState;
-
     switch (gameState)
     {
     case GameState::CONNECTING:
@@ -259,7 +261,10 @@ void RoborallyApp::printMessage()
         lcd->print(StringAssets::connected);
         break;
     case GameState::ENTERING_CARD:
-        lcd->print(StringAssets::enterCard);
+        lcd->print(pwdHintDisplay ? StringAssets::enterCard : StringAssets::pwdHint);
+
+        pwdHintDisplay = !pwdHintDisplay;
+        pwdHintLastUpdated = millis();
         break;
     case GameState::WAITING_QUORUM:
     case GameState::WAITING_HIGHER_CARD_NUMBER:
@@ -278,6 +283,8 @@ void RoborallyApp::printMessage()
     default:
         lcd->print(gameState);
     }
+
+    messageState = gameState;
 }
 
 void RoborallyApp::updateMonitor(void)
@@ -301,6 +308,7 @@ void RoborallyApp::updateMonitor(void)
     {
         return;
     }
+    monitorLastUpdated = millis();
 
     unsigned char *bitmap = new unsigned char[LcdAssets::roborallyMovesBitmapLength];
 
@@ -403,7 +411,6 @@ void RoborallyApp::updateMonitor(void)
     }
 
     drawMonitor(bitmap);
-    monitorLastUpdated = millis();
     monitorState = gameState;
     delete bitmap;
 }
@@ -490,26 +497,17 @@ void RoborallyApp::flashlightTurnOff()
     SPI.end();
 }
 
-void RoborallyApp::communicate(void)
+void RoborallyApp::listen(void)
 {
     PlayPad *self = getSelf();
     RF24 *radio = AbstractApp::sc->getRadio();
     uint8_t pipe;
 
+    // Reinit the radio ???
     // if (playPadNumber != 0)
     // {
     //     radio->openReadingPipe(0, addresses[0]);
     // }
-
-    if (self->state == GameState::OFFLINE)
-    {
-        self->state = GameState::CONNECTING;
-
-        // Init the connection to other, already online pads
-        anounceSelf();
-        return;
-    }
-
     if (radio->available(&pipe))
     {
         if (pipe < maxPlayers && pipe >= 0 && pipe != playPadNumber) // Valid pipe
@@ -578,8 +576,14 @@ void RoborallyApp::communicate(void)
     }
 }
 
-void RoborallyApp::anounceSelf(void)
+void RoborallyApp::anounceSelf(bool force = false)
 {
+    if (!isReachedTimer(anounceSelfLastUpdated, anounceSelfMillis))
+    {
+        return;
+    }
+    anounceSelfLastUpdated = millis();
+
     PlayPad *self = getSelf();
     RF24 *radio = AbstractApp::sc->getRadio();
 
@@ -602,6 +606,7 @@ void RoborallyApp::activityRequired()
     flashlightTurnOn();
 }
 
+// getPlayPadsConnected checks how many pads are connected, including self
 uint8_t RoborallyApp::getPlayPadsConnected(void)
 {
     uint8_t connected = 0;
@@ -616,12 +621,27 @@ uint8_t RoborallyApp::getPlayPadsConnected(void)
     return connected;
 }
 
-void RoborallyApp::initRadio(void)
+void RoborallyApp::markOffline(void)
+{
+    unsigned long m = millis();
+    unsigned long heartBeatLastUpdated;
+
+    for (uint8_t i = 0; i < maxPlayers; i++)
+    {
+        heartBeatLastUpdated = playPads[i].heartBeatLastUpdated;
+        if (m > heartBeatLastUpdated && m - heartBeatLastUpdated > heartBeatMaxMillis)
+        {
+            playPads[i].state = GameState::OFFLINE;
+        }
+    }
+}
+
+void RoborallyApp::init(void)
 {
     RF24 *radio = AbstractApp::sc->getRadio();
     radio->powerUp();
     radio->setPayloadSize(sizeof(PlayPad));
-    radio->setAutoAck(true);
+    radio->setAutoAck(false);
     /**
      * According to the datasheet, the auto-retry features's delay value should
      * be "skewed" to allow the RX node to receive 1 transmission at a time.
@@ -630,6 +650,8 @@ void RoborallyApp::initRadio(void)
     radio->setRetries(((playPadNumber * 3) % 12) + 3, 15);
     for (uint8_t i = 0; i < maxPlayers; i++)
     {
+        playPads[i].heartBeatLastUpdated = millis();
+
         // set pipes
         if (i == playPadNumber)
         {
@@ -678,7 +700,8 @@ bool RoborallyApp::hasQuorum()
         {
             continue;
         }
-        if (gameState == GameState::OFFLINE) {
+        if (gameState == GameState::OFFLINE)
+        {
             gameState = playPads[i].state;
             continue;
         }
@@ -724,8 +747,20 @@ bool RoborallyApp::isReachedTimer(unsigned long lastUpdated, unsigned long refre
 void RoborallyApp::handleGameState(void)
 {
     PlayPad *self = getSelf();
+    if (getPlayPadsConnected() == 1)
+    {
+        self->state = GameState::CONNECTING;
+        return;
+    }
+
     switch (self->state)
     {
+    case GameState::POWER_DOWN:
+        if (hasQuorum())
+        {
+            setGameStatesLocaly(GameState::YOUR_MOVE);
+        }
+        break;
     case GameState::WAITING_QUORUM:
         if (hasQuorum())
         {

@@ -5,7 +5,7 @@
 class RoborallyApp : public AbstractApp
 {
 public:
-     RoborallyApp(unsigned short int _padNumber);
+     RoborallyApp(unsigned short int _padNumber, unsigned short int _anounceSelfMillis);
      AbstractApp::APPS execute(void);
      enum GameState
      {
@@ -46,10 +46,16 @@ private:
      bool roundDisplayCurrent = true;
      unsigned long monitorLastUpdated;
      unsigned long roundLastUpdated;
+     unsigned long anounceSelfLastUpdated;
+     unsigned long pwdHintLastUpdated;
+     unsigned long pwdHintDisplay = false;
      const static unsigned short int noiseRefreshTimeMilis = 100;
      const static unsigned short int waitingRefreshTimeMilis = 100;
      const static unsigned short int roundRefreshTimeMilis = 400;
      const static unsigned short int flashlightBlinkMillis = 100;
+     const static unsigned short int pwdHintBlinkMillis = 2000;
+     const static unsigned short int heartBeatMaxMillis = 5000; // Max millis of the last heart beat of a pad to mark it OFFLINE
+     unsigned short int anounceSelfMillis = 1000;
      bool flashlightOn = false;
      unsigned long flashlightCreated = 0;
      const static uint8_t flashlightBlinks = 10;
@@ -65,6 +71,7 @@ private:
      {
           GameState state = OFFLINE;
           uint16_t cardNumber = 0;
+          unsigned long heartBeatLastUpdated = 0;
      };
      const uint8_t addresses[maxPlayers][6] = {
          "Prime", "2Node", "3Node", "4Node", "5Node", "6Node"};
@@ -134,14 +141,19 @@ private:
      void flashlightTurnOff();
 
      /**
-         * TR/RX business logic based on the GameState of the pad
+         * Check the last heart beat time of the pads and mark outdated as OFFLINE
          */
-     void communicate(void);
+     void markOffline(void);
+
+     /**
+         * RX other pad states
+         */
+     void listen(void);
 
      /**
          * Setup the radio module. open reading and writing pipes
          */
-     void initRadio(void);
+     void init(void);
 
      /**
          * Flash the light and play the sound in order the player pays attention
@@ -151,7 +163,7 @@ private:
      /**
          * Send the device pad's GameState to all other pads
          */
-     void anounceSelf(void);
+     void anounceSelf(bool force = false);
 
      /**
          * Check if all connected pads have the same GameState

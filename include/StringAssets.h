@@ -34,6 +34,7 @@ namespace StringAssets {
     const char connecting[] = "Connecting";
     const char connected[] = "OK to start";
     const char enterCard[] = "Enter card";
+    const char pwdHint[] = "Pwr down:1000";
     const char waiting[] = "Waiting";
     const char yourMove[] = "Your move";
     const char powerDown[] = "Power down";

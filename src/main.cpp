@@ -151,10 +151,10 @@ void loop()
     {
       // Animation on the splash screen...
     }
-#if defined(PAD_NUMBER)
-    app = new RoborallyApp(PAD_NUMBER);
+#if defined(PAD_NUMBER) && defined(PAD_ANOUNCE_SELF_PERIOD)
+    app = new RoborallyApp(PAD_NUMBER, PAD_ANOUNCE_SELF_PERIOD);
 #else
-    app = new RoborallyApp(0);
+    app = new RoborallyApp(0, 1000);
 #endif
     break;
   default:
