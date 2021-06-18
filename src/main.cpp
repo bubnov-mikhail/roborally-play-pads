@@ -145,12 +145,14 @@ void loop()
     app = new RadioChannelScanApp();
     break;
   case AbstractApp::APPS::ROBORALLY:
+    /**
     drawFullScreen(LcdAssets::fullScreenLength, LcdAssets::splashScreenAddress);
     tonePlayer.playTones(AudioAssets::splashScreenIntro, AudioAssets::splashScreenIntroLength, false);
     while (!keypad.read() || keypad.getKeypadCode() == 0)
     {
       // Animation on the splash screen...
     }
+    */
 #if defined(PAD_NUMBER) && defined(PAD_ANOUNCE_SELF_PERIOD)
     app = new RoborallyApp(PAD_NUMBER, PAD_ANOUNCE_SELF_PERIOD);
 #else

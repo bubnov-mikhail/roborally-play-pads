@@ -163,27 +163,17 @@ private:
      /**
          * Send the device pad's GameState to all other pads
          */
-     void anounceSelf(bool force = false);
+     void syncStates(bool force = false);
 
      /**
-         * Check if all connected pads have the same GameState
+         * Check if all connected pads have the provided state
          */
-     bool hasQuorum(void);
+     bool haveQuorum(GameState state);
 
      /**
-         * Set the same GameState for all not OFFLINE pads, inc. self
+         * Check if the provided PlayPad data is valid
          */
-     void setGameStatesLocaly(GameState gameState);
-
-     /**
-         * Check if the provided game state is more or equal OFFLINE and less or equal DO_EXIT
-         */
-     bool isValidGameState(GameState gameState);
-
-     /**
-         * Check if the provided card number is more or equal 0 and less or equal maxCardNumber
-         */
-     bool isValidCardNumber(uint16_t cardNumber);
+     bool isValidPlayPad(PlayPad input);
 
      /**
          * Check if time period ends
