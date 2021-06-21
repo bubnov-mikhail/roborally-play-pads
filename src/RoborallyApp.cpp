@@ -520,6 +520,7 @@ void RoborallyApp::listen(void)
 
     playPads[pipe].state = input.state;
     playPads[pipe].cardNumber = input.cardNumber;
+    playPads[pipe].opponentKnownState = input.opponentKnownState;
     // Update heart beat so, the markOffline will not mark this pad as offline... for now.
     playPads[pipe].heartBeatLastUpdated = millis();
 
