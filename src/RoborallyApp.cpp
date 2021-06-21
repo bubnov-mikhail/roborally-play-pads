@@ -546,6 +546,7 @@ void RoborallyApp::syncStates(bool force)
         {
             continue;
         }
+        self->opponentKnownState = playPads[i].state;
         radio->write(self, sizeof(PlayPad));
     }
     radio->startListening();
@@ -670,6 +671,19 @@ bool RoborallyApp::isValidPlayPad(PlayPad input)
     return input.cardNumber >= 0 && input.cardNumber <= maxCardNumber && input.state >= GameState::OFFLINE && input.state <= GameState::DO_EXIT;
 }
 
+bool RoborallyApp::isStateSynchronized(void)
+{
+    PlayPad *self = getSelf();
+    for (uint8_t i = 0; i < maxPlayers; i++)
+    {
+        if (playPads[i].state != GameState::OFFLINE && playPads[i].opponentKnownState != self->state) {
+            return false;
+        }
+    }
+
+    return true;
+}
+
 bool RoborallyApp::isReachedTimer(unsigned long lastUpdated, unsigned long refreshTimeMilis)
 {
     unsigned long m = millis();
@@ -710,32 +724,26 @@ void RoborallyApp::handleGameState(void)
         }
         break;
     case GameState::POWER_DOWN:
-        if (haveQuorum(GameState::POWER_DOWN))
+        if (haveQuorum(GameState::POWER_DOWN) && isStateSynchronized())
         {
             // All pads are Power down.
             self->state = GameState::ENTERING_CARD;
-            // Delay the anounceSelf to make sure all pads will switch to the ENTERING_CARD state
-            anounceSelfLastUpdated += anounceSelfMillis;
             activityRequired();
             break;
         }
 
-        if (haveQuorum(GameState::NEXT_PHASE_WAITING))
+        if (haveQuorum(GameState::NEXT_PHASE_WAITING) && isStateSynchronized())
         {
             if (round > 5)
             {
                 self->state = GameState::NEXT_PHASE_WAITING;
-                // Delay the anounceSelf to make sure all pads will switch to the ENTERING_CARD state
-                anounceSelfLastUpdated += anounceSelfMillis;
             }
         }
         break;
     case GameState::WAITING_QUORUM:
-        if (haveQuorum(GameState::WAITING_QUORUM))
+        if (haveQuorum(GameState::WAITING_QUORUM) && isStateSynchronized())
         {
             self->state = GameState::WAITING_HIGHER_CARD_NUMBER;
-            // Delay the anounceSelf to make sure all pads will switch to the ENTERING_CARD state
-            anounceSelfLastUpdated += anounceSelfMillis;
         }
         break;
     case GameState::WAITING_HIGHER_CARD_NUMBER:
@@ -755,7 +763,7 @@ void RoborallyApp::handleGameState(void)
         break;
     }
     case GameState::NEXT_PHASE_WAITING:
-        if (haveQuorum(GameState::NEXT_PHASE_WAITING))
+        if (haveQuorum(GameState::NEXT_PHASE_WAITING) && isStateSynchronized())
         {
             round = round + 1;
             if (round > 5)
@@ -764,8 +772,6 @@ void RoborallyApp::handleGameState(void)
             }
             validCardNumberEntered = false;
             self->state = GameState::ENTERING_CARD;
-            // Delay the anounceSelf to make sure all pads will switch to the ENTERING_CARD state
-            anounceSelfLastUpdated += anounceSelfMillis;
             activityRequired();
         }
         break;
