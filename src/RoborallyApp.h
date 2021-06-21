@@ -64,7 +64,16 @@ private:
     const static uint8_t flashlightBAddress = 0x32;
     const static uint16_t maxCardNumber = 1000;
     const static uint8_t waitingPhaseMax = 6;
-
+    GameState waitingQuorumStates[4] = {
+        GameState::WAITING_QUORUM, 
+        GameState::WAITING_HIGHER_CARD_NUMBER, 
+        GameState::YOUR_MOVE, 
+        GameState::NEXT_PHASE_WAITING
+    };
+    GameState nextPhaseWaitingStates[2] = {
+        GameState::NEXT_PHASE_WAITING,
+        GameState::ENTERING_CARD
+    };
     unsigned short int playPadNumber = 0;
     const static unsigned short int maxPlayers = 6;
     struct PlayPad
@@ -73,6 +82,12 @@ private:
         GameState opponentKnownState = OFFLINE; // An opponent's known state. Used to be sure the pad's state is fully synchronized
         uint16_t cardNumber = 0;
         unsigned long heartBeatLastUpdated = 0;
+    };
+    struct PlayPadMessage
+    {
+        GameState state = OFFLINE;
+        GameState opponentKnownState[maxPlayers] = {OFFLINE, OFFLINE, OFFLINE, OFFLINE, OFFLINE, OFFLINE}; // An opponent's known state. Used to be sure the pad's state is fully synchronized
+        uint16_t cardNumber = 0;
     };
     const uint8_t addresses[maxPlayers][6] = {
         "Prime", "2Node", "3Node", "4Node", "5Node", "6Node"};
@@ -172,9 +187,14 @@ private:
     bool haveQuorum(GameState state);
 
     /**
+         * Check if all connected pads have any of the provided states
+         */
+    bool haveQuorum(GameState state[], uint8_t size);
+
+    /**
          * Check if the provided PlayPad data is valid
          */
-    bool isValidPlayPad(PlayPad input);
+    bool isValidPlayPadMessage(PlayPadMessage input);
 
     /**
          * Check if time period ends

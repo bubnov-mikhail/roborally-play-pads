@@ -38,11 +38,11 @@ AbstractApp::APPS RoborallyApp::execute(void)
         printMessage();
         printCardMonitor();
         handleKeypad();
-        flashlightBlink();
-        listen();
-        markOffline();
-        handleGameState();
         syncStates();
+        listen();
+        flashlightBlink();
+        handleGameState();
+        markOffline();
         // tonePlayer->play(); // In case of a back music
         if (self->state == GameState::DO_EXIT)
         {
@@ -508,10 +508,10 @@ void RoborallyApp::listen(void)
         return;
     }
 
-    PlayPad input;
-    radio->read(&input, sizeof(input));
+    PlayPadMessage input;
+    radio->read(&input, sizeof(PlayPadMessage));
 
-    if (!isValidPlayPad(input))
+    if (!isValidPlayPadMessage(input))
     {
         return;
     }
@@ -520,7 +520,8 @@ void RoborallyApp::listen(void)
 
     playPads[pipe].state = input.state;
     playPads[pipe].cardNumber = input.cardNumber;
-    playPads[pipe].opponentKnownState = input.opponentKnownState;
+    playPads[pipe].opponentKnownState = input.opponentKnownState[playPadNumber];
+
     // Update heart beat so, the markOffline will not mark this pad as offline... for now.
     playPads[pipe].heartBeatLastUpdated = millis();
 
@@ -537,19 +538,18 @@ void RoborallyApp::syncStates(bool force)
     }
     anounceSelfLastUpdated = millis();
 
-    PlayPad *self = getSelf();
     RF24 *radio = AbstractApp::sc->getRadio();
-
     radio->stopListening();
+
+    PlayPad *self = getSelf();
+    PlayPadMessage input;
+    input.state = self->state;
+    input.cardNumber = self->cardNumber;
     for (uint8_t i = 0; i < maxPlayers; i++)
     {
-        if (playPadNumber == i)
-        {
-            continue;
-        }
-        self->opponentKnownState = playPads[i].state;
-        radio->write(self, sizeof(PlayPad));
+        input.opponentKnownState[i] = playPads[i].state;
     }
+    radio->write(&input, sizeof(PlayPadMessage));
     radio->startListening();
 }
 
@@ -598,7 +598,7 @@ void RoborallyApp::init(void)
 {
     RF24 *radio = AbstractApp::sc->getRadio();
     radio->powerUp();
-    radio->setPayloadSize(sizeof(PlayPad));
+    radio->setPayloadSize(sizeof(PlayPadMessage));
     radio->setAutoAck(false);
     /**
      * According to the datasheet, the auto-retry features's delay value should
@@ -667,9 +667,38 @@ bool RoborallyApp::haveQuorum(GameState state)
     return true;
 }
 
-bool RoborallyApp::isValidPlayPad(PlayPad input)
+bool RoborallyApp::haveQuorum(GameState states[], uint8_t size)
 {
-    return input.cardNumber >= 0 && input.cardNumber <= maxCardNumber && input.state >= GameState::OFFLINE && input.state <= GameState::DO_EXIT;
+    for (uint8_t i = 0; i < maxPlayers; i++)
+    {
+        if (playPads[i].state == GameState::OFFLINE || playPads[i].state == GameState::POWER_DOWN)
+        {
+            continue;
+        }
+
+        bool matchAny = false;
+        for (uint8_t j = 0; j < size; j++)
+        {
+            if (states[j] == playPads[i].state)
+            {
+                matchAny = true;
+                break;
+            }
+        }
+        if (!matchAny) {
+            return false;
+        }
+    }
+
+    return true;
+}
+
+bool RoborallyApp::isValidPlayPadMessage(PlayPadMessage input)
+{
+    return input.cardNumber >= 0 && input.cardNumber <= maxCardNumber 
+        && input.state > GameState::OFFLINE && input.state <= GameState::DO_EXIT
+        && input.opponentKnownState[playPadNumber] >= GameState::OFFLINE && input.opponentKnownState[playPadNumber] <= GameState::DO_EXIT
+    ;
 }
 
 bool RoborallyApp::isStateSynchronized(void)
@@ -677,9 +706,9 @@ bool RoborallyApp::isStateSynchronized(void)
     PlayPad *self = getSelf();
     for (uint8_t i = 0; i < maxPlayers; i++)
     {
-        if (playPads[i].state != GameState::OFFLINE && playPads[i].opponentKnownState != self->state) {
+        if (playPadNumber != i && playPads[i].state != GameState::OFFLINE && playPads[i].opponentKnownState != self->state) {
             return false;
-        }
+        } 
     }
 
     return true;
@@ -742,7 +771,7 @@ void RoborallyApp::handleGameState(void)
         }
         break;
     case GameState::WAITING_QUORUM:
-        if (haveQuorum(GameState::WAITING_QUORUM) && isStateSynchronized())
+        if (isStateSynchronized() && haveQuorum(waitingQuorumStates, 4))
         {
             self->state = GameState::WAITING_HIGHER_CARD_NUMBER;
         }
@@ -764,7 +793,7 @@ void RoborallyApp::handleGameState(void)
         break;
     }
     case GameState::NEXT_PHASE_WAITING:
-        if (haveQuorum(GameState::NEXT_PHASE_WAITING) && isStateSynchronized())
+        if (haveQuorum(nextPhaseWaitingStates, 2) && isStateSynchronized())
         {
             round = round + 1;
             if (round > 5)
